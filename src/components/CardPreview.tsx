@@ -233,9 +233,13 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
         <p className={`text-xs uppercase tracking-widest font-sans font-semibold ${relationship.senderColor}`}>
           {displaySender}
         </p>
-        <p className="font-serif text-sm tracking-[0.25em] text-slate-400 mt-1">
-          20 · 10 · 2026
-        </p>
+        <div className="inline-flex items-center justify-center space-x-2 mt-2 px-3.5 py-0.5 rounded-full bg-white/85 border border-amber-300/80 shadow-2xs">
+          <span className="text-[10px] text-amber-600">✦</span>
+          <span className="font-serif font-bold text-xs tracking-[0.25em] text-amber-950 uppercase">
+            20 · 10 · 2026
+          </span>
+          <span className="text-[10px] text-amber-600">✦</span>
+        </div>
       </div>
     </div>
   );
