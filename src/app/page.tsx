@@ -159,7 +159,7 @@ export default function HomePage() {
     const p = new URLSearchParams();
     p.set('id', activeId);
     p.set('lang', language);
-    if (relationship.id !== 'mother') p.set('rel', relationship.id);
+    p.set('rel', relationship.id);
     if (receiver.trim()) p.set('r', receiver.trim());
     if (sender.trim()) p.set('s', sender.trim());
 

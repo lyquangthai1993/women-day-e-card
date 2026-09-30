@@ -77,47 +77,43 @@ function CardViewContent() {
       setLanguage(lang as Language);
     }
 
-    const hasInlineData = Boolean(rel || rec || msg || wishIdx);
+    // Chỉ coi là có dữ liệu inline hoàn chỉnh nếu biết trước chủ đề thiệp (rel) VÀ có lời chúc (msg hoặc wishIdx)
+    const hasCompleteInlineData = Boolean(rel && (msg || wishIdx));
+    const hasAnyInlineData = Boolean(rel || rec || msg || wishIdx);
 
     if (id) {
       setCardId(id.trim());
     }
 
-    // 1. Nạp dữ liệu compact inline tức thì trong 0ms nếu có
-    if (hasInlineData) {
-      let curRel = RELATIONSHIPS[0];
-      if (rel) {
-        const found = RELATIONSHIPS.find((item) => item.id === rel || item.nameVi === rel);
-        if (found) {
-          curRel = found;
-          setRelationship(found);
-        }
+    // 1. Nạp trước dữ liệu inline nếu có
+    let initialRel = RELATIONSHIPS[0];
+    if (rel) {
+      const found = RELATIONSHIPS.find((item) => item.id === rel || item.nameVi === rel);
+      if (found) {
+        initialRel = found;
+        setRelationship(found);
       }
-      if (lang === 'vi' || lang === 'en') {
-        setLanguage(lang as Language);
+    }
+    if (rec) setReceiver(rec);
+    if (send) setSender(send);
+    if (wishIdx) {
+      const idx = parseInt(wishIdx, 10);
+      const wishes = (lang || 'vi') === 'vi' ? initialRel.wishesVi : initialRel.wishesEn;
+      if (!isNaN(idx) && wishes[idx]) {
+        setMessage(wishes[idx]);
       }
-      if (rec) setReceiver(rec);
-      if (send) setSender(send);
-      if (wishIdx) {
-        const idx = parseInt(wishIdx, 10);
-        const wishes = (lang || 'vi') === 'vi' ? curRel.wishesVi : curRel.wishesEn;
-        if (!isNaN(idx) && wishes[idx]) {
-          setMessage(wishes[idx]);
-        }
-      } else if (msg) {
-        setMessage(msg);
-      }
-      setIsLoadingCard(false);
+    } else if (msg) {
+      setMessage(msg);
     }
 
-    // 2. Nếu có Card ID, đồng bộ dữ liệu mới nhất từ Google Sheet
+    // 2. Xử lý trạng thái tải (Loading) & Đồng bộ từ Google Sheet
     if (id) {
-      if (!hasInlineData) {
+      // Nếu chưa có đầy đủ theme và nội dung từ URL, hiển thị skeleton loading để tránh bị đổi màu thiệp đột ngột
+      if (!hasCompleteInlineData) {
         setIsLoadingCard(true);
       }
 
       getCardFromGoogleSheet(id.trim()).then((data) => {
-        setIsLoadingCard(false);
         if (data) {
           if (data.receiver) setReceiver(data.receiver);
           if (data.message) setMessage(data.message);
@@ -129,13 +125,15 @@ function CardViewContent() {
           if (data.language && (data.language === 'vi' || data.language === 'en')) {
             setLanguage(data.language as Language);
           }
-        } else if (!hasInlineData) {
+        } else if (!hasAnyInlineData) {
           showToast(t.toastCardNotFound);
         }
+        setIsLoadingCard(false);
       }).catch(() => {
         setIsLoadingCard(false);
       });
-    } else if (!hasInlineData) {
+    } else {
+      // Không có ID, mở ngay bằng dữ liệu inline
       setIsLoadingCard(false);
     }
   }, [searchParams]);
