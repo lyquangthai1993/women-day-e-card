@@ -20,6 +20,13 @@ export interface RelationshipTheme {
   defaultSalutationEn: string;
   wishesVi: string[];
   wishesEn: string[];
+  gradientClass?: string;
+  borderClass?: string;
+  dividerSymbol?: string;
+  stampBadgeVi?: string;
+  stampBadgeEn?: string;
+  stampStyle?: 'wax-seal' | 'ruby-ribbon' | 'airmail-stamp' | 'bestie-badge' | 'modern-foil' | 'coral-heart' | 'memorial-halo';
+  salutationColor?: string;
 }
 
 export interface CardData {

@@ -170,6 +170,75 @@ export const renderFlowerSvgContent = (relId: string) => {
   }
 };
 
+const renderStamp = (rel: RelationshipTheme, lang: Language) => {
+  const badgeText = lang === 'vi' ? (rel.stampBadgeVi || '20 · 10 · 2026') : (rel.stampBadgeEn || '20 · 10 · 2026');
+
+  switch (rel.stampStyle) {
+    case 'wax-seal':
+      return (
+        <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-rose-100/90 border border-rose-300 shadow-xs text-rose-800">
+          <span className="text-xs">🌺</span>
+          <span className="font-serif font-bold text-[10px] sm:text-[11px] tracking-wider uppercase">{badgeText}</span>
+          <span className="text-[10px] text-rose-500">✦</span>
+        </div>
+      );
+    case 'ruby-ribbon':
+      return (
+        <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-gradient-to-r from-rose-700 via-red-600 to-rose-700 text-white shadow-sm border border-amber-300/70">
+          <span className="text-[10px] text-amber-200">❦</span>
+          <span className="font-serif font-bold text-[10px] sm:text-[11px] tracking-widest uppercase text-amber-100">{badgeText}</span>
+          <span className="text-[10px] text-amber-200">❦</span>
+        </div>
+      );
+    case 'airmail-stamp':
+      return (
+        <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-lg bg-orange-50/90 border-2 border-dashed border-rose-300 shadow-2xs text-rose-700">
+          <span className="text-xs">🌸</span>
+          <span className="font-mono font-bold text-[10px] tracking-wider uppercase">{badgeText}</span>
+        </div>
+      );
+    case 'bestie-badge':
+      return (
+        <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-amber-100/95 border-2 border-amber-300 text-amber-900 shadow-xs">
+          <span className="text-xs">🌼</span>
+          <span className="font-sans font-extrabold text-[10px] tracking-wide uppercase">{badgeText}</span>
+          <span className="text-[10px] text-amber-600">✦</span>
+        </div>
+      );
+    case 'modern-foil':
+      return (
+        <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-purple-100/90 border border-purple-300/80 text-purple-900 shadow-2xs">
+          <span className="text-[10px] text-purple-600">◆</span>
+          <span className="font-sans font-bold text-[10px] tracking-widest uppercase">{badgeText}</span>
+          <span className="text-[10px] text-purple-600">◆</span>
+        </div>
+      );
+    case 'coral-heart':
+      return (
+        <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-gradient-to-r from-rose-500 via-orange-400 to-rose-500 text-white shadow-sm border border-orange-200">
+          <span className="text-xs">🧡</span>
+          <span className="font-serif font-bold text-[10px] sm:text-[11px] tracking-wider uppercase">{badgeText}</span>
+        </div>
+      );
+    case 'memorial-halo':
+      return (
+        <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-slate-200/90 border border-slate-300 text-slate-700 shadow-2xs">
+          <span className="text-xs">🕊️</span>
+          <span className="font-serif font-medium text-[10px] tracking-widest uppercase text-slate-800">{badgeText}</span>
+          <span className="text-[9px] text-slate-400">✧</span>
+        </div>
+      );
+    default:
+      return (
+        <div className="inline-flex items-center justify-center space-x-2 px-4 py-1 rounded-full bg-white/90 border border-amber-300/80 shadow-xs">
+          <span className="text-[10px] text-amber-600">✦</span>
+          <span className="font-serif font-bold text-xs tracking-widest text-amber-950 uppercase">{badgeText}</span>
+          <span className="text-[10px] text-amber-600">✦</span>
+        </div>
+      );
+  }
+};
+
 export const CardPreview: React.FC<CardPreviewProps> = ({
   relationship,
   receiver,
@@ -192,8 +261,15 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
       ref={cardRef}
       id="cardCaptureArea"
       style={{ backgroundColor: relationship.bgColor }}
-      className={`relative w-full aspect-[4/5] min-h-[480px] rounded-2xl shadow-xl overflow-hidden p-6 flex flex-col justify-between transition-colors duration-500 card-border-gold ${relationship.bgClass}`}
+      className={`relative w-full aspect-[4/5] min-h-[480px] rounded-2xl shadow-xl overflow-hidden p-6 flex flex-col justify-between transition-all duration-500 ${relationship.gradientClass || relationship.bgClass} ${relationship.borderClass || 'card-border-gold'}`}
     >
+      {/* Subtle Botanical Watermark in Center */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.06] overflow-hidden">
+        <svg className="w-80 h-80 transform scale-125" viewBox="0 0 100 100" fill="none">
+          <g>{renderFlowerSvgContent(relationship.id)}</g>
+        </svg>
+      </div>
+
       {/* 4 Corner Botanical Ornaments */}
       <svg className="corner-decor top-2 left-2" viewBox="0 0 100 100" fill="none">
         <g>{renderFlowerSvgContent(relationship.id)}</g>
@@ -219,11 +295,19 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
 
       {/* Salutation & Recipient */}
       <div className="relative z-10 text-center pt-2">
-        <p className="font-script text-2xl sm:text-3xl text-rose-700/80 mb-1 tracking-wide leading-normal">{defaultSalutation}</p>
+        <p className={`font-script text-2xl sm:text-3xl mb-1 tracking-wide leading-normal ${relationship.salutationColor || 'text-rose-700/80'}`}>
+          {defaultSalutation}
+        </p>
         <h2 className={`font-serif font-bold text-2xl sm:text-3xl tracking-wide px-4 break-words leading-normal pb-1 ${relationship.titleColor}`}>
           {displayReceiver}
         </h2>
-        <div className="w-12 h-[1.5px] bg-amber-400/70 mx-auto mt-2 mb-1"></div>
+        <div className="flex items-center justify-center space-x-2 my-1 opacity-70">
+          <div className="w-8 h-[1px] bg-current opacity-40"></div>
+          <span className={`text-xs tracking-widest select-none ${relationship.titleColor}`}>
+            {relationship.dividerSymbol || '✦ ❀ ✦'}
+          </span>
+          <div className="w-8 h-[1px] bg-current opacity-40"></div>
+        </div>
       </div>
 
       {/* Heartfelt Message */}
@@ -235,17 +319,17 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
 
       {/* Sender & Event Date */}
       <div className="relative z-10 text-center pt-2 pb-2">
-        <div className="w-12 h-[1.5px] bg-amber-400/70 mx-auto mb-3"></div>
+        <div className="flex items-center justify-center space-x-2 mb-2.5 opacity-70">
+          <div className="w-8 h-[1px] bg-current opacity-40"></div>
+          <span className={`text-xs tracking-widest select-none ${relationship.senderColor}`}>
+            {relationship.dividerSymbol || '✦ ❀ ✦'}
+          </span>
+          <div className="w-8 h-[1px] bg-current opacity-40"></div>
+        </div>
         <p className={`text-xs uppercase tracking-widest font-sans font-semibold mb-3 ${relationship.senderColor}`}>
           {displaySender}
         </p>
-        <div className="inline-flex items-center justify-center space-x-2 px-4 py-1 rounded-full bg-white/90 border border-amber-300/80 shadow-xs">
-          <span className="text-[10px] text-amber-600">✦</span>
-          <span className="font-serif font-bold text-xs tracking-widest text-amber-950 uppercase">
-            20 · 10 · 2026
-          </span>
-          <span className="text-[10px] text-amber-600">✦</span>
-        </div>
+        {renderStamp(relationship, language)}
       </div>
     </div>
   );
