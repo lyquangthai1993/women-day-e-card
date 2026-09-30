@@ -47,6 +47,13 @@ function CardViewContent() {
     });
   };
 
+  const handleSelectLanguage = (next: Language) => {
+    if (language !== next) {
+      setLanguage(next);
+      saveUserLanguage(next);
+    }
+  };
+
   useEffect(() => {
     document.title = t.pageTitle;
   }, [t.pageTitle]);
@@ -209,14 +216,31 @@ function CardViewContent() {
             </div>
           </Link>
 
-          <button
-            type="button"
-            onClick={toggleLanguage}
-            className="shrink-0 flex items-center space-x-1.5 bg-rose-50 border border-rose-200 hover:bg-rose-100/80 px-2.5 py-1 rounded-full text-xs font-bold text-rose-800 transition"
-          >
-            <span>{language === 'vi' ? '🇻🇳' : '🇬🇧'}</span>
-            <span>{language === 'vi' ? 'VI / EN' : 'EN / VI'}</span>
-          </button>
+          {/* Segmented Language Switcher: [ VI | EN ] */}
+          <div className="shrink-0 flex items-center bg-rose-50/90 border border-rose-200/80 p-0.5 rounded-full shadow-2xs">
+            <button
+              type="button"
+              onClick={() => handleSelectLanguage('vi')}
+              className={`px-2.5 py-1 rounded-full text-xs font-bold transition-all duration-200 ${
+                language === 'vi'
+                  ? 'bg-rose-600 text-white shadow-xs'
+                  : 'text-rose-700/80 hover:text-rose-900 hover:bg-rose-100/50'
+              }`}
+            >
+              VI
+            </button>
+            <button
+              type="button"
+              onClick={() => handleSelectLanguage('en')}
+              className={`px-2.5 py-1 rounded-full text-xs font-bold transition-all duration-200 ${
+                language === 'en'
+                  ? 'bg-rose-600 text-white shadow-xs'
+                  : 'text-rose-700/80 hover:text-rose-900 hover:bg-rose-100/50'
+              }`}
+            >
+              EN
+            </button>
+          </div>
         </div>
       </header>
 
