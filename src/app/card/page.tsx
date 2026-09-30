@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, Suspense } from 'react';
-import html2canvas from 'html2canvas';
+import { toPng } from 'html-to-image';
 import { Image as ImageIcon, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
@@ -149,7 +149,7 @@ function CardViewContent() {
     return slug ? `happy-womens-day-${slug}.png` : "happy-womens-day-card.png";
   };
 
-  // Lưu ảnh thiệp về máy
+  // Lưu ảnh thiệp về máy bằng html-to-image (chất lượng cao, không lệch font hay che chữ)
   const handleSaveImage = async () => {
     if (!cardRef.current || isSavingImage || isLoadingCard) return;
     setIsSavingImage(true);
@@ -160,24 +160,13 @@ function CardViewContent() {
         await document.fonts.ready;
       }
 
-      const canvas = await html2canvas(cardRef.current, {
-        scale: 3,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: relationship.bgColor || '#ffffff',
-        logging: false,
-        onclone: (clonedDoc) => {
-          const clonedCard = clonedDoc.getElementById('cardCaptureArea');
-          if (clonedCard) {
-            clonedCard.style.width = '520px';
-            clonedCard.style.minHeight = '650px';
-            clonedCard.style.aspectRatio = 'unset';
-            clonedCard.style.margin = '0 auto';
-          }
-        },
-      });
+      const targetEl = (cardRef.current.querySelector('#cardCaptureArea') as HTMLElement) || cardRef.current;
 
-      const imgData = canvas.toDataURL('image/png');
+      const imgData = await toPng(targetEl, {
+        cacheBust: true,
+        pixelRatio: 2.5,
+        backgroundColor: relationship.bgColor || '#ffffff',
+      });
       const finalFileName = getDownloadFileName();
 
       const link = document.createElement('a');
