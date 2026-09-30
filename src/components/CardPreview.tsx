@@ -91,7 +91,7 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
         <p className={`text-xs uppercase tracking-widest font-sans font-semibold ${relationship.senderColor}`}>
           {displaySender}
         </p>
-        <p className="font-serif text-[11px] tracking-[0.3em] text-slate-400 mt-1">
+        <p className="font-serif text-sm tracking-[0.25em] text-slate-400 mt-1">
           20 · 10 · 2026
         </p>
       </div>
