@@ -3,6 +3,7 @@ export const GOOGLE_SHEET_API_URL = process.env.NEXT_PUBLIC_GOOGLE_SHEET_API_URL
 export interface SheetPayload {
   action: 'create_card' | 'claim_icecream' | 'save_card' | 'update_card';
   cardId?: string;
+  cardUrl?: string;
   visitorId: string;
   sender?: string;
   receiver?: string;
@@ -14,6 +15,7 @@ export interface SheetPayload {
 
 export interface GoogleSheetCardData {
   cardId: string;
+  cardUrl?: string;
   createdAt: string;
   updatedAt: string;
   visitorId: string;

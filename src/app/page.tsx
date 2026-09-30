@@ -222,6 +222,7 @@ export default function HomePage() {
       const res = await syncToGoogleSheet({
         action: 'save_card',
         cardId: activeCardId,
+        cardUrl: shareUrl,
         visitorId,
         sender: sender.trim() || 'Ẩn danh',
         receiver: receiver.trim() || (language === 'vi' ? relationship.nameVi : relationship.nameEn),
@@ -297,6 +298,7 @@ export default function HomePage() {
       syncToGoogleSheet({
         action: 'save_card',
         cardId: activeCardId,
+        cardUrl: getCardShareUrl(activeCardId),
         visitorId,
         sender: sender.trim() || 'Ẩn danh',
         receiver: receiver.trim() || (language === 'vi' ? relationship.nameVi : relationship.nameEn),

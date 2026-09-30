@@ -1709,6 +1709,7 @@
       const payload = {
         action: action || (currentCardId ? 'save_card' : 'create_card'),
         cardId: currentCardId || '',
+        cardUrl: currentCardId ? getCardShareUrl() : '',
         visitorId: deviceVisitorId,
         sender: document.getElementById('senderNameInput').value.trim() || 'Ẩn danh',
         receiver: document.getElementById('receiverNameInput').value.trim() || '',
