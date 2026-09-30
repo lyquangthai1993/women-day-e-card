@@ -222,6 +222,7 @@ export const RELATIONSHIPS: RelationshipTheme[] = [
 
 export const I18N = {
   vi: {
+    pageTitle: "Thiệp Chúc Mừng 20/10 - E-Card",
     subHeader: "Trao gửi yêu thương",
     privacyNotice: "🔒 <strong>Riêng tư tuyệt đối:</strong> Thiệp tạo trực tiếp trên máy của bạn.",
     labelRelationship: "1. Người phụ nữ bạn muốn gửi gắm:",
@@ -259,6 +260,7 @@ export const I18N = {
     toastClaimed: "Chúc mừng bạn đã nhận kem thành công!"
   },
   en: {
+    pageTitle: "Happy Vietnamese Women's Day 20/10 - E-Card",
     subHeader: "Send Love & Gratitude",
     privacyNotice: "🔒 <strong>Strictly Private:</strong> Generated locally on your device.",
     labelRelationship: "1. The special woman in your story:",

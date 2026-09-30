@@ -49,6 +49,10 @@ export default function HomePage() {
     checkUrlHash();
   }, []);
 
+  useEffect(() => {
+    document.title = t.pageTitle;
+  }, [t.pageTitle]);
+
   // Đọc dữ liệu từ URL hash nếu được chia sẻ
   const checkUrlHash = () => {
     if (typeof window === 'undefined') return;
