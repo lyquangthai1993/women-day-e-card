@@ -1,28 +1,27 @@
 /**
  * ==============================================================================
- * GOOGLE APPS SCRIPT CHO HỆ THỐNG THIỆP 20/10 (E-CARD & QUẢN LÝ QUÀ KEM)
+ * GOOGLE APPS SCRIPT FOR WOMEN'S DAY 20/10 E-CARD & REWARD MANAGEMENT
  * ==============================================================================
- * Tính năng chính:
- * 1. Ghi nhận đầy đủ thông tin thiệp & LINK XEM THIỆP mà người dùng đã tạo.
- * 2. Hỗ trợ xem lại thiệp theo Card ID theo thời gian thực (Real-time Cloud Sync).
- * 3. Tự động cập nhật nội dung vào cùng một link khi người gửi chỉnh sửa thiệp.
- * 4. Ghi nhận trạng thái đổi quà kem tại quầy theo thiết bị hoặc mã thiệp.
+ * Key Features:
+ * 1. Store full card details & CARD SHARE URL created by users.
+ * 2. Real-time Cloud Sync for viewing cards by Card ID.
+ * 3. Seamlessly updates existing card records upon edits.
+ * 4. Track ice cream reward redemption status by visitor device ID or card ID.
  *
- * HƯỚNG DẪN CÀI ĐẶT NHANH VÀO GOOGLE SHEET:
- * 1. Mở file Google Sheet của bạn.
- * 2. Trên thanh menu, chọn: Tiện ích mở rộng (Extensions) > Apps Script.
- * 3. Xóa sạch toàn bộ mã cũ trong file Code.gs và DÁN TOÀN BỘ MÃ NÀY VÀO.
- * 4. Bấm biểu tượng Lưu (Save / Ctrl+S).
- * 5. Bấm nút "Triển khai" (Deploy) ở góc trên bên phải:
- *    - Chọn "Quản lý bản triển khai" (Manage deployments).
- *    - Bấm vào biểu tượng Bút chì (Chỉnh sửa / Edit).
- *    - Ở mục "Phiên bản" (Version): Chọn "Phiên bản mới" (New version).
- *    - Bấm "Triển khai" (Deploy).
- *    - (Đảm bảo mục "Ai có quyền truy cập" / "Who has access" là "Bất kỳ ai" / "Anyone").
- * 6. Xong! Hệ thống sẽ tự động tạo bảng "Danh Sách Thiệp" với đầy đủ cột Link thiệp.
+ * QUICK SETUP GUIDE IN GOOGLE SHEETS:
+ * 1. Open your Google Sheet.
+ * 2. In the top menu, select: Extensions > Apps Script.
+ * 3. Delete any existing code in Code.gs and PASTE THIS ENTIRE SCRIPT.
+ * 4. Click Save (Ctrl+S / Cmd+S).
+ * 5. Click "Deploy" (top right) > "Manage deployments".
+ *    - Click the Pencil icon (Edit).
+ *    - In "Version", choose "New version".
+ *    - Click "Deploy".
+ *    - (Ensure "Who has access" is set to "Anyone").
+ * 6. Done! The system will automatically use or create the "Cards" sheet.
  */
 
-const SHEET_NAME = "Danh Sách Thiệp";
+const SHEET_NAME = "Cards";
 
 const HEADERS = [
   "Card ID",
@@ -40,7 +39,7 @@ const HEADERS = [
 ];
 
 // ==============================================================================
-// 1. XỬ LÝ GET (Đọc dữ liệu thiệp khi người nhận mở link)
+// 1. GET HANDLER (Read card data when recipient opens share link)
 // ==============================================================================
 function doGet(e) {
   try {
@@ -50,18 +49,18 @@ function doGet(e) {
 
     if (action === 'get_card' || cardId) {
       if (!cardId) {
-        return createJsonResponse({ status: 'error', message: 'Thiếu mã thiệp (cardId)' });
+        return createJsonResponse({ status: 'error', message: 'Missing card ID (cardId)' });
       }
 
       const sheet = getOrInitSheet();
       const data = sheet.getDataRange().getValues();
       if (data.length <= 1) {
-        return createJsonResponse({ status: 'not_found', message: 'Chưa có dữ liệu thiệp trong bảng' });
+        return createJsonResponse({ status: 'not_found', message: 'No card data found in sheet' });
       }
 
       const map = getHeaderIndexes(data[0]);
 
-      // Dò từ dòng mới nhất lên dòng đầu tiên để lấy dữ liệu cập nhật mới nhất
+      // Scan from bottom to top to get the latest updated record
       for (let i = data.length - 1; i >= 1; i--) {
         const row = data[i];
         const rowCardId = String(row[map.cardId] || '').trim();
@@ -86,14 +85,14 @@ function doGet(e) {
         }
       }
 
-      return createJsonResponse({ status: 'not_found', message: 'Không tìm thấy thiệp với mã: ' + cardId });
+      return createJsonResponse({ status: 'not_found', message: 'Card not found with ID: ' + cardId });
     }
 
-    // Ping kiểm tra tình trạng hoạt động của API
+    // Ping check for API health
     return createJsonResponse({
       status: 'ok',
-      message: 'Women Day E-Card API đang hoạt động bình thường',
-      timestamp: new Date().toLocaleString('vi-VN')
+      message: 'Women Day E-Card API is running normally',
+      timestamp: new Date().toISOString()
     });
 
   } catch (err) {
@@ -102,11 +101,11 @@ function doGet(e) {
 }
 
 // ==============================================================================
-// 2. XỬ LÝ POST (Lưu thiệp mới, Cập nhật thiệp, Đổi quà kem)
+// 2. POST HANDLER (Save new card, Update card, Claim ice cream reward)
 // ==============================================================================
 function doPost(e) {
   const lock = LockService.getScriptLock();
-  lock.tryLock(10000); // Khóa chống race-condition tối đa 10s
+  lock.tryLock(10000); // 10s anti race-condition lock
 
   try {
     let payload = {};
@@ -128,7 +127,7 @@ function doPost(e) {
     const map = getHeaderIndexes(data[0]);
 
     // --------------------------------------------------------------------------
-    // Trường hợp A: Xác nhận nhận kem tại quầy
+    // Case A: Confirm ice cream redemption at counter
     // --------------------------------------------------------------------------
     if (action === 'claim_icecream') {
       const visitorId = (payload.visitorId || '').trim();
@@ -145,7 +144,7 @@ function doPost(e) {
       }
 
       if (foundRow > 0) {
-        sheet.getRange(foundRow, map.iceCreamStatus + 1).setValue("ĐÃ NHẬN KEM 🍦");
+        sheet.getRange(foundRow, map.iceCreamStatus + 1).setValue("CLAIMED 🍦");
         sheet.getRange(foundRow, map.claimedTime + 1).setValue(nowStr);
       } else {
         const newRow = createEmptyRow(data[0].length);
@@ -153,24 +152,24 @@ function doPost(e) {
         newRow[map.createdAt] = nowStr;
         newRow[map.updatedAt] = nowStr;
         newRow[map.visitorId] = visitorId;
-        newRow[map.sender] = payload.sender || "Ẩn danh";
-        newRow[map.message] = "Xác nhận nhận kem trực tiếp tại quầy";
-        newRow[map.iceCreamStatus] = "ĐÃ NHẬN KEM 🍦";
+        newRow[map.sender] = payload.sender || "Anonymous";
+        newRow[map.message] = "Direct counter ice cream redemption";
+        newRow[map.iceCreamStatus] = "CLAIMED 🍦";
         newRow[map.claimedTime] = nowStr;
         sheet.appendRow(newRow);
       }
 
-      return createJsonResponse({ status: 'success', message: 'Đã xác nhận nhận kem thành công' });
+      return createJsonResponse({ status: 'success', message: 'Ice cream claimed successfully' });
     }
 
     // --------------------------------------------------------------------------
-    // Trường hợp B: Tạo mới hoặc cập nhật thiệp (Ghi nhận link người dùng đã tạo)
+    // Case B: Create new card or update existing card
     // --------------------------------------------------------------------------
     const cardId = (payload.cardId || '').trim() || ('c_' + Utilities.getUuid().substring(0, 8));
     const defaultOrigin = "https://women-day-e-card.vercel.app";
     const cardUrl = (payload.cardUrl || '').trim() || (`${defaultOrigin}/card?id=${cardId}`);
-    const visitorId = payload.visitorId || 'Ẩn danh';
-    const sender = payload.sender || 'Ẩn danh';
+    const visitorId = payload.visitorId || 'Anonymous';
+    const sender = payload.sender || 'Anonymous';
     const receiver = payload.receiver || '';
     const relationship = payload.relationship || 'mother';
     const message = payload.message || '';
@@ -179,13 +178,13 @@ function doPost(e) {
     let foundRow = -1;
     for (let i = 1; i < data.length; i++) {
       if (String(data[i][map.cardId]).trim() === cardId) {
-        foundRow = i + 1; // Chỉ số dòng thực tế trên Sheet (1-indexed)
+        foundRow = i + 1;
         break;
       }
     }
 
     if (foundRow > 0) {
-      // CẬP NHẬT DÒNG THIỆP HIỆN CÓ
+      // UPDATE EXISTING CARD ROW
       sheet.getRange(foundRow, map.cardUrl + 1).setValue(cardUrl);
       sheet.getRange(foundRow, map.updatedAt + 1).setValue(nowStr);
       sheet.getRange(foundRow, map.sender + 1).setValue(sender);
@@ -202,7 +201,7 @@ function doPost(e) {
         updatedAt: nowStr
       });
     } else {
-      // TẠO DÒNG MỚI NẾU THIỆP CHƯA CÓ TRONG BẢNG
+      // APPEND NEW CARD ROW
       const newRow = createEmptyRow(data[0].length);
       newRow[map.cardId] = cardId;
       newRow[map.cardUrl] = cardUrl;
@@ -214,7 +213,7 @@ function doPost(e) {
       newRow[map.message] = message;
       newRow[map.language] = language;
       newRow[map.visitorId] = visitorId;
-      newRow[map.iceCreamStatus] = "Chưa nhận kem";
+      newRow[map.iceCreamStatus] = "Not claimed";
       newRow[map.claimedTime] = "";
 
       sheet.appendRow(newRow);
@@ -238,20 +237,19 @@ function doPost(e) {
 }
 
 // ==============================================================================
-// 3. TIỆN ÍCH QUẢN LÝ BẢNG TÍNH & ĐỊNH DẠNG
+// 3. SPREADSHEET UTILITIES & FORMATTING
 // ==============================================================================
 function getOrInitSheet() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
-  let sheet = ss.getSheetByName(SHEET_NAME);
+  // 1. Look for "Cards" first, or fallback to "Danh Sách Thiệp" or "Wishes"
+  let sheet = ss.getSheetByName(SHEET_NAME) || ss.getSheetByName("Danh Sách Thiệp") || ss.getSheetByName("Wishes");
 
   if (!sheet) {
-    sheet = ss.getSheetByName("Wishes") || ss.getSheets()[0];
+    sheet = ss.getSheets()[0];
     if (sheet && sheet.getLastRow() > 0) {
       const firstRow = sheet.getRange(1, 1, 1, Math.max(sheet.getLastColumn(), 1)).getValues()[0];
       const firstCell = String(firstRow[0] || '').toLowerCase();
-      // Nếu sheet cũ chưa có cột Mã Thiệp
-      if (!firstCell.includes("mã thiệp") && !firstCell.includes("card id")) {
-        // Tạo sheet mới chuẩn hóa
+      if (!firstCell.includes("card id") && !firstCell.includes("mã thiệp")) {
         sheet = ss.insertSheet(SHEET_NAME);
       }
     } else if (!sheet) {
@@ -270,7 +268,7 @@ function getOrInitSheet() {
 function formatHeaderRow(sheet) {
   const headerRange = sheet.getRange(1, 1, 1, HEADERS.length);
   headerRange.setFontWeight("bold");
-  headerRange.setBackground("#fce7f3"); // Hồng đào pastel
+  headerRange.setBackground("#fce7f3"); // Soft pastel pink
   headerRange.setFontColor("#9d174d");
   sheet.setFrozenRows(1);
   for (let c = 1; c <= HEADERS.length; c++) {
@@ -296,18 +294,18 @@ function getHeaderIndexes(headerRow) {
 
   headerRow.forEach((h, idx) => {
     const s = String(h).toLowerCase();
-    if (s.includes("mã thiệp") || s.includes("card id") || s.includes("cardid")) map.cardId = idx;
-    else if (s.includes("link") || s.includes("url")) map.cardUrl = idx;
-    else if (s.includes("cập nhật") || s.includes("updated")) map.updatedAt = idx;
-    else if (s.includes("tạo") || s.includes("created")) map.createdAt = idx;
-    else if (s.includes("gửi") || s.includes("sender")) map.sender = idx;
-    else if ((s.includes("nhận") && !s.includes("kem")) || s.includes("receiver") || s.includes("recipient")) map.receiver = idx;
-    else if (s.includes("quan hệ") || s.includes("mối quan hệ") || s.includes("relationship")) map.relationship = idx;
-    else if (s.includes("chúc") || s.includes("lời chúc") || s.includes("message") || s.includes("wish")) map.message = idx;
-    else if (s.includes("ngôn ngữ") || s.includes("language")) map.language = idx;
-    else if (s.includes("thiết bị") || s.includes("visitor") || s.includes("fingerprint") || s.includes("device")) map.visitorId = idx;
-    else if (s.includes("trạng thái") || s.includes("ice cream") || (s.includes("kem") && !s.includes("thời gian")) || s.includes("ice")) map.iceCreamStatus = idx;
-    else if (s.includes("giờ nhận") || s.includes("thời gian nhận kem") || s.includes("claimed")) map.claimedTime = idx;
+    if (s.includes("card id") || s.includes("cardid") || s.includes("mã thiệp")) map.cardId = idx;
+    else if (s.includes("card url") || s.includes("url") || s.includes("link")) map.cardUrl = idx;
+    else if (s.includes("updated") || s.includes("cập nhật")) map.updatedAt = idx;
+    else if (s.includes("created") || s.includes("tạo")) map.createdAt = idx;
+    else if (s.includes("sender") || s.includes("gửi")) map.sender = idx;
+    else if (s.includes("receiver") || s.includes("recipient") || (s.includes("nhận") && !s.includes("kem"))) map.receiver = idx;
+    else if (s.includes("relationship") || s.includes("quan hệ") || s.includes("mối quan hệ")) map.relationship = idx;
+    else if (s.includes("message") || s.includes("wish") || s.includes("lời chúc") || s.includes("chúc")) map.message = idx;
+    else if (s.includes("language") || s.includes("ngôn ngữ")) map.language = idx;
+    else if (s.includes("visitor") || s.includes("device") || s.includes("fingerprint") || s.includes("thiết bị")) map.visitorId = idx;
+    else if (s.includes("ice cream") || s.includes("trạng thái") || (s.includes("kem") && !s.includes("thời gian")) || s.includes("ice")) map.iceCreamStatus = idx;
+    else if (s.includes("claimed") || s.includes("giờ nhận") || s.includes("thời gian nhận kem")) map.claimedTime = idx;
   });
 
   return map;
