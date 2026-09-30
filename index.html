@@ -847,7 +847,27 @@
     };
 
     // --- 2. BIẾN TOÀN CỤC & KHỞI TẠO STATE ---
-    let currentLang = 'vi';
+    function saveUserLanguage(lang) {
+      try {
+        localStorage.setItem('user_language', lang);
+        sessionStorage.setItem('user_language', lang);
+        document.cookie = 'user_lang=' + lang + '; path=/; max-age=31536000; SameSite=Lax';
+      } catch (e) {}
+    }
+
+    function getSavedUserLanguage() {
+      try {
+        const session = sessionStorage.getItem('user_language');
+        if (session === 'vi' || session === 'en') return session;
+        const local = localStorage.getItem('user_language');
+        if (local === 'vi' || local === 'en') return local;
+        const match = document.cookie.match(/(?:^|;\s*)user_lang=([^;]*)/);
+        if (match && (match[1] === 'vi' || match[1] === 'en')) return match[1];
+      } catch (e) {}
+      return null;
+    }
+
+    let currentLang = getSavedUserLanguage() || 'vi';
     let currentRelationship = RELATIONSHIPS[0];
     let deviceVisitorId = 'fp_generating...';
     let isClaimed = false;
@@ -1206,6 +1226,7 @@
     // --- 5. CHUYỂN ĐỔI NGÔN NGỮ (VI/EN) ---
     function toggleLanguage() {
       currentLang = currentLang === 'vi' ? 'en' : 'vi';
+      saveUserLanguage(currentLang);
       applyLanguage();
     }
 

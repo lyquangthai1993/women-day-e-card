@@ -14,6 +14,7 @@ import { CardPreview } from '../components/CardPreview';
 import { SuggestionsModal } from '../components/SuggestionsModal';
 import { IceCreamModal } from '../components/IceCreamModal';
 import { ViewCardModal } from '../components/ViewCardModal';
+import { saveUserLanguage, getSavedUserLanguage } from '../lib/languageStorage';
 
 export default function HomePage() {
   const [language, setLanguage] = useState<Language>('vi');
@@ -47,8 +48,13 @@ export default function HomePage() {
     return 'c_' + Math.random().toString(36).substring(2, 8) + Date.now().toString(36).slice(-4);
   };
 
-  // Khởi tạo FingerprintJS và kiểm tra trạng thái vé kem
+  // Khởi tạo FingerprintJS, nạp ngôn ngữ đã lưu và kiểm tra trạng thái vé kem
   useEffect(() => {
+    const savedLang = getSavedUserLanguage();
+    if (savedLang) {
+      setLanguage(savedLang);
+    }
+
     async function init() {
       const id = await getDeviceFingerprint();
       setVisitorId(id);
@@ -130,7 +136,11 @@ export default function HomePage() {
   };
 
   const toggleLanguage = () => {
-    setLanguage((prev) => (prev === 'vi' ? 'en' : 'vi'));
+    setLanguage((prev) => {
+      const next = prev === 'vi' ? 'en' : 'vi';
+      saveUserLanguage(next);
+      return next;
+    });
   };
 
   const handleSelectRelationship = (rel: RelationshipTheme) => {

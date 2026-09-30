@@ -10,12 +10,17 @@ import { RelationshipTheme, Language } from '../../types';
 import { RELATIONSHIPS, I18N } from '../../lib/constants';
 import { getCardFromGoogleSheet } from '../../lib/googleSheet';
 import { CardPreview } from '../../components/CardPreview';
+import { saveUserLanguage, getSavedUserLanguage } from '../../lib/languageStorage';
 
 function CardViewContent() {
   const searchParams = useSearchParams();
   const urlLang = searchParams.get('lang') || searchParams.get('l');
 
-  const [language, setLanguage] = useState<Language>(urlLang === 'en' ? 'en' : 'vi');
+  const initialLang = (urlLang === 'en' || urlLang === 'vi')
+    ? (urlLang as Language)
+    : (getSavedUserLanguage() || 'vi');
+
+  const [language, setLanguage] = useState<Language>(initialLang);
   const [relationship, setRelationship] = useState<RelationshipTheme>(RELATIONSHIPS[0]);
   const [receiver, setReceiver] = useState<string>('');
   const [message, setMessage] = useState<string>('');
@@ -35,7 +40,11 @@ function CardViewContent() {
   };
 
   const toggleLanguage = () => {
-    setLanguage((prev) => (prev === 'vi' ? 'en' : 'vi'));
+    setLanguage((prev) => {
+      const next = prev === 'vi' ? 'en' : 'vi';
+      saveUserLanguage(next);
+      return next;
+    });
   };
 
   useEffect(() => {
