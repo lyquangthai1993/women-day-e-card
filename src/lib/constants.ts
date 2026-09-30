@@ -1,0 +1,291 @@
+import { RelationshipTheme } from '../types';
+
+export const RELATIONSHIPS: RelationshipTheme[] = [
+  {
+    id: 'mother',
+    icon: '🌺',
+    nameVi: 'Mẹ',
+    nameEn: 'Mother',
+    flowerVi: 'Hoa Mẫu Đơn',
+    flowerEn: 'Pink Peony',
+    bgClass: 'bg-[#fdf2f8]', // Hồng ấm áp
+    titleColor: 'text-pink-900',
+    bodyColor: 'text-pink-950',
+    senderColor: 'text-pink-800',
+    strokeColor: '#f472b6',
+    petalColor: '#fbcfe8',
+    defaultReceiverVi: 'Mẹ Yêu Quý',
+    defaultReceiverEn: 'Dearest Mother',
+    defaultSalutationVi: 'Kính gửi',
+    defaultSalutationEn: 'To My Loving',
+    wishesVi: [
+      "Cảm ơn mẹ vì cả một đời hy sinh và luôn là chỗ dựa vững chãi nhất của con. Chúc mẹ 20/10 nhiều sức khỏe và luôn an yên.",
+      "Điều con ngưỡng mộ nhất ở mẹ là sự dịu dàng và kiên cường. Mong mẹ mỗi ngày đều tìm thấy niềm vui bình dị.",
+      "Có một điều con ít khi nói thành lời: Con yêu mẹ rất nhiều và cảm ơn vì đã là mẹ của con.",
+      "Chúc mẹ ngày 20/10 rạng rỡ như những đóa hoa mẫu đơn, luôn vui vẻ và hạnh phúc bên con cháu."
+    ],
+    wishesEn: [
+      "Thank you, Mom, for your endless love, sacrifices, and warmth. Wishing you a peaceful and joyful Vietnamese Women's Day.",
+      "What I admire most about you is your graceful strength. May every day bring you health and gentle happiness.",
+      "Something I don't say often enough: I love you deeply and am eternally grateful to be your child.",
+      "Wishing you a day as blooming and beautiful as pink peonies. Always stay cheerful and healthy!"
+    ]
+  },
+  {
+    id: 'wife',
+    icon: '🌹',
+    nameVi: 'Vợ',
+    nameEn: 'Wife',
+    flowerVi: 'Hoa Hồng Đỏ',
+    flowerEn: 'Red Rose',
+    bgClass: 'bg-[#fff1f2]', // Hồng đỏ nồng thắm
+    titleColor: 'text-rose-900',
+    bodyColor: 'text-rose-950',
+    senderColor: 'text-rose-800',
+    strokeColor: '#f43f5e',
+    petalColor: '#fecdd3',
+    defaultReceiverVi: 'Vợ Yêu Của Anh',
+    defaultReceiverEn: 'My Beloved Wife',
+    defaultSalutationVi: 'Thương gửi',
+    defaultSalutationEn: 'With all my love to',
+    wishesVi: [
+      "Cảm ơn em vì đã cùng anh vun vén mái ấm và luôn bên cạnh anh qua mọi thăng trầm. 20/10 chúc vợ luôn xinh đẹp và hạnh phúc!",
+      "Nếu không có em, cuộc sống của anh chắc chắn sẽ rất tẻ nhạt. Cảm ơn vì em đã là người bạn đồng hành tuyệt vời nhất.",
+      "Hôm nay anh chỉ muốn nói với em rằng: Với anh, nụ cười của em luôn là điều quý giá nhất.",
+      "Chúc bà xã 20/10 ngập tràn niềm vui, bớt lo toan và luôn cảm nhận được tình yêu thương của anh."
+    ],
+    wishesEn: [
+      "Thank you for building our home with love and being my constant anchor. Happy Women's Day to my wonderful wife!",
+      "Life would be dull without you by my side. Thank you for being the most loving partner I could ever ask for.",
+      "Today I just want to remind you: Your smile is, and will always be, my greatest treasure.",
+      "Wishing my dearest wife a day full of sweet moments, laughter, and relaxation."
+    ]
+  },
+  {
+    id: 'sister',
+    icon: '🌸',
+    nameVi: 'Chị / Em gái',
+    nameEn: 'Sister',
+    flowerVi: 'Hoa Anh Đào',
+    flowerEn: 'Cherry Blossom',
+    bgClass: 'bg-[#fff7ed]', // Anh đào hồng phấn
+    titleColor: 'text-orange-950',
+    bodyColor: 'text-stone-800',
+    senderColor: 'text-rose-700',
+    strokeColor: '#fb7185',
+    petalColor: '#fed7aa',
+    defaultReceiverVi: 'Chị / Em Gái',
+    defaultReceiverEn: 'My Dear Sister',
+    defaultSalutationVi: 'Thân gửi',
+    defaultSalutationEn: 'Dearest',
+    wishesVi: [
+      "Chúc người chị/em gái tuyệt vời luôn tự tin tỏa sáng và đạt được mọi ước mơ của mình nhé!",
+      "Cảm ơn vì đã luôn là nơi để chia sẻ và tíu tít đủ thứ chuyện trên đời. 20/10 vui vẻ và rực rỡ nha!",
+      "Chúc em/chị luôn giữ nụ cười tươi tắn trên môi và luôn được yêu thương trọn vẹn.",
+      "Mong mọi điều tốt lành, may mắn và hạnh phúc nhất sẽ đến với chị/em trong ngày hôm nay."
+    ],
+    wishesEn: [
+      "Wishing my amazing sister a vibrant day! Keep shining brightly and chasing your dreams.",
+      "Thank you for all the shared laughter and memories. Happy Vietnamese Women's Day!",
+      "May your smile stay radiant, and may you always be surrounded by love and kindness.",
+      "Sending warm hugs and wishing you endless success and joy!"
+    ]
+  },
+  {
+    id: 'friend',
+    icon: '🌼',
+    nameVi: 'Bạn thân',
+    nameEn: 'Best Friend',
+    flowerVi: 'Cúc Họa Mi',
+    flowerEn: 'Daisy',
+    bgClass: 'bg-[#fefce8]', // Vàng kem ấm áp
+    titleColor: 'text-yellow-950',
+    bodyColor: 'text-yellow-900',
+    senderColor: 'text-amber-800',
+    strokeColor: '#eab308',
+    petalColor: '#fef08a',
+    defaultReceiverVi: 'Bạn Thân Của Tôi',
+    defaultReceiverEn: 'My Best Friend',
+    defaultSalutationVi: 'Gửi bạn',
+    defaultSalutationEn: 'To My Buddy',
+    wishesVi: [
+      "Chúc bạn thân 20/10 luôn tràn đầy năng lượng, tiền vào như nước và sớm có người rước nha!",
+      "Cảm ơn bạn vì luôn lắng nghe và đồng hành những lúc vui buồn. 20/10 thật hạnh phúc nhé người bạn tuyệt vời!",
+      "Chúc bạn luôn xinh đẹp, tự tin làm chủ cuộc sống và luôn yêu thương chính mình.",
+      "Hôm nay xứng đáng nhận hoa, quà và thật nhiều niềm vui. Happy Women's Day!"
+    ],
+    wishesEn: [
+      "Happy Women's Day to my favorite partner in crime! Stay fabulous, rich, and cheerful!",
+      "Thanks for always being there through thick and thin. Have a truly wonderful 20/10!",
+      "Wishing you confidence, success, and tons of love. You deserve the best!",
+      "Go treat yourself to something nice today—you truly rock!"
+    ]
+  },
+  {
+    id: 'colleague',
+    icon: '💜',
+    nameVi: 'Đồng nghiệp',
+    nameEn: 'Colleague',
+    flowerVi: 'Hoa Lilac',
+    flowerEn: 'Lilac',
+    bgClass: 'bg-[#faf5ff]', // Tím lilac thanh nhã
+    titleColor: 'text-purple-950',
+    bodyColor: 'text-purple-900',
+    senderColor: 'text-purple-700',
+    strokeColor: '#a855f7',
+    petalColor: '#e9d5ff',
+    defaultReceiverVi: 'Chị / Em Đồng Nghiệp',
+    defaultReceiverEn: 'Dear Colleague',
+    defaultSalutationVi: 'Thân chúc',
+    defaultSalutationEn: 'Wishing',
+    wishesVi: [
+      "Cảm ơn bạn vì sự hợp tác và năng lượng tích cực luôn mang lại cho team. Chúc bạn 20/10 thật nhiều niềm vui!",
+      "Chúc đồng nghiệp tài năng công việc luôn thuận lợi, deadline luôn êm đẹp và luôn xinh tươi!",
+      "Rất may mắn vì được làm việc cùng một đồng nghiệp tận tâm và dễ thương như bạn. Chúc bạn 20/10 tuyệt vời!",
+      "Chúc toàn thể chị em đồng nghiệp ngày 20/10 ngập tràn hoa, quà và những lời chúc tốt đẹp nhất."
+    ],
+    wishesEn: [
+      "Thank you for your fantastic teamwork and positive energy. Happy Vietnamese Women's Day!",
+      "Wishing you great success, stress-free deadlines, and continued growth in everything you do!",
+      "It's a pleasure collaborating with someone as dedicated and inspiring as you. Have a great 20/10!",
+      "Wishing all our female colleagues a joyful day filled with flowers and appreciation!"
+    ]
+  },
+  {
+    id: 'lover',
+    icon: '🧡',
+    nameVi: 'Người yêu',
+    nameEn: 'Girlfriend',
+    flowerVi: 'Mao Lương San Hô',
+    flowerEn: 'Ranunculus',
+    bgClass: 'bg-[#fff5f5]', // San hô ngọt ngào
+    titleColor: 'text-rose-950',
+    bodyColor: 'text-rose-900',
+    senderColor: 'text-rose-700',
+    strokeColor: '#fb923c',
+    petalColor: '#fed7aa',
+    defaultReceiverVi: 'Em Yêu Của Anh',
+    defaultReceiverEn: 'My Sweetheart',
+    defaultSalutationVi: 'Dành tặng',
+    defaultSalutationEn: 'Forever with',
+    wishesVi: [
+      "Chúc cô gái của anh ngày 20/10 luôn nở nụ cười rạng rỡ nhất. Yêu em nhiều hơn mỗi ngày!",
+      "Cảm ơn em đã đến và mang theo muôn vàn ấm áp vào thế giới của anh. 20/10 ngọt ngào nha em!",
+      "Anh không giỏi nói lời hoa mỹ, chỉ mong em luôn an yên và hạnh phúc khi ở bên anh.",
+      "Hôm nay hãy để anh lo tất cả nhé. Chúc em một ngày 20/10 ngập tràn sự cưng chiều!"
+    ],
+    wishesEn: [
+      "Wishing the sweetest girl a very Happy Women's Day! You bring so much sunshine into my world.",
+      "Thank you for being my favorite person and best blessing. Loving you more each day!",
+      "I might not always find poetic words, but I promise to always care for you and make you smile.",
+      "Today is your day to be pampered! Happy 20/10 my love."
+    ]
+  },
+  {
+    id: 'memorial',
+    icon: '🕊️',
+    nameVi: 'Người tôi muốn nhớ về',
+    nameEn: 'In Loving Memory',
+    flowerVi: 'Hoa Trắng Thanh Khiết',
+    flowerEn: 'White Lily',
+    bgClass: 'bg-[#f8fafc]', // Trắng xám trang nhã
+    titleColor: 'text-slate-800',
+    bodyColor: 'text-slate-700',
+    senderColor: 'text-slate-600',
+    strokeColor: '#94a3b8',
+    petalColor: '#e2e8f0',
+    defaultReceiverVi: 'Người Phụ Nữ Trong Tim Tôi',
+    defaultReceiverEn: 'Forever In My Heart',
+    defaultSalutationVi: 'Tưởng nhớ',
+    defaultSalutationEn: 'Remembering',
+    wishesVi: [
+      "Dù ở đâu, hình bóng và sự ấm áp của người vẫn luôn sống mãi trong trái tim và từng ký ức của con/tôi.",
+      "Cảm ơn vì những yêu thương dịu dàng đã từng để lại. Hôm nay con nhớ về người với lòng biết ơn vô hạn.",
+      "Gửi một lời tri ân bình yên đến nơi xa. Người sẽ luôn là ngọn hải đăng soi sáng cho con.",
+      "Nhớ về người với tất cả sự kính trọng, yêu thương và lòng trân quý sâu sắc nhất."
+    ],
+    wishesEn: [
+      "Wherever you are, your warmth and gentle presence will forever stay alive in my heart.",
+      "Thank you for all the precious love you left behind. Remembering you today with endless gratitude.",
+      "Sending peaceful thoughts to you. You remain my guiding light always.",
+      "Cherishing your memory today with all my love, respect, and admiration."
+    ]
+  }
+];
+
+export const I18N = {
+  vi: {
+    subHeader: "Trao gửi yêu thương",
+    privacyNotice: "🔒 <strong>Riêng tư tuyệt đối:</strong> Thiệp tạo trực tiếp trên máy của bạn.",
+    labelRelationship: "1. Người phụ nữ bạn muốn gửi gắm:",
+    labelReceiverName: "Tên người nhận (ví dụ: Mẹ yêu, Chị Mai, Em Thảo...):",
+    receiverPlaceholder: "Gửi đến ai đó...",
+    labelMessage: "Lời nhắn chân thành từ bạn:",
+    btnOpenSuggestions: "Gợi ý lời chúc hay",
+    quickOpenPrompt: "Chạm để mở khung xem kho lời chúc mẫu",
+    suggestionsModalTitle: "Kho Lời Chúc Ý Nghĩa",
+    suggestionsModalSubtitle: "Chạm vào câu bạn thích để tự động điền vào thiệp",
+    btnCloseSuggestions: "Đóng",
+    toastWishSelected: "Đã điền lời chúc vào thiệp!",
+    messagePlaceholder: "Viết những điều bạn chưa kịp nói...",
+    labelSenderName: "Tên người gửi (hoặc để trống nếu gửi ẩn danh):",
+    senderPlaceholder: "Tên của bạn...",
+    labelPreview: "2. Xem trước tấm thiệp của bạn:",
+    livePreviewHint: "Cập nhật theo thời gian thực",
+    btnShareText: "Chia sẻ thiệp",
+    btnSaveImgText: "Lưu thành file ảnh",
+    footerMadeWith: "Được tạo với tấm lòng dành cho ngày Phụ nữ Việt Nam 20/10",
+    claimedBannerText: "Bạn đã có vé nhận kem tại quầy!",
+    modalTag: "Nhiệm vụ hoàn thành!",
+    modalTitle: "Giờ thì đi lấy kem thôi! 🍦",
+    modalDesc: "Lời nhắn đã trên đường đến người bạn thương. Hãy đưa màn hình này cho ban lãnh đạo tại quầy kem nhé!",
+    btnClaim: "Xác nhận đã nhận kem tại quầy",
+    btnClaimed: "ĐÃ NHẬN KEM 🍦 (XONG)",
+    btnClose: "Đóng và quay lại",
+    viewModalTitle: "Tấm thiệp dành tặng bạn",
+    longPressHint: "💡 Gợi ý: Nhấn giữ vào ảnh để lưu trực tiếp vào thư viện ảnh điện thoại.",
+    btnDownload: "Tải ảnh về máy",
+    btnCreateOwn: "Tạo thiệp của bạn",
+    defaultAnonymous: "Từ: Một người thầm trân quý",
+    toastCopied: "Đã sao chép liên kết thiệp vào bộ nhớ tạm!",
+    toastImageSaved: "Ảnh thiệp đã được tạo thành công!",
+    toastClaimed: "Chúc mừng bạn đã nhận kem thành công!"
+  },
+  en: {
+    subHeader: "Send Love & Gratitude",
+    privacyNotice: "🔒 <strong>Strictly Private:</strong> Generated locally on your device.",
+    labelRelationship: "1. The special woman in your story:",
+    labelReceiverName: "Recipient's Name (e.g. Mom, Sarah, Sister...):",
+    receiverPlaceholder: "To someone special...",
+    labelMessage: "Your heartfelt message:",
+    btnOpenSuggestions: "Inspiration Wishes",
+    quickOpenPrompt: "Tap to browse sample wishes",
+    suggestionsModalTitle: "Heartfelt Wishes Library",
+    suggestionsModalSubtitle: "Tap any wish to auto-fill into your e-card",
+    btnCloseSuggestions: "Close",
+    toastWishSelected: "Wish inserted into card!",
+    messagePlaceholder: "Words you haven't said yet...",
+    labelSenderName: "Sender's Name (or leave blank for anonymous):",
+    senderPlaceholder: "Your name...",
+    labelPreview: "2. Live Card Preview:",
+    livePreviewHint: "Updates in real-time",
+    btnShareText: "Share E-Card",
+    btnSaveImgText: "Save as Image",
+    footerMadeWith: "Crafted with love for Vietnamese Women's Day 20/10",
+    claimedBannerText: "You have an ice cream ticket ready!",
+    modalTag: "Mission Complete!",
+    modalTitle: "Now Go Pick Up Your Ice Cream! 🍦",
+    modalDesc: "Your card is on its way to your loved one. Show this pass to the leadership team at the ice cream cart!",
+    btnClaim: "Confirm Ice Cream Claimed",
+    btnClaimed: "ICE CREAM CLAIMED 🍦 (DONE)",
+    btnClose: "Close & Return",
+    viewModalTitle: "An E-Card For You",
+    longPressHint: "💡 Tip: Long press the image to save directly to your photos.",
+    btnDownload: "Download Image",
+    btnCreateOwn: "Create Your Own Card",
+    defaultAnonymous: "From: Someone who cherishes you",
+    toastCopied: "Card link copied to clipboard!",
+    toastImageSaved: "Card image rendered successfully!",
+    toastClaimed: "Ice cream claimed successfully! Enjoy!"
+  }
+};

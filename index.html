@@ -976,20 +976,30 @@
 
     // --- 6. XỬ LÝ 2 HÀNH ĐỘNG CHÍNH (CHIA SẺ & LƯU ẢNH) ---
 
-    // Gói dữ liệu thiệp thành chuỗi Base64 UTF-8 để nhúng vào link
+    // Gói dữ liệu thiệp thành URL siêu ngắn (Luôn < 150 ký tự, tránh lỗi QR code > 400 chars)
     function getCardShareUrl() {
-      const cardData = {
-        r: document.getElementById('receiverNameInput').value.trim() || (currentLang === 'vi' ? currentRelationship.defaultReceiverVi : currentRelationship.defaultReceiverEn),
-        m: document.getElementById('messageInput').value.trim() || (currentLang === 'vi' ? currentRelationship.wishesVi[0] : currentRelationship.wishesEn[0]),
-        s: document.getElementById('senderNameInput').value.trim(),
-        rel: currentRelationship.id,
-        lang: currentLang
-      };
+      const receiver = document.getElementById('receiverNameInput').value.trim();
+      const message = document.getElementById('messageInput').value.trim();
+      const sender = document.getElementById('senderNameInput').value.trim();
       
-      const jsonStr = JSON.stringify(cardData);
-      const encoded = btoa(encodeURIComponent(jsonStr));
+      const wishes = currentLang === 'vi' ? currentRelationship.wishesVi : currentRelationship.wishesEn;
+      const wishIdx = wishes.findIndex(w => w.trim() === message);
+
+      const params = new URLSearchParams();
+      if (receiver) params.set('r', receiver);
+      if (sender) params.set('s', sender);
+      params.set('rel', currentRelationship.id);
+      if (currentLang !== 'vi') params.set('l', currentLang);
+
+      // Nếu là câu gợi ý mẫu: chỉ lưu chỉ số w=0,1,2 (giảm chiều dài URL từ 800 ký tự xuống còn ~70 ký tự!)
+      if (wishIdx >= 0) {
+        params.set('w', wishIdx.toString());
+      } else if (message) {
+        params.set('m', message);
+      }
+
       const baseUrl = window.location.origin + window.location.pathname;
-      return `${baseUrl}#card=${encoded}`;
+      return `${baseUrl}#${params.toString()}`;
     }
 
     // 1. Chia sẻ thiệp
@@ -1127,37 +1137,71 @@
       if (timeEl) timeEl.innerText = timeStr;
     }, 1000);
 
-    // --- 8. XỬ LÝ KHI NGƯỜI NHẬN MỞ LINK TỪ ZALO / MESSENGER (#card=...) ---
+    // --- 8. XỬ LÝ KHI NGƯỜI NHẬN MỞ LINK TỪ ZALO / MESSENGER ---
     function checkUrlCardParam() {
       const hash = window.location.hash;
-      if (hash && hash.includes('card=')) {
+      if (!hash) return;
+
+      // 1. Hỗ trợ định dạng cũ #card=... (backward compatibility)
+      if (hash.includes('card=')) {
         try {
           const encoded = hash.split('card=')[1];
           const jsonStr = decodeURIComponent(atob(encoded));
           const data = JSON.parse(jsonStr);
 
-          // Điền dữ liệu từ URL vào thiệp
           if (data.r) document.getElementById('receiverNameInput').value = data.r;
           if (data.m) document.getElementById('messageInput').value = data.m;
           if (data.s) document.getElementById('senderNameInput').value = data.s;
-          
           if (data.rel) {
             const rel = RELATIONSHIPS.find(item => item.id === data.rel);
             if (rel) currentRelationship = rel;
           }
-
           if (data.lang) currentLang = data.lang;
 
           applyLanguage();
-
-          // Tự động hiển thị thiệp dạng pop-up cho người nhận
-          setTimeout(() => {
-            renderCardToImagePopup();
-          }, 600);
-
+          setTimeout(() => renderCardToImagePopup(), 600);
+          return;
         } catch (e) {
-          console.warn("Invalid card URL parameter:", e);
+          console.warn("Invalid legacy card URL parameter:", e);
         }
+      }
+
+      // 2. Định dạng mới siêu gọn #r=...&s=...&rel=...&w=...&m=... (Luôn < 150 ký tự)
+      try {
+        const queryStr = hash.startsWith('#') ? hash.substring(1) : hash;
+        const params = new URLSearchParams(queryStr);
+
+        if (params.has('rel')) {
+          const rel = RELATIONSHIPS.find(item => item.id === params.get('rel'));
+          if (rel) currentRelationship = rel;
+        }
+
+        if (params.has('l')) {
+          currentLang = params.get('l');
+        }
+
+        if (params.has('r')) {
+          document.getElementById('receiverNameInput').value = params.get('r');
+        }
+
+        if (params.has('s')) {
+          document.getElementById('senderNameInput').value = params.get('s');
+        }
+
+        if (params.has('w')) {
+          const idx = parseInt(params.get('w'), 10);
+          const wishes = currentLang === 'vi' ? currentRelationship.wishesVi : currentRelationship.wishesEn;
+          if (!isNaN(idx) && wishes[idx]) {
+            document.getElementById('messageInput').value = wishes[idx];
+          }
+        } else if (params.has('m')) {
+          document.getElementById('messageInput').value = params.get('m');
+        }
+
+        applyLanguage();
+        setTimeout(() => renderCardToImagePopup(), 600);
+      } catch (err) {
+        console.warn("Error parsing URL hash params:", err);
       }
     }
 
