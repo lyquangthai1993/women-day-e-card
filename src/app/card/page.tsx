@@ -156,11 +156,25 @@ function CardViewContent() {
     showToast(t.btnSavingText);
 
     try {
+      if (typeof document !== 'undefined' && document.fonts) {
+        await document.fonts.ready;
+      }
+
       const canvas = await html2canvas(cardRef.current, {
-        scale: 2.5,
+        scale: 3,
         useCORS: true,
+        allowTaint: true,
         backgroundColor: relationship.bgColor || '#ffffff',
         logging: false,
+        onclone: (clonedDoc) => {
+          const clonedCard = clonedDoc.getElementById('cardCaptureArea');
+          if (clonedCard) {
+            clonedCard.style.width = '520px';
+            clonedCard.style.minHeight = '650px';
+            clonedCard.style.aspectRatio = 'unset';
+            clonedCard.style.margin = '0 auto';
+          }
+        },
       });
 
       const imgData = canvas.toDataURL('image/png');

@@ -223,98 +223,106 @@
       </div>
 
       <!-- KHUNG THIỆP ĐỂ RENDER VÀ XUẤT ẢNH -->
-      <div id="cardCaptureArea" class="relative w-full aspect-[4/5] rounded-2xl shadow-xl overflow-hidden p-6 flex flex-col justify-between transition-colors duration-500 card-border-gold">
+      <div id="cardCaptureArea" class="relative w-full aspect-[4/5] min-h-[480px] rounded-2xl shadow-xl overflow-hidden p-6 flex flex-col justify-between transition-colors duration-500 card-border-gold">
         
-        <!-- Hoa văn 4 góc đặc trưng cho từng loài hoa -->
+        <!-- Hoa văn 4 góc đặc trưng cho từng loài hoa (Dùng native SVG transform để html2canvas xuất đủ 4 góc) -->
         <svg class="corner-decor top-2 left-2" viewBox="0 0 100 100" fill="none">
-          <path d="M12,85 Q26,52 42,32" stroke="#4ade80" stroke-width="2" stroke-linecap="round"/>
-          <path d="M24,58 C14,48 18,34 32,38 C34,50 28,60 24,58 Z" fill="#86efac" opacity="0.8"/>
-          <path d="M24,58 Q25,48 29,40" stroke="#22c55e" stroke-width="0.8"/>
-          <path d="M36,40 C46,30 42,22 34,26 C30,34 34,40 36,40 Z" fill="#bbf7d0" opacity="0.8"/>
-          <ellipse cx="46" cy="44" rx="26" ry="24" fill="#fbcfe8" opacity="0.85"/>
-          <path d="M26,38 C20,24 34,16 48,20 C62,15 72,26 68,40 C73,54 62,68 48,66 C32,68 22,54 26,38 Z" fill="#f9a8d4" opacity="0.9"/>
-          <path d="M32,36 C30,26 40,22 48,26 C56,22 64,30 60,42 C64,52 54,60 46,58 C34,59 29,48 32,36 Z" fill="#f472b6"/>
-          <path d="M36,42 C33,34 42,30 48,34 C54,30 60,37 56,46 C58,52 50,56 44,54 C38,55 35,48 36,42 Z" fill="#ec4899" opacity="0.95"/>
-          <path d="M40,42 C40,36 46,34 50,38 C53,43 49,48 44,48 C41,47 39,44 40,42 Z" fill="#db2777"/>
-          <circle cx="46" cy="42" r="3.2" fill="#fbbf24"/>
-          <circle cx="48" cy="40.5" r="1.3" fill="#f59e0b"/>
-          <circle cx="44" cy="41" r="1.3" fill="#f59e0b"/>
-          <circle cx="46" cy="43.5" r="1.2" fill="#d97706"/>
+          <g id="cornerTopLeft" class="corner-decor-g">
+            <path d="M12,85 Q26,52 42,32" stroke="#4ade80" stroke-width="2" stroke-linecap="round"/>
+            <path d="M24,58 C14,48 18,34 32,38 C34,50 28,60 24,58 Z" fill="#86efac" opacity="0.8"/>
+            <path d="M24,58 Q25,48 29,40" stroke="#22c55e" stroke-width="0.8"/>
+            <path d="M36,40 C46,30 42,22 34,26 C30,34 34,40 36,40 Z" fill="#bbf7d0" opacity="0.8"/>
+            <ellipse cx="46" cy="44" rx="26" ry="24" fill="#fbcfe8" opacity="0.85"/>
+            <path d="M26,38 C20,24 34,16 48,20 C62,15 72,26 68,40 C73,54 62,68 48,66 C32,68 22,54 26,38 Z" fill="#f9a8d4" opacity="0.9"/>
+            <path d="M32,36 C30,26 40,22 48,26 C56,22 64,30 60,42 C64,52 54,60 46,58 C34,59 29,48 32,36 Z" fill="#f472b6"/>
+            <path d="M36,42 C33,34 42,30 48,34 C54,30 60,37 56,46 C58,52 50,56 44,54 C38,55 35,48 36,42 Z" fill="#ec4899" opacity="0.95"/>
+            <path d="M40,42 C40,36 46,34 50,38 C53,43 49,48 44,48 C41,47 39,44 40,42 Z" fill="#db2777"/>
+            <circle cx="46" cy="42" r="3.2" fill="#fbbf24"/>
+            <circle cx="48" cy="40.5" r="1.3" fill="#f59e0b"/>
+            <circle cx="44" cy="41" r="1.3" fill="#f59e0b"/>
+            <circle cx="46" cy="43.5" r="1.2" fill="#d97706"/>
+          </g>
         </svg>
 
-        <svg class="corner-decor top-2 right-2 transform scale-x-[-1]" viewBox="0 0 100 100" fill="none">
-          <path d="M12,85 Q26,52 42,32" stroke="#4ade80" stroke-width="2" stroke-linecap="round"/>
-          <path d="M24,58 C14,48 18,34 32,38 C34,50 28,60 24,58 Z" fill="#86efac" opacity="0.8"/>
-          <path d="M24,58 Q25,48 29,40" stroke="#22c55e" stroke-width="0.8"/>
-          <path d="M36,40 C46,30 42,22 34,26 C30,34 34,40 36,40 Z" fill="#bbf7d0" opacity="0.8"/>
-          <ellipse cx="46" cy="44" rx="26" ry="24" fill="#fbcfe8" opacity="0.85"/>
-          <path d="M26,38 C20,24 34,16 48,20 C62,15 72,26 68,40 C73,54 62,68 48,66 C32,68 22,54 26,38 Z" fill="#f9a8d4" opacity="0.9"/>
-          <path d="M32,36 C30,26 40,22 48,26 C56,22 64,30 60,42 C64,52 54,60 46,58 C34,59 29,48 32,36 Z" fill="#f472b6"/>
-          <path d="M36,42 C33,34 42,30 48,34 C54,30 60,37 56,46 C58,52 50,56 44,54 C38,55 35,48 36,42 Z" fill="#ec4899" opacity="0.95"/>
-          <path d="M40,42 C40,36 46,34 50,38 C53,43 49,48 44,48 C41,47 39,44 40,42 Z" fill="#db2777"/>
-          <circle cx="46" cy="42" r="3.2" fill="#fbbf24"/>
-          <circle cx="48" cy="40.5" r="1.3" fill="#f59e0b"/>
-          <circle cx="44" cy="41" r="1.3" fill="#f59e0b"/>
-          <circle cx="46" cy="43.5" r="1.2" fill="#d97706"/>
+        <svg class="corner-decor top-2 right-2" viewBox="0 0 100 100" fill="none">
+          <g id="cornerTopRight" class="corner-decor-g" transform="translate(100, 0) scale(-1, 1)">
+            <path d="M12,85 Q26,52 42,32" stroke="#4ade80" stroke-width="2" stroke-linecap="round"/>
+            <path d="M24,58 C14,48 18,34 32,38 C34,50 28,60 24,58 Z" fill="#86efac" opacity="0.8"/>
+            <path d="M24,58 Q25,48 29,40" stroke="#22c55e" stroke-width="0.8"/>
+            <path d="M36,40 C46,30 42,22 34,26 C30,34 34,40 36,40 Z" fill="#bbf7d0" opacity="0.8"/>
+            <ellipse cx="46" cy="44" rx="26" ry="24" fill="#fbcfe8" opacity="0.85"/>
+            <path d="M26,38 C20,24 34,16 48,20 C62,15 72,26 68,40 C73,54 62,68 48,66 C32,68 22,54 26,38 Z" fill="#f9a8d4" opacity="0.9"/>
+            <path d="M32,36 C30,26 40,22 48,26 C56,22 64,30 60,42 C64,52 54,60 46,58 C34,59 29,48 32,36 Z" fill="#f472b6"/>
+            <path d="M36,42 C33,34 42,30 48,34 C54,30 60,37 56,46 C58,52 50,56 44,54 C38,55 35,48 36,42 Z" fill="#ec4899" opacity="0.95"/>
+            <path d="M40,42 C40,36 46,34 50,38 C53,43 49,48 44,48 C41,47 39,44 40,42 Z" fill="#db2777"/>
+            <circle cx="46" cy="42" r="3.2" fill="#fbbf24"/>
+            <circle cx="48" cy="40.5" r="1.3" fill="#f59e0b"/>
+            <circle cx="44" cy="41" r="1.3" fill="#f59e0b"/>
+            <circle cx="46" cy="43.5" r="1.2" fill="#d97706"/>
+          </g>
         </svg>
 
-        <svg class="corner-decor bottom-2 left-2 transform scale-y-[-1]" viewBox="0 0 100 100" fill="none">
-          <path d="M12,85 Q26,52 42,32" stroke="#4ade80" stroke-width="2" stroke-linecap="round"/>
-          <path d="M24,58 C14,48 18,34 32,38 C34,50 28,60 24,58 Z" fill="#86efac" opacity="0.8"/>
-          <path d="M24,58 Q25,48 29,40" stroke="#22c55e" stroke-width="0.8"/>
-          <path d="M36,40 C46,30 42,22 34,26 C30,34 34,40 36,40 Z" fill="#bbf7d0" opacity="0.8"/>
-          <ellipse cx="46" cy="44" rx="26" ry="24" fill="#fbcfe8" opacity="0.85"/>
-          <path d="M26,38 C20,24 34,16 48,20 C62,15 72,26 68,40 C73,54 62,68 48,66 C32,68 22,54 26,38 Z" fill="#f9a8d4" opacity="0.9"/>
-          <path d="M32,36 C30,26 40,22 48,26 C56,22 64,30 60,42 C64,52 54,60 46,58 C34,59 29,48 32,36 Z" fill="#f472b6"/>
-          <path d="M36,42 C33,34 42,30 48,34 C54,30 60,37 56,46 C58,52 50,56 44,54 C38,55 35,48 36,42 Z" fill="#ec4899" opacity="0.95"/>
-          <path d="M40,42 C40,36 46,34 50,38 C53,43 49,48 44,48 C41,47 39,44 40,42 Z" fill="#db2777"/>
-          <circle cx="46" cy="42" r="3.2" fill="#fbbf24"/>
-          <circle cx="48" cy="40.5" r="1.3" fill="#f59e0b"/>
-          <circle cx="44" cy="41" r="1.3" fill="#f59e0b"/>
-          <circle cx="46" cy="43.5" r="1.2" fill="#d97706"/>
+        <svg class="corner-decor bottom-2 left-2" viewBox="0 0 100 100" fill="none">
+          <g id="cornerBottomLeft" class="corner-decor-g" transform="translate(0, 100) scale(1, -1)">
+            <path d="M12,85 Q26,52 42,32" stroke="#4ade80" stroke-width="2" stroke-linecap="round"/>
+            <path d="M24,58 C14,48 18,34 32,38 C34,50 28,60 24,58 Z" fill="#86efac" opacity="0.8"/>
+            <path d="M24,58 Q25,48 29,40" stroke="#22c55e" stroke-width="0.8"/>
+            <path d="M36,40 C46,30 42,22 34,26 C30,34 34,40 36,40 Z" fill="#bbf7d0" opacity="0.8"/>
+            <ellipse cx="46" cy="44" rx="26" ry="24" fill="#fbcfe8" opacity="0.85"/>
+            <path d="M26,38 C20,24 34,16 48,20 C62,15 72,26 68,40 C73,54 62,68 48,66 C32,68 22,54 26,38 Z" fill="#f9a8d4" opacity="0.9"/>
+            <path d="M32,36 C30,26 40,22 48,26 C56,22 64,30 60,42 C64,52 54,60 46,58 C34,59 29,48 32,36 Z" fill="#f472b6"/>
+            <path d="M36,42 C33,34 42,30 48,34 C54,30 60,37 56,46 C58,52 50,56 44,54 C38,55 35,48 36,42 Z" fill="#ec4899" opacity="0.95"/>
+            <path d="M40,42 C40,36 46,34 50,38 C53,43 49,48 44,48 C41,47 39,44 40,42 Z" fill="#db2777"/>
+            <circle cx="46" cy="42" r="3.2" fill="#fbbf24"/>
+            <circle cx="48" cy="40.5" r="1.3" fill="#f59e0b"/>
+            <circle cx="44" cy="41" r="1.3" fill="#f59e0b"/>
+            <circle cx="46" cy="43.5" r="1.2" fill="#d97706"/>
+          </g>
         </svg>
 
-        <svg class="corner-decor bottom-2 right-2 transform scale-[-1]" viewBox="0 0 100 100" fill="none">
-          <path d="M12,85 Q26,52 42,32" stroke="#4ade80" stroke-width="2" stroke-linecap="round"/>
-          <path d="M24,58 C14,48 18,34 32,38 C34,50 28,60 24,58 Z" fill="#86efac" opacity="0.8"/>
-          <path d="M24,58 Q25,48 29,40" stroke="#22c55e" stroke-width="0.8"/>
-          <path d="M36,40 C46,30 42,22 34,26 C30,34 34,40 36,40 Z" fill="#bbf7d0" opacity="0.8"/>
-          <ellipse cx="46" cy="44" rx="26" ry="24" fill="#fbcfe8" opacity="0.85"/>
-          <path d="M26,38 C20,24 34,16 48,20 C62,15 72,26 68,40 C73,54 62,68 48,66 C32,68 22,54 26,38 Z" fill="#f9a8d4" opacity="0.9"/>
-          <path d="M32,36 C30,26 40,22 48,26 C56,22 64,30 60,42 C64,52 54,60 46,58 C34,59 29,48 32,36 Z" fill="#f472b6"/>
-          <path d="M36,42 C33,34 42,30 48,34 C54,30 60,37 56,46 C58,52 50,56 44,54 C38,55 35,48 36,42 Z" fill="#ec4899" opacity="0.95"/>
-          <path d="M40,42 C40,36 46,34 50,38 C53,43 49,48 44,48 C41,47 39,44 40,42 Z" fill="#db2777"/>
-          <circle cx="46" cy="42" r="3.2" fill="#fbbf24"/>
-          <circle cx="48" cy="40.5" r="1.3" fill="#f59e0b"/>
-          <circle cx="44" cy="41" r="1.3" fill="#f59e0b"/>
-          <circle cx="46" cy="43.5" r="1.2" fill="#d97706"/>
+        <svg class="corner-decor bottom-2 right-2" viewBox="0 0 100 100" fill="none">
+          <g id="cornerBottomRight" class="corner-decor-g" transform="translate(100, 100) scale(-1, -1)">
+            <path d="M12,85 Q26,52 42,32" stroke="#4ade80" stroke-width="2" stroke-linecap="round"/>
+            <path d="M24,58 C14,48 18,34 32,38 C34,50 28,60 24,58 Z" fill="#86efac" opacity="0.8"/>
+            <path d="M24,58 Q25,48 29,40" stroke="#22c55e" stroke-width="0.8"/>
+            <path d="M36,40 C46,30 42,22 34,26 C30,34 34,40 36,40 Z" fill="#bbf7d0" opacity="0.8"/>
+            <ellipse cx="46" cy="44" rx="26" ry="24" fill="#fbcfe8" opacity="0.85"/>
+            <path d="M26,38 C20,24 34,16 48,20 C62,15 72,26 68,40 C73,54 62,68 48,66 C32,68 22,54 26,38 Z" fill="#f9a8d4" opacity="0.9"/>
+            <path d="M32,36 C30,26 40,22 48,26 C56,22 64,30 60,42 C64,52 54,60 46,58 C34,59 29,48 32,36 Z" fill="#f472b6"/>
+            <path d="M36,42 C33,34 42,30 48,34 C54,30 60,37 56,46 C58,52 50,56 44,54 C38,55 35,48 36,42 Z" fill="#ec4899" opacity="0.95"/>
+            <path d="M40,42 C40,36 46,34 50,38 C53,43 49,48 44,48 C41,47 39,44 40,42 Z" fill="#db2777"/>
+            <circle cx="46" cy="42" r="3.2" fill="#fbbf24"/>
+            <circle cx="48" cy="40.5" r="1.3" fill="#f59e0b"/>
+            <circle cx="44" cy="41" r="1.3" fill="#f59e0b"/>
+            <circle cx="46" cy="43.5" r="1.2" fill="#d97706"/>
+          </g>
         </svg>
 
         <!-- Đầu thiệp: Lời đề tặng -->
-        <div class="relative z-10 text-center pt-3">
-          <p class="font-script text-2xl text-rose-700/80 mb-0.5 tracking-wide" id="previewSalutation">Thương gửi</p>
-          <h2 class="font-serif font-bold text-2xl tracking-wide theme-title-text px-4 break-words leading-tight" id="previewReceiver">
+        <div class="relative z-10 text-center pt-2">
+          <p class="font-script text-2xl sm:text-3xl text-rose-700/80 mb-1 tracking-wide leading-normal" id="previewSalutation">Thương gửi</p>
+          <h2 class="font-serif font-bold text-2xl sm:text-3xl tracking-wide theme-title-text px-4 break-words leading-normal pb-1" id="previewReceiver">
             Người Phụ Nữ Của Tôi
           </h2>
-          <div class="w-12 h-[1px] bg-amber-400/60 mx-auto mt-2.5"></div>
+          <div class="w-12 h-[1.5px] bg-amber-400/70 mx-auto mt-2 mb-1"></div>
         </div>
 
         <!-- Thân thiệp: Lời chúc -->
-        <div class="relative z-10 px-4 py-3 my-auto text-center flex items-center justify-center">
-          <p class="font-serif text-lg leading-relaxed italic theme-body-text break-words line-clamp-6" id="previewMessage">
+        <div class="relative z-10 px-5 py-3 my-auto text-center flex items-center justify-center flex-1">
+          <p class="font-serif text-base sm:text-lg leading-relaxed italic theme-body-text break-words line-clamp-6 select-none" id="previewMessage">
             "Cảm ơn vì đã luôn là ánh sáng ấm áp, mang lại nụ cười và sự dịu dàng cho cuộc sống này. Chúc bạn một ngày 20/10 thật bình an và hạnh phúc."
           </p>
         </div>
 
         <!-- Chân thiệp: Người gửi & Ngày 20.10 -->
-        <div class="relative z-10 text-center pb-2">
-          <div class="w-12 h-[1px] bg-amber-400/60 mx-auto mb-2"></div>
-          <p class="text-xs uppercase tracking-widest font-sans font-semibold theme-sender-text" id="previewSender">
+        <div class="relative z-10 text-center pt-2 pb-2">
+          <div class="w-12 h-[1.5px] bg-amber-400/70 mx-auto mb-3"></div>
+          <p class="text-xs uppercase tracking-widest font-sans font-semibold mb-3 theme-sender-text" id="previewSender">
             Từ: Một người thầm trân quý
           </p>
-          <div class="inline-flex items-center justify-center space-x-2 mt-2 px-3.5 py-0.5 rounded-full bg-white/85 border border-amber-300/80 shadow-2xs">
+          <div class="inline-flex items-center justify-center space-x-2 px-4 py-1 rounded-full bg-white/90 border border-amber-300/80 shadow-xs">
             <span class="text-[10px] text-amber-600">✦</span>
-            <span class="font-serif font-bold text-xs tracking-[0.25em] text-amber-950 uppercase">
+            <span class="font-serif font-bold text-xs tracking-widest text-amber-950 uppercase">
               20 · 10 · 2026
             </span>
             <span class="text-[10px] text-amber-600">✦</span>
@@ -1193,7 +1201,7 @@
 
       // Cập nhật hoa văn SVG 4 góc đúng theo đặc trưng từng loài hoa
       const flowerSvg = getFlowerSvgContent(currentRelationship.id);
-      document.querySelectorAll('.corner-decor').forEach(el => {
+      document.querySelectorAll('.corner-decor-g').forEach(el => {
         el.innerHTML = flowerSvg;
       });
     }
@@ -1415,11 +1423,24 @@
       showToast(I18N[currentLang].btnSavingText);
 
       try {
+        if (typeof document !== 'undefined' && document.fonts) {
+          await document.fonts.ready;
+        }
         const canvas = await html2canvas(cardArea, {
-          scale: 2.5, // Tăng độ phân giải cho màn hình Retina
+          scale: 3,
           useCORS: true,
+          allowTaint: true,
           backgroundColor: currentRelationship.bgColor || '#ffffff',
-          logging: false
+          logging: false,
+          onclone: (clonedDoc) => {
+            const clonedCard = clonedDoc.getElementById('cardCaptureArea');
+            if (clonedCard) {
+              clonedCard.style.width = '520px';
+              clonedCard.style.minHeight = '650px';
+              clonedCard.style.aspectRatio = 'unset';
+              clonedCard.style.margin = '0 auto';
+            }
+          }
         });
 
         const imgData = canvas.toDataURL('image/png');
@@ -1688,7 +1709,25 @@
     async function renderCardToImagePopup() {
       const cardArea = document.getElementById('cardCaptureArea');
       try {
-        const canvas = await html2canvas(cardArea, { scale: 2, useCORS: true, backgroundColor: currentRelationship.bgColor || '#ffffff' });
+        if (typeof document !== 'undefined' && document.fonts) {
+          await document.fonts.ready;
+        }
+        const canvas = await html2canvas(cardArea, {
+          scale: 3,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: currentRelationship.bgColor || '#ffffff',
+          logging: false,
+          onclone: (clonedDoc) => {
+            const clonedCard = clonedDoc.getElementById('cardCaptureArea');
+            if (clonedCard) {
+              clonedCard.style.width = '520px';
+              clonedCard.style.minHeight = '650px';
+              clonedCard.style.aspectRatio = 'unset';
+              clonedCard.style.margin = '0 auto';
+            }
+          }
+        });
         const imgData = canvas.toDataURL('image/png');
         document.getElementById('generatedCardImage').src = imgData;
         

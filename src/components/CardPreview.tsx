@@ -192,50 +192,56 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
       ref={cardRef}
       id="cardCaptureArea"
       style={{ backgroundColor: relationship.bgColor }}
-      className={`relative w-full aspect-[4/5] rounded-2xl shadow-xl overflow-hidden p-6 flex flex-col justify-between transition-colors duration-500 card-border-gold ${relationship.bgClass}`}
+      className={`relative w-full aspect-[4/5] min-h-[480px] rounded-2xl shadow-xl overflow-hidden p-6 flex flex-col justify-between transition-colors duration-500 card-border-gold ${relationship.bgClass}`}
     >
       {/* 4 Corner Botanical Ornaments */}
       <svg className="corner-decor top-2 left-2" viewBox="0 0 100 100" fill="none">
-        {renderFlowerSvgContent(relationship.id)}
+        <g>{renderFlowerSvgContent(relationship.id)}</g>
       </svg>
 
-      <svg className="corner-decor top-2 right-2 transform scale-x-[-1]" viewBox="0 0 100 100" fill="none">
-        {renderFlowerSvgContent(relationship.id)}
+      <svg className="corner-decor top-2 right-2" viewBox="0 0 100 100" fill="none">
+        <g transform="translate(100, 0) scale(-1, 1)">
+          {renderFlowerSvgContent(relationship.id)}
+        </g>
       </svg>
 
-      <svg className="corner-decor bottom-2 left-2 transform scale-y-[-1]" viewBox="0 0 100 100" fill="none">
-        {renderFlowerSvgContent(relationship.id)}
+      <svg className="corner-decor bottom-2 left-2" viewBox="0 0 100 100" fill="none">
+        <g transform="translate(0, 100) scale(1, -1)">
+          {renderFlowerSvgContent(relationship.id)}
+        </g>
       </svg>
 
-      <svg className="corner-decor bottom-2 right-2 transform scale-[-1]" viewBox="0 0 100 100" fill="none">
-        {renderFlowerSvgContent(relationship.id)}
+      <svg className="corner-decor bottom-2 right-2" viewBox="0 0 100 100" fill="none">
+        <g transform="translate(100, 100) scale(-1, -1)">
+          {renderFlowerSvgContent(relationship.id)}
+        </g>
       </svg>
 
       {/* Salutation & Recipient */}
-      <div className="relative z-10 text-center pt-3">
-        <p className="font-script text-2xl text-rose-700/80 mb-0.5 tracking-wide">{defaultSalutation}</p>
-        <h2 className={`font-serif font-bold text-2xl tracking-wide px-4 break-words leading-tight ${relationship.titleColor}`}>
+      <div className="relative z-10 text-center pt-2">
+        <p className="font-script text-2xl sm:text-3xl text-rose-700/80 mb-1 tracking-wide leading-normal">{defaultSalutation}</p>
+        <h2 className={`font-serif font-bold text-2xl sm:text-3xl tracking-wide px-4 break-words leading-normal pb-1 ${relationship.titleColor}`}>
           {displayReceiver}
         </h2>
-        <div className="w-12 h-[1px] bg-amber-400/60 mx-auto mt-2.5"></div>
+        <div className="w-12 h-[1.5px] bg-amber-400/70 mx-auto mt-2 mb-1"></div>
       </div>
 
       {/* Heartfelt Message */}
-      <div className="relative z-10 px-4 py-3 my-auto text-center flex items-center justify-center">
-        <p className={`font-serif text-lg leading-relaxed italic break-words line-clamp-6 ${relationship.bodyColor}`}>
+      <div className="relative z-10 px-5 py-3 my-auto text-center flex items-center justify-center flex-1">
+        <p className={`font-serif text-base sm:text-lg leading-relaxed italic break-words line-clamp-6 select-none ${relationship.bodyColor}`}>
           {displayMessage}
         </p>
       </div>
 
       {/* Sender & Event Date */}
-      <div className="relative z-10 text-center pb-2">
-        <div className="w-12 h-[1px] bg-amber-400/60 mx-auto mb-2"></div>
-        <p className={`text-xs uppercase tracking-widest font-sans font-semibold ${relationship.senderColor}`}>
+      <div className="relative z-10 text-center pt-2 pb-2">
+        <div className="w-12 h-[1.5px] bg-amber-400/70 mx-auto mb-3"></div>
+        <p className={`text-xs uppercase tracking-widest font-sans font-semibold mb-3 ${relationship.senderColor}`}>
           {displaySender}
         </p>
-        <div className="inline-flex items-center justify-center space-x-2 mt-2 px-3.5 py-0.5 rounded-full bg-white/85 border border-amber-300/80 shadow-2xs">
+        <div className="inline-flex items-center justify-center space-x-2 px-4 py-1 rounded-full bg-white/90 border border-amber-300/80 shadow-xs">
           <span className="text-[10px] text-amber-600">✦</span>
-          <span className="font-serif font-bold text-xs tracking-[0.25em] text-amber-950 uppercase">
+          <span className="font-serif font-bold text-xs tracking-widest text-amber-950 uppercase">
             20 · 10 · 2026
           </span>
           <span className="text-[10px] text-amber-600">✦</span>
