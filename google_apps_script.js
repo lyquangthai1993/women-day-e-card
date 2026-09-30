@@ -25,18 +25,18 @@
 const SHEET_NAME = "Danh Sách Thiệp";
 
 const HEADERS = [
-  "Mã Thiệp (Card ID)",
-  "Link Xem Thiệp (Card URL)",
-  "Thời Gian Tạo",
-  "Cập Nhật Cuối",
-  "Người Gửi",
-  "Người Nhận",
-  "Mối Quan Hệ",
-  "Lời Chúc",
-  "Ngôn Ngữ",
-  "Mã Thiết Bị (Visitor ID)",
-  "Trạng Thái Kem",
-  "Thời Gian Nhận Kem"
+  "Card ID",
+  "Card URL",
+  "Created At",
+  "Updated At",
+  "Sender",
+  "Receiver",
+  "Relationship",
+  "Message",
+  "Language",
+  "Visitor ID",
+  "Ice Cream Status",
+  "Claimed Time"
 ];
 
 // ==============================================================================
@@ -301,12 +301,12 @@ function getHeaderIndexes(headerRow) {
     else if (s.includes("cập nhật") || s.includes("updated")) map.updatedAt = idx;
     else if (s.includes("tạo") || s.includes("created")) map.createdAt = idx;
     else if (s.includes("gửi") || s.includes("sender")) map.sender = idx;
-    else if (s.includes("nhận") && !s.includes("kem")) map.receiver = idx;
+    else if ((s.includes("nhận") && !s.includes("kem")) || s.includes("receiver") || s.includes("recipient")) map.receiver = idx;
     else if (s.includes("quan hệ") || s.includes("mối quan hệ") || s.includes("relationship")) map.relationship = idx;
-    else if (s.includes("chúc") || s.includes("lời chúc") || s.includes("message")) map.message = idx;
+    else if (s.includes("chúc") || s.includes("lời chúc") || s.includes("message") || s.includes("wish")) map.message = idx;
     else if (s.includes("ngôn ngữ") || s.includes("language")) map.language = idx;
-    else if (s.includes("thiết bị") || s.includes("visitor") || s.includes("fingerprint")) map.visitorId = idx;
-    else if (s.includes("trạng thái") || s.includes("kem") || s.includes("ice")) map.iceCreamStatus = idx;
+    else if (s.includes("thiết bị") || s.includes("visitor") || s.includes("fingerprint") || s.includes("device")) map.visitorId = idx;
+    else if (s.includes("trạng thái") || s.includes("ice cream") || (s.includes("kem") && !s.includes("thời gian")) || s.includes("ice")) map.iceCreamStatus = idx;
     else if (s.includes("giờ nhận") || s.includes("thời gian nhận kem") || s.includes("claimed")) map.claimedTime = idx;
   });
 
