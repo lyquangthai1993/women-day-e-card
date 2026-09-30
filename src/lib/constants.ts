@@ -265,7 +265,11 @@ export const I18N = {
     toastCardLoading: "Đang tải dữ liệu thiệp từ Google Sheet...",
     toastCardLoaded: "Đã tải xong nội dung thiệp!",
     toastCardUpdated: "Đã đồng bộ cập nhật lên Google Sheet!",
-    toastCardNotFound: "Không tìm thấy thiệp trên Google Sheet!"
+    toastCardNotFound: "Không tìm thấy thiệp trên Google Sheet!",
+    viewCardGreetingBadge: "💌 Tấm thiệp dành tặng riêng cho bạn",
+    viewCardHeading: "Chúc mừng ngày Phụ nữ Việt Nam 20/10",
+    btnCreateOwnCardAction: "Tự tạo thiệp của riêng bạn ngay 🌸",
+    btnEditCurrentCardAction: "Chỉnh sửa thiệp này"
   },
   en: {
     pageTitle: "Happy Vietnamese Women's Day 20/10 - E-Card",
@@ -311,6 +315,10 @@ export const I18N = {
     toastCardLoading: "Loading e-card from Google Sheet...",
     toastCardLoaded: "E-card loaded successfully!",
     toastCardUpdated: "E-card updated on Google Sheet!",
-    toastCardNotFound: "E-card not found on Google Sheet!"
+    toastCardNotFound: "E-card not found on Google Sheet!",
+    viewCardGreetingBadge: "💌 A heartfelt e-card for you",
+    viewCardHeading: "Happy Vietnamese Women's Day 20/10",
+    btnCreateOwnCardAction: "Create your own e-card now 🌸",
+    btnEditCurrentCardAction: "Edit this card"
   }
 };
