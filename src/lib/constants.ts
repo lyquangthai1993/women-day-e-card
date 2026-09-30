@@ -194,8 +194,8 @@ export const RELATIONSHIPS: RelationshipTheme[] = [
     nameEn: 'In Loving Memory',
     flowerVi: 'Hoa Trắng Thanh Khiết',
     flowerEn: 'White Lily',
-    bgClass: 'bg-[#f8fafc]', // Trắng xám trang nhã
-    bgColor: '#f8fafc',
+    bgClass: 'bg-[#f0f4f8]', // Xám xanh nhẹ thanh khiết
+    bgColor: '#f0f4f8',
     titleColor: 'text-slate-800',
     bodyColor: 'text-slate-700',
     senderColor: 'text-slate-600',
