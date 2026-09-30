@@ -265,10 +265,6 @@ function CardViewContent() {
 
         {/* Các nút hành động */}
         <div className="space-y-3 pt-2">
-          <p className="text-[11px] text-center text-slate-400">
-            {t.longPressHint}
-          </p>
-
           {/* Nút 1: Tải ảnh về máy */}
           <button
             type="button"

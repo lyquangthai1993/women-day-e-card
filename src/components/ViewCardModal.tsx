@@ -50,9 +50,6 @@ export const ViewCardModal: React.FC<ViewCardModalProps> = ({
         </div>
 
         <div className="shrink-0 space-y-2 pt-1">
-          <p className="text-[11px] text-center text-slate-400">
-            {t.longPressHint}
-          </p>
           <div className={onEdit ? "grid grid-cols-2 gap-2" : "w-full"}>
             <a
               href={imageUrl}
