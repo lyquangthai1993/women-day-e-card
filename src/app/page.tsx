@@ -67,68 +67,33 @@ export default function HomePage() {
   }, [t.pageTitle]);
 
   // Đọc dữ liệu từ URL hash nếu được chia sẻ
+  // Đọc dữ liệu từ URL nếu được mở từ liên kết
   const checkUrlHash = () => {
     if (typeof window === 'undefined') return;
     const hash = window.location.hash;
     
     let queryStr = hash.startsWith('#') ? hash.substring(1) : hash;
     let params = new URLSearchParams(queryStr);
-    if (!params.has('id') && !params.has('cardId') && window.location.search) {
+    if (!params.has('id') && !params.has('cardId') && !params.has('edit') && window.location.search) {
       params = new URLSearchParams(window.location.search);
     }
-    const cloudCardId = params.get('id') || params.get('cardId');
-    const hasInlineData = params.has('rel') || params.has('r') || params.has('m') || params.has('w');
 
-    // 1. Nếu có dữ liệu inline trên URL, nạp tức thì trong 0ms để tránh nháy thiệp mặc định
-    if (hasInlineData) {
-      try {
-        setIsViewingMode(true);
-        let compactRel = RELATIONSHIPS[0];
+    // 1. Chế độ chỉnh sửa thiệp (khi được chuyển từ trang /card về trang chủ)
+    if (params.has('edit')) {
+      const editId = params.get('edit')!.trim();
+      setCardId(editId);
+      setIsViewingMode(false);
 
-        if (params.has('rel')) {
-          const found = RELATIONSHIPS.find((item) => item.id === params.get('rel'));
-          if (found) {
-            compactRel = found;
-            setRelationship(found);
-          }
-        }
-        if (params.has('l')) {
-          setLanguage(params.get('l') as Language);
-        }
-        if (params.has('r')) {
-          setReceiver(params.get('r') || '');
-        }
-        if (params.has('s')) {
-          setSender(params.get('s') || '');
-        }
-        if (params.has('w')) {
-          const idx = parseInt(params.get('w') || '', 10);
-          const curRel = compactRel;
-          const wishes = (params.get('l') || 'vi') === 'vi' ? curRel.wishesVi : curRel.wishesEn;
-          if (!isNaN(idx) && wishes[idx]) {
-            setMessage(wishes[idx]);
-          }
-        } else if (params.has('m')) {
-          setMessage(params.get('m') || '');
-        }
-      } catch (e) {
-        console.warn('Error parsing inline compact URL params:', e);
+      if (params.has('rel')) {
+        const found = RELATIONSHIPS.find((item) => item.id === params.get('rel'));
+        if (found) setRelationship(found);
       }
-    }
+      if (params.has('l')) setLanguage(params.get('l') as Language);
+      if (params.has('r')) setReceiver(params.get('r') || '');
+      if (params.has('s')) setSender(params.get('s') || '');
+      if (params.has('m')) setMessage(params.get('m') || '');
 
-    // 2. Kiểm tra Card ID trên Google Sheet (Real-time Cloud Sync)
-    if (cloudCardId) {
-      const cleanId = cloudCardId.trim();
-      setCardId(cleanId);
-      setIsViewingMode(true);
-
-      // Nếu chưa có inline data (chỉ mở thuần link #id=...), bật skeleton loading
-      if (!hasInlineData) {
-        setIsLoadingCard(true);
-      }
-
-      getCardFromGoogleSheet(cleanId).then((data) => {
-        setIsLoadingCard(false);
+      getCardFromGoogleSheet(editId).then((data) => {
         if (data) {
           if (data.receiver) setReceiver(data.receiver);
           if (data.message) setMessage(data.message);
@@ -137,15 +102,15 @@ export default function HomePage() {
             const found = RELATIONSHIPS.find((item) => item.id === data.relationship || item.nameVi === data.relationship);
             if (found) setRelationship(found);
           }
-          if (data.language && (data.language === 'vi' || data.language === 'en')) {
-            setLanguage(data.language as Language);
-          }
-        } else if (!hasInlineData) {
-          showToast(t.toastCardNotFound);
         }
-      }).catch(() => {
-        setIsLoadingCard(false);
       });
+      return;
+    }
+
+    // 2. Nếu người dùng mở link xem thiệp cũ (có id) ở trang chủ, tự động chuyển sang trang con /card
+    const cloudCardId = params.get('id') || params.get('cardId');
+    if (cloudCardId) {
+      window.location.replace(`/card?${params.toString()}`);
       return;
     }
 
@@ -153,26 +118,8 @@ export default function HomePage() {
 
     // 3. Backward compatibility: #card=...
     if (hash.includes('card=')) {
-      try {
-        const encoded = hash.split('card=')[1];
-        const jsonStr = decodeURIComponent(atob(encoded));
-        const data = JSON.parse(jsonStr);
-
-        setIsViewingMode(true);
-        if (data.r) setReceiver(data.r);
-        if (data.m) setMessage(data.m);
-        if (data.s) setSender(data.s);
-        if (data.rel) {
-          const found = RELATIONSHIPS.find((item) => item.id === data.rel);
-          if (found) {
-            setRelationship(found);
-          }
-        }
-        if (data.lang) setLanguage(data.lang as Language);
-        return;
-      } catch (e) {
-        console.warn('Invalid URL hash:', e);
-      }
+      window.location.replace(`/card${hash}`);
+      return;
     }
   };
 
@@ -194,9 +141,9 @@ export default function HomePage() {
     showToast(t.toastWishSelected);
   };
 
-  // Tạo URL chia sẻ kết hợp Card ID (Google Sheet) + Compact Inline Data (Load tức thì 0ms)
+  // Tạo URL chia sẻ hướng về trang con /card?id=... (Đúng chuẩn trang con)
   const getCardShareUrl = (activeId: string) => {
-    const baseUrl = window.location.origin + window.location.pathname;
+    const baseUrl = `${window.location.origin}/card`;
     const p = new URLSearchParams();
     p.set('id', activeId);
     if (relationship.id !== 'mother') p.set('rel', relationship.id);
@@ -211,7 +158,7 @@ export default function HomePage() {
     } else if (message.trim()) {
       p.set('m', message.trim());
     }
-    return `${baseUrl}#${p.toString()}`;
+    return `${baseUrl}?${p.toString()}`;
   };
 
   // Tên file tiếng Anh chuẩn cho download

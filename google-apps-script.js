@@ -168,7 +168,7 @@ function doPost(e) {
     // --------------------------------------------------------------------------
     const cardId = (payload.cardId || '').trim() || ('c_' + Utilities.getUuid().substring(0, 8));
     const defaultOrigin = "https://women-day-e-card.vercel.app";
-    const cardUrl = (payload.cardUrl || '').trim() || (`${defaultOrigin}/#id=${cardId}`);
+    const cardUrl = (payload.cardUrl || '').trim() || (`${defaultOrigin}/card?id=${cardId}`);
     const visitorId = payload.visitorId || 'Ẩn danh';
     const sender = payload.sender || 'Ẩn danh';
     const receiver = payload.receiver || '';
