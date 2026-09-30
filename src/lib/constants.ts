@@ -320,6 +320,9 @@ export const I18N = {
     viewCardHeading: "Chúc mừng ngày Phụ nữ Việt Nam 20/10",
     btnCreateOwnCardAction: "Tự tạo thiệp của riêng bạn ngay 🌸",
     btnEditCurrentCardAction: "Chỉnh sửa thiệp này",
+    btnUpdateCurrentCard: "Cập nhật thiệp này",
+    btnCreateAsNewCard: "Tạo thành thiệp mới (gửi người khác)",
+    toastNewCardCreated: "Đã tạo thiệp mới thành công! Link thiệp cũ vẫn được giữ nguyên.",
     btnSharingText: "Đang tạo liên kết...",
     btnSavingText: "Đang xuất ảnh..."
   },
@@ -373,6 +376,9 @@ export const I18N = {
     viewCardHeading: "Happy Vietnamese Women's Day 20/10",
     btnCreateOwnCardAction: "Create your own e-card now 🌸",
     btnEditCurrentCardAction: "Edit this card",
+    btnUpdateCurrentCard: "Update Current Card",
+    btnCreateAsNewCard: "Save as New Card (for someone else)",
+    toastNewCardCreated: "New card created! Previous card link remains intact.",
     btnSharingText: "Creating link...",
     btnSavingText: "Rendering image..."
   }

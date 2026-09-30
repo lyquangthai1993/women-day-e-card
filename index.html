@@ -364,14 +364,22 @@
     <!-- BƯỚC 4: 2 NÚT HÀNH ĐỘNG CHÍNH (THEO YÊU CẦU HR) -->
     <section id="step4Section" class="space-y-2.5 pt-2">
       <!-- Nút 1: Chia sẻ (Mở link thiệp / gửi qua Zalo/Messenger) -->
-      <button id="btnShareCard" onclick="handleShareCard()" class="w-full bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-700 hover:to-pink-700 text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg shadow-rose-200 flex items-center justify-center space-x-2 active:scale-[0.98] transition">
+      <button id="btnShareCard" onclick="handleShareCard(false)" class="w-full bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-700 hover:to-pink-700 text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg shadow-rose-200 flex items-center justify-center space-x-2 active:scale-[0.98] transition">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
         </svg>
         <span class="text-sm tracking-wide" id="btnShareText">Chia sẻ thiệp</span>
       </button>
 
-      <!-- Nút 2: Lưu thành file ảnh -->
+      <!-- Nút 2: Tạo thành thiệp mới (gửi người khác) - Hiện khi đang có currentCardId -->
+      <button id="btnCreateNewCard" onclick="handleShareCard(true)" class="hidden w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-500 hover:opacity-95 text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg shadow-emerald-200 flex items-center justify-center space-x-2 active:scale-[0.98] transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <span class="text-sm tracking-wide" id="btnCreateNewCardText">Tạo thành thiệp mới (gửi người khác)</span>
+      </button>
+
+      <!-- Nút 3: Lưu thành file ảnh -->
       <button id="btnSaveImage" onclick="handleSaveImage()" class="w-full bg-white hover:bg-slate-50 text-slate-700 font-bold py-3.5 px-6 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-center space-x-2 active:scale-[0.98] transition">
         <svg class="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
@@ -855,6 +863,9 @@
         btnViewDownloadText: "Tải ảnh về máy",
         btnViewEditText: "Chỉnh sửa thiệp này",
         btnViewCreateOwnText: "Tự tạo thiệp của riêng bạn ngay 🌸",
+        btnUpdateCurrentCard: "Cập nhật thiệp này",
+        btnCreateAsNewCard: "Tạo thành thiệp mới (gửi người khác)",
+        toastNewCardCreated: "Đã tạo thiệp mới thành công! Link thiệp cũ vẫn được giữ nguyên.",
         btnSharingText: "Đang tạo liên kết...",
         btnSavingText: "Đang xuất ảnh..."
       },
@@ -909,6 +920,9 @@
         btnViewDownloadText: "Download Image",
         btnViewEditText: "Edit this card",
         btnViewCreateOwnText: "Create your own e-card now 🌸",
+        btnUpdateCurrentCard: "Update Current Card",
+        btnCreateAsNewCard: "Save as New Card (for someone else)",
+        toastNewCardCreated: "New card created! Previous card link remains intact.",
         btnSharingText: "Creating link...",
         btnSavingText: "Rendering image..."
       }
@@ -1414,7 +1428,8 @@
       document.getElementById('senderNameInput').placeholder = t.senderPlaceholder;
       document.getElementById('labelPreview').innerText = t.labelPreview;
       document.getElementById('livePreviewHint').innerText = t.livePreviewHint;
-      document.getElementById('btnShareText').innerText = t.btnShareText;
+      document.getElementById('btnShareText').innerText = currentCardId ? t.btnUpdateCurrentCard : t.btnShareText;
+      if (document.getElementById('btnCreateNewCardText')) document.getElementById('btnCreateNewCardText').innerText = t.btnCreateAsNewCard;
       document.getElementById('btnSaveImgText').innerText = t.btnSaveImgText;
       document.getElementById('footerMadeWith').innerText = t.footerMadeWith;
       document.getElementById('claimedBannerText').innerText = t.claimedBannerText;
@@ -1476,14 +1491,14 @@
       return `${baseUrl}#${p.toString()}`;
     }
 
-    // 1. Chia sẻ thiệp
-    async function handleShareCard() {
-      const btnShare = document.getElementById('btnShareCard');
-      const originalShareHTML = btnShare ? btnShare.innerHTML : '';
-      if (btnShare) {
-        btnShare.disabled = true;
-        btnShare.classList.add('cursor-wait', 'opacity-80');
-        btnShare.innerHTML = `
+    // 1. Chia sẻ thiệp (hỗ trợ forceNew = true để tạo thiệp mới gửi người khác)
+    async function handleShareCard(forceNew = false) {
+      const activeBtn = forceNew ? document.getElementById('btnCreateNewCard') : document.getElementById('btnShareCard');
+      const originalShareHTML = activeBtn ? activeBtn.innerHTML : '';
+      if (activeBtn) {
+        activeBtn.disabled = true;
+        activeBtn.classList.add('cursor-wait', 'opacity-80');
+        activeBtn.innerHTML = `
           <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -1493,18 +1508,31 @@
       }
 
       try {
+        if (!currentCardId || forceNew) {
+          currentCardId = generateCardId();
+        }
         const shareUrl = getCardShareUrl();
         const shareTitle = currentLang === 'vi' ? "Thiệp chúc mừng 20/10 gửi tặng bạn 🌸" : "Happy Vietnamese Women's Day E-Card 🌸";
         const shareText = currentLang === 'vi' 
           ? "Mình vừa tạo một tấm thiệp 20/10 gửi tặng bạn. Nhấp vào đây để xem nhé!" 
           : "I've sent you a heartfelt Women's Day e-card. Tap to open!";
 
-        // Hiển thị banner chỉnh sửa và cập nhật URL
-        document.getElementById('editingBanner').classList.remove('hidden');
+        // Hiển thị banner chỉnh sửa và nút tạo thiệp mới
+        const editingBanner = document.getElementById('editingBanner');
+        if (editingBanner) editingBanner.classList.remove('hidden');
+        const btnCreateNew = document.getElementById('btnCreateNewCard');
+        if (btnCreateNew) btnCreateNew.classList.remove('hidden');
+        const shareTextEl = document.getElementById('btnShareText');
+        if (shareTextEl) shareTextEl.innerText = I18N[currentLang].btnUpdateCurrentCard;
+
         window.history.replaceState(null, '', `#id=${currentCardId}`);
 
         // Đồng bộ dữ liệu thiệp lên Google Sheet
         await syncToGoogleSheet('save_card');
+
+        if (forceNew) {
+          showToast(I18N[currentLang].toastNewCardCreated);
+        }
 
         // Thử dùng Web Share API (native trên iOS/Android)
         if (navigator.share) {
@@ -1534,10 +1562,10 @@
 
         openIceCreamModal();
       } finally {
-        if (btnShare) {
-          btnShare.disabled = false;
-          btnShare.classList.remove('cursor-wait', 'opacity-80');
-          btnShare.innerHTML = originalShareHTML;
+        if (activeBtn) {
+          activeBtn.disabled = false;
+          activeBtn.classList.remove('cursor-wait', 'opacity-80');
+          activeBtn.innerHTML = originalShareHTML;
         }
       }
     }
@@ -1907,6 +1935,10 @@
       setViewingMode(false);
       const banner = document.getElementById('editingBanner');
       if (banner) banner.classList.remove('hidden');
+      const btnCreateNew = document.getElementById('btnCreateNewCard');
+      if (btnCreateNew) btnCreateNew.classList.remove('hidden');
+      const shareTextEl = document.getElementById('btnShareText');
+      if (shareTextEl) shareTextEl.innerText = I18N[currentLang].btnUpdateCurrentCard;
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -1915,6 +1947,10 @@
       setViewingMode(false);
       const banner = document.getElementById('editingBanner');
       if (banner) banner.classList.add('hidden');
+      const btnCreateNew = document.getElementById('btnCreateNewCard');
+      if (btnCreateNew) btnCreateNew.classList.add('hidden');
+      const shareTextEl = document.getElementById('btnShareText');
+      if (shareTextEl) shareTextEl.innerText = I18N[currentLang].btnShareText;
       window.history.pushState(null, '', window.location.pathname);
       document.getElementById('receiverNameInput').value = '';
       document.getElementById('messageInput').value = '';

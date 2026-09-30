@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { toPng } from 'html-to-image';
 import confetti from 'canvas-confetti';
-import { Sparkles, Share2, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { Sparkles, Share2, Image as ImageIcon, Loader2, RefreshCw, PlusCircle } from 'lucide-react';
 
 import { RelationshipTheme, Language } from '../types';
 import { RELATIONSHIPS, I18N } from '../lib/constants';
@@ -29,7 +29,8 @@ export default function HomePage() {
   const [isLoadingCard, setIsLoadingCard] = useState<boolean>(false);
   
   // Trạng thái loading spinner khi bấm nút
-  const [isSharing, setIsSharing] = useState<boolean>(false);
+  const [sharingAction, setSharingAction] = useState<'update' | 'new' | 'default' | null>(null);
+  const isSharing = sharingAction !== null;
   const [isSavingImage, setIsSavingImage] = useState<boolean>(false);
 
   const [visitorId, setVisitorId] = useState<string>('fp_loading');
@@ -181,14 +182,15 @@ export default function HomePage() {
     return slug ? `happy-womens-day-${slug}.png` : "happy-womens-day-card.png";
   };
 
-  // Chia sẻ thiệp kèm hiệu ứng loading spinner
-  const handleShare = async () => {
+  // Chia sẻ thiệp kèm hiệu ứng loading spinner (hỗ trợ forceNew để tạo thiệp mới gửi người khác)
+  const handleShare = async (forceNew: boolean = false) => {
     if (isSharing) return;
-    setIsSharing(true);
+    const actionType = forceNew ? 'new' : (cardId ? 'update' : 'default');
+    setSharingAction(actionType);
 
     try {
       let activeCardId = cardId;
-      if (!activeCardId) {
+      if (!activeCardId || forceNew) {
         activeCardId = generateCardId();
         setCardId(activeCardId);
       }
@@ -213,7 +215,9 @@ export default function HomePage() {
         language,
       });
 
-      if (res && res.status === 'success' && res.action === 'updated') {
+      if (forceNew) {
+        showToast(t.toastNewCardCreated);
+      } else if (res && res.status === 'success' && res.action === 'updated') {
         showToast(t.toastCardUpdated);
       }
 
@@ -245,7 +249,7 @@ export default function HomePage() {
     } catch (err) {
       console.error("Error sharing card:", err);
     } finally {
-      setIsSharing(false);
+      setSharingAction(null);
     }
   };
 
@@ -644,27 +648,75 @@ export default function HomePage() {
 
             {/* Nút Call To Action */}
             <section className="space-y-2.5 pt-2">
-              <button
-                onClick={handleShare}
-                disabled={isSharing}
-                className={`w-full bg-gradient-to-r from-rose-600 via-pink-600 to-rose-500 hover:opacity-95 text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg shadow-rose-200 flex items-center justify-center space-x-2 active:scale-[0.98] transition ${isSharing ? 'opacity-80 cursor-wait' : ''}`}
-              >
-                {isSharing ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    <span className="text-sm tracking-wide">{t.btnSharingText}</span>
-                  </>
-                ) : (
-                  <>
-                    <Share2 className="w-5 h-5" />
-                    <span className="text-sm tracking-wide">{t.btnShareText}</span>
-                  </>
-                )}
-              </button>
+              {cardId ? (
+                <>
+                  {/* Nút 1: Cập nhật thiệp hiện tại */}
+                  <button
+                    type="button"
+                    onClick={() => handleShare(false)}
+                    disabled={isSharing || isSavingImage}
+                    className={`w-full bg-gradient-to-r from-rose-600 via-pink-600 to-rose-500 hover:opacity-95 text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg shadow-rose-200 flex items-center justify-center space-x-2 active:scale-[0.98] transition ${isSharing ? 'opacity-80 cursor-wait' : ''}`}
+                  >
+                    {sharingAction === 'update' ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        <span className="text-sm tracking-wide">{t.btnSharingText}</span>
+                      </>
+                    ) : (
+                      <>
+                        <RefreshCw className="w-4 h-4" />
+                        <span className="text-sm tracking-wide">{t.btnUpdateCurrentCard}</span>
+                      </>
+                    )}
+                  </button>
 
+                  {/* Nút 2: Force tạo thiệp mới gửi người khác */}
+                  <button
+                    type="button"
+                    onClick={() => handleShare(true)}
+                    disabled={isSharing || isSavingImage}
+                    className={`w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-500 hover:opacity-95 text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg shadow-emerald-200 flex items-center justify-center space-x-2 active:scale-[0.98] transition ${isSharing ? 'opacity-80 cursor-wait' : ''}`}
+                  >
+                    {sharingAction === 'new' ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        <span className="text-sm tracking-wide">{t.btnSharingText}</span>
+                      </>
+                    ) : (
+                      <>
+                        <PlusCircle className="w-4 h-4" />
+                        <span className="text-sm tracking-wide">{t.btnCreateAsNewCard}</span>
+                      </>
+                    )}
+                  </button>
+                </>
+              ) : (
+                /* Nút mặc định khi chưa có cardId */
+                <button
+                  type="button"
+                  onClick={() => handleShare(false)}
+                  disabled={isSharing || isSavingImage}
+                  className={`w-full bg-gradient-to-r from-rose-600 via-pink-600 to-rose-500 hover:opacity-95 text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg shadow-rose-200 flex items-center justify-center space-x-2 active:scale-[0.98] transition ${isSharing ? 'opacity-80 cursor-wait' : ''}`}
+                >
+                  {sharingAction === 'default' ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <span className="text-sm tracking-wide">{t.btnSharingText}</span>
+                    </>
+                  ) : (
+                    <>
+                      <Share2 className="w-5 h-5" />
+                      <span className="text-sm tracking-wide">{t.btnShareText}</span>
+                    </>
+                  )}
+                </button>
+              )}
+
+              {/* Nút 3: Lưu ảnh về máy */}
               <button
+                type="button"
                 onClick={handleSaveImage}
-                disabled={isSavingImage}
+                disabled={isSavingImage || isSharing}
                 className={`w-full bg-white hover:bg-slate-50 text-slate-700 font-bold py-3.5 px-6 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-center space-x-2 active:scale-[0.98] transition ${isSavingImage ? 'opacity-80 cursor-wait' : ''}`}
               >
                 {isSavingImage ? (
