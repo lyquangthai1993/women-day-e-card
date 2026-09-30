@@ -197,13 +197,13 @@ function CardViewContent() {
       {/* Header */}
       <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-rose-100 shadow-2xs">
         <div className="max-w-md mx-auto px-4 h-14 flex items-center justify-between">
-          <Link href="/" className="flex items-center space-x-2 hover:opacity-90 transition">
-            <span className="text-xl">🌸</span>
-            <div>
-              <h1 className="font-serif font-bold text-base text-rose-900 leading-tight">
-                {t.pageTitle}
+          <Link href="/" className="flex items-center space-x-2 hover:opacity-90 transition min-w-0 pr-2">
+            <span className="text-xl shrink-0">🌸</span>
+            <div className="min-w-0">
+              <h1 className="font-serif font-bold text-base sm:text-lg text-rose-900 leading-tight">
+                20 · 10 E-Card
               </h1>
-              <p className="text-[10px] text-rose-700 tracking-wider font-medium">
+              <p className="text-[10px] text-rose-700 tracking-wider font-medium truncate">
                 {t.subHeader}
               </p>
             </div>
@@ -212,7 +212,7 @@ function CardViewContent() {
           <button
             type="button"
             onClick={toggleLanguage}
-            className="flex items-center space-x-1.5 bg-rose-50 border border-rose-200 hover:bg-rose-100/80 px-2.5 py-1 rounded-full text-xs font-bold text-rose-800 transition"
+            className="shrink-0 flex items-center space-x-1.5 bg-rose-50 border border-rose-200 hover:bg-rose-100/80 px-2.5 py-1 rounded-full text-xs font-bold text-rose-800 transition"
           >
             <span>{language === 'vi' ? '🇻🇳' : '🇬🇧'}</span>
             <span>{language === 'vi' ? 'VI / EN' : 'EN / VI'}</span>

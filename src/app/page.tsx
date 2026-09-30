@@ -395,20 +395,20 @@ export default function HomePage() {
         <div className="max-w-md mx-auto px-4 h-14 flex items-center justify-between">
           <div 
             onClick={handleSwitchToCreateMode} 
-            className="flex items-center space-x-2 cursor-pointer group select-none"
+            className="flex items-center space-x-2 cursor-pointer group select-none min-w-0 pr-2"
             title={language === 'vi' ? 'Trang chủ tạo thiệp' : 'Homepage Creator'}
           >
-            <span className="text-xl group-hover:scale-110 transition-transform">🌸</span>
-            <div>
-              <h1 className="font-serif font-bold text-lg text-rose-700 leading-tight">20 · 10 E-Card</h1>
-              <p className="text-[10px] text-slate-400 font-medium leading-none">{t.subHeader}</p>
+            <span className="text-xl group-hover:scale-110 transition-transform shrink-0">🌸</span>
+            <div className="min-w-0">
+              <h1 className="font-serif font-bold text-lg text-rose-700 leading-tight truncate">20 · 10 E-Card</h1>
+              <p className="text-[10px] text-slate-400 font-medium leading-none truncate">{t.subHeader}</p>
             </div>
           </div>
 
           {/* Toggle VI/EN */}
           <button
             onClick={toggleLanguage}
-            className="flex items-center space-x-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-semibold px-2.5 py-1.5 rounded-full transition"
+            className="shrink-0 flex items-center space-x-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-semibold px-2.5 py-1.5 rounded-full transition"
           >
             <span>{language === 'vi' ? '🇻🇳' : '🇬🇧'}</span>
             <span>{language === 'vi' ? 'VI / EN' : 'EN / VI'}</span>
