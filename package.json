@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbo",
-    "dev:webpack": "next dev",
+    "dev": "next dev --turbo -p 5000",
+    "dev:webpack": "next dev -p 5000",
     "clean": "node -e \"const fs = require('fs'); fs.rmSync('.next', { recursive: true, force: true }); console.log('Cleaned .next directory');\"",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 5000",
     "lint": "next lint"
   },
   "dependencies": {
