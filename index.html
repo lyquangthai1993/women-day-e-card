@@ -152,27 +152,28 @@
           class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition bg-slate-50/50">
       </div>
 
-      <!-- GỢI Ý CÂU CHÚC NHANH (Tap to insert) -->
+      <!-- KHUNG NHẬP LỜI NHẮN & NÚT MỞ POPUP GỢI Ý ĐẸP MẮT -->
       <div>
         <div class="flex items-center justify-between mb-1.5">
-          <label class="text-xs font-bold text-slate-600" id="labelSuggestions">
-            Gợi ý lời chúc (Chạm để điền nhanh):
+          <label class="block text-xs font-bold text-slate-600" id="labelMessage">
+            Lời nhắn chân thành từ bạn:
           </label>
-          <span class="text-[10px] text-rose-500 font-medium" id="hintTap">Chạm để chọn</span>
+          <button type="button" onclick="openSuggestionsModal()" class="inline-flex items-center space-x-1.5 text-xs font-bold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 px-3 py-1 rounded-full active:scale-95 transition shadow-sm">
+            <span>✨</span>
+            <span id="btnOpenSuggestions">Gợi ý lời chúc hay</span>
+          </button>
         </div>
-        <div class="flex space-x-2 overflow-x-auto pb-2 scrollbar-none" id="suggestionsContainer">
-          <!-- Render câu chúc bằng JS -->
-        </div>
-      </div>
-
-      <div>
-        <label class="block text-xs font-bold text-slate-600 mb-1" id="labelMessage">
-          Lời nhắn chân thành từ bạn:
-        </label>
         <textarea id="messageInput" rows="3" maxlength="300"
           placeholder="Viết những điều bạn chưa kịp nói..." 
           class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition bg-slate-50/50 resize-none"></textarea>
-        <div class="text-right text-[10px] text-slate-400" id="charCount">0/300</div>
+        
+        <div class="flex items-center justify-between mt-1">
+          <button type="button" onclick="openSuggestionsModal()" class="text-[11px] text-rose-500 hover:text-rose-700 font-semibold inline-flex items-center space-x-1.5 group transition">
+            <span class="text-xs group-hover:rotate-12 transition-transform">💡</span>
+            <span id="quickOpenPrompt" class="underline decoration-rose-300 underline-offset-2">Chạm để mở khung xem kho lời chúc mẫu</span>
+          </button>
+          <div class="text-[10px] text-slate-400 font-mono" id="charCount">0/300</div>
+        </div>
       </div>
 
       <div>
@@ -367,6 +368,54 @@
             Tạo thiệp của bạn
           </button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL 3: KHUNG POPUP GỢI Ý LỜI CHÚC (SUGGESTIONS POPUP) ================= -->
+  <div id="suggestionsModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white max-w-md w-full rounded-3xl p-5 shadow-2xl space-y-4 max-h-[85vh] flex flex-col animate-scale-up">
+      <!-- Header popup -->
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div class="flex items-center space-x-2.5">
+          <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-rose-500 to-pink-500 text-white flex items-center justify-center text-base shadow-md shadow-rose-200">
+            ✨
+          </div>
+          <div>
+            <h3 class="font-serif font-bold text-lg text-slate-800 leading-tight" id="suggestionsModalTitle">
+              Kho Lời Chúc Ý Nghĩa
+            </h3>
+            <p class="text-[11px] text-slate-400" id="suggestionsModalSubtitle">
+              Chạm vào câu bạn thích để tự động điền vào thiệp
+            </p>
+          </div>
+        </div>
+        <button type="button" onclick="closeSuggestionsModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center text-sm transition">
+          ✕
+        </button>
+      </div>
+
+      <!-- Tag phân loại đối tượng -->
+      <div class="flex items-center justify-between bg-rose-50/60 px-3.5 py-2 rounded-2xl border border-rose-100">
+        <div class="flex items-center space-x-2">
+          <span class="text-lg" id="suggestionsModalIcon">🌺</span>
+          <span class="text-xs font-bold text-rose-800" id="suggestionsModalRelName">Mẹ (Hoa Mẫu Đơn)</span>
+        </div>
+        <span class="text-[10px] font-bold bg-white text-rose-700 border border-rose-200 px-2.5 py-0.5 rounded-full shadow-2xs" id="suggestionsModalCount">
+          4 gợi ý
+        </span>
+      </div>
+
+      <!-- Danh sách câu chúc hiển thị dạng card sang trọng -->
+      <div class="flex-1 overflow-y-auto space-y-2.5 pr-1 scrollbar-thin" id="suggestionsModalList">
+        <!-- Render bằng JavaScript -->
+      </div>
+
+      <!-- Footer đóng popup -->
+      <div class="pt-2 border-t border-slate-100">
+        <button type="button" onclick="closeSuggestionsModal()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl text-xs transition" id="btnCloseSuggestions">
+          Đóng
+        </button>
       </div>
     </div>
   </div>
@@ -600,9 +649,13 @@
         labelRelationship: "1. Người phụ nữ bạn muốn gửi gắm:",
         labelReceiverName: "Tên người nhận (ví dụ: Mẹ yêu, Chị Mai, Em Thảo...):",
         receiverPlaceholder: "Gửi đến ai đó...",
-        labelSuggestions: "Gợi ý lời chúc (Chạm để điền nhanh):",
-        hintTap: "Chạm để chọn",
         labelMessage: "Lời nhắn chân thành từ bạn:",
+        btnOpenSuggestions: "Gợi ý lời chúc hay",
+        quickOpenPrompt: "Chạm để mở khung xem kho lời chúc mẫu",
+        suggestionsModalTitle: "Kho Lời Chúc Ý Nghĩa",
+        suggestionsModalSubtitle: "Chạm vào câu bạn thích để tự động điền vào thiệp",
+        btnCloseSuggestions: "Đóng",
+        toastWishSelected: "Đã điền lời chúc vào thiệp!",
         messagePlaceholder: "Viết những điều bạn chưa kịp nói...",
         labelSenderName: "Tên người gửi (hoặc để trống nếu gửi ẩn danh):",
         senderPlaceholder: "Tên của bạn...",
@@ -633,9 +686,13 @@
         labelRelationship: "1. The special woman in your story:",
         labelReceiverName: "Recipient's Name (e.g. Mom, Sarah, Sister...):",
         receiverPlaceholder: "To someone special...",
-        labelSuggestions: "Inspiration wishes (Tap to insert):",
-        hintTap: "Tap to insert",
         labelMessage: "Your heartfelt message:",
+        btnOpenSuggestions: "Inspiration Wishes",
+        quickOpenPrompt: "Tap to browse sample wishes",
+        suggestionsModalTitle: "Heartfelt Wishes Library",
+        suggestionsModalSubtitle: "Tap any wish to auto-fill into your e-card",
+        btnCloseSuggestions: "Close",
+        toastWishSelected: "Wish inserted into card!",
         messagePlaceholder: "Words you haven't said yet...",
         labelSenderName: "Sender's Name (or leave blank for anonymous):",
         senderPlaceholder: "Your name...",
@@ -753,27 +810,74 @@
     function selectRelationship(rel) {
       currentRelationship = rel;
       renderRelationships();
-      renderSuggestions();
       updateCardTheme();
       updatePreview();
+      // Nếu popup đang mở thì re-render luôn
+      if (!document.getElementById('suggestionsModal').classList.contains('hidden')) {
+        renderSuggestionsModal();
+      }
     }
 
-    function renderSuggestions() {
-      const container = document.getElementById('suggestionsContainer');
-      container.innerHTML = '';
-      const wishes = currentLang === 'vi' ? currentRelationship.wishesVi : currentRelationship.wishesEn;
+    // --- POPUP GỢI Ý LỜI CHÚC (SUGGESTIONS MODAL) ---
+    function openSuggestionsModal() {
+      renderSuggestionsModal();
+      document.getElementById('suggestionsModal').classList.remove('hidden');
+    }
 
-      wishes.forEach((wish) => {
-        const chip = document.createElement('button');
-        chip.type = 'button';
-        chip.className = "flex-shrink-0 max-w-[240px] text-left text-xs bg-slate-50 hover:bg-rose-50 hover:text-rose-700 border border-slate-200 hover:border-rose-300 rounded-xl px-3 py-2 transition leading-snug line-clamp-2";
-        chip.innerText = wish;
-        chip.onclick = () => {
-          document.getElementById('messageInput').value = wish;
-          updatePreview();
-        };
-        container.appendChild(chip);
+    function closeSuggestionsModal() {
+      document.getElementById('suggestionsModal').classList.add('hidden');
+    }
+
+    function renderSuggestionsModal() {
+      const container = document.getElementById('suggestionsModalList');
+      container.innerHTML = '';
+      
+      const relName = currentLang === 'vi' 
+        ? `${currentRelationship.nameVi} (${currentRelationship.flowerVi})` 
+        : `${currentRelationship.nameEn} (${currentRelationship.flowerEn})`;
+        
+      document.getElementById('suggestionsModalIcon').innerText = currentRelationship.icon;
+      document.getElementById('suggestionsModalRelName').innerText = relName;
+      
+      const wishes = currentLang === 'vi' ? currentRelationship.wishesVi : currentRelationship.wishesEn;
+      document.getElementById('suggestionsModalCount').innerText = `${wishes.length} ${currentLang === 'vi' ? 'gợi ý' : 'wishes'}`;
+
+      const currentMsg = document.getElementById('messageInput').value.trim();
+
+      wishes.forEach((wish, idx) => {
+        const isCurrent = currentMsg === wish;
+        const card = document.createElement('div');
+        card.className = `p-3.5 rounded-2xl border transition text-left cursor-pointer group ${
+          isCurrent 
+            ? 'bg-rose-50 border-rose-300 ring-2 ring-rose-200' 
+            : 'bg-white border-slate-200 hover:border-rose-300 hover:bg-rose-50/40 hover:shadow-sm'
+        }`;
+
+        card.innerHTML = `
+          <div class="flex items-start justify-between space-x-2">
+            <span class="text-rose-400 font-serif text-xl leading-none">“</span>
+            <p class="flex-1 text-xs text-slate-700 leading-relaxed font-sans group-hover:text-slate-900">
+              ${wish}
+            </p>
+          </div>
+          <div class="mt-2.5 flex items-center justify-between pt-2 border-t border-slate-100">
+            <span class="text-[10px] text-slate-400 font-medium">Gợi ý #${idx + 1}</span>
+            <button type="button" class="inline-flex items-center space-x-1 text-[11px] font-bold text-rose-600 group-hover:text-rose-700 bg-white group-hover:bg-rose-100/60 border border-slate-200 group-hover:border-rose-200 px-2.5 py-0.5 rounded-full transition shadow-2xs">
+              <span>${isCurrent ? '✓ Đang dùng' : (currentLang === 'vi' ? 'Chọn câu này ↵' : 'Select ↵')}</span>
+            </button>
+          </div>
+        `;
+
+        card.onclick = () => selectWishFromModal(wish);
+        container.appendChild(card);
       });
+    }
+
+    function selectWishFromModal(wish) {
+      document.getElementById('messageInput').value = wish;
+      updatePreview();
+      showToast(I18N[currentLang].toastWishSelected);
+      closeSuggestionsModal();
     }
 
     function updateCardTheme() {
@@ -839,9 +943,12 @@
       document.getElementById('labelRelationship').innerText = t.labelRelationship;
       document.getElementById('labelReceiverName').innerText = t.labelReceiverName;
       document.getElementById('receiverNameInput').placeholder = t.receiverPlaceholder;
-      document.getElementById('labelSuggestions').innerText = t.labelSuggestions;
-      document.getElementById('hintTap').innerText = t.hintTap;
       document.getElementById('labelMessage').innerText = t.labelMessage;
+      document.getElementById('btnOpenSuggestions').innerText = t.btnOpenSuggestions;
+      document.getElementById('quickOpenPrompt').innerText = t.quickOpenPrompt;
+      document.getElementById('suggestionsModalTitle').innerText = t.suggestionsModalTitle;
+      document.getElementById('suggestionsModalSubtitle').innerText = t.suggestionsModalSubtitle;
+      document.getElementById('btnCloseSuggestions').innerText = t.btnCloseSuggestions;
       document.getElementById('messageInput').placeholder = t.messagePlaceholder;
       document.getElementById('labelSenderName').innerText = t.labelSenderName;
       document.getElementById('senderNameInput').placeholder = t.senderPlaceholder;
@@ -861,8 +968,10 @@
       document.getElementById('btnCreateOwn').innerText = t.btnCreateOwn;
 
       renderRelationships();
-      renderSuggestions();
       updatePreview();
+      if (!document.getElementById('suggestionsModal').classList.contains('hidden')) {
+        renderSuggestionsModal();
+      }
     }
 
     // --- 6. XỬ LÝ 2 HÀNH ĐỘNG CHÍNH (CHIA SẺ & LƯU ẢNH) ---
