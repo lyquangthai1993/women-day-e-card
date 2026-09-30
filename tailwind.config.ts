@@ -11,7 +11,7 @@ const config: Config = {
       fontFamily: {
         sans: ['"Plus Jakarta Sans"', 'sans-serif'],
         serif: ['"Playfair Display"', '"Lora"', 'serif'],
-        script: ['"Dancing Script"', 'cursive'],
+        script: ['"Charm"', '"Caveat"', 'cursive'],
         body: ['"Lora"', 'serif'],
       },
       colors: {

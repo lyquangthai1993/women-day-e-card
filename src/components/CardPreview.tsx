@@ -312,7 +312,7 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
 
       {/* Heartfelt Message */}
       <div className="relative z-10 px-5 py-3 my-auto text-center flex items-center justify-center flex-1">
-        <p className={`font-serif text-base sm:text-lg leading-relaxed italic break-words line-clamp-6 select-none ${relationship.bodyColor}`}>
+        <p className={`font-body text-base sm:text-lg leading-relaxed italic break-words line-clamp-6 select-none ${relationship.bodyColor}`}>
           {displayMessage}
         </p>
       </div>
