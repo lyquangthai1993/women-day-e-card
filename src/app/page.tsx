@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import html2canvas from 'html2canvas';
 import confetti from 'canvas-confetti';
-import { Sparkles, Share2, Image as ImageIcon } from 'lucide-react';
+import { Sparkles, Share2, Image as ImageIcon, Loader2 } from 'lucide-react';
 
 import { RelationshipTheme, Language } from '../types';
 import { RELATIONSHIPS, I18N } from '../lib/constants';
@@ -26,6 +26,10 @@ export default function HomePage() {
   // Chế độ xem thiệp chuyên biệt (khi mở từ link chia sẻ / hash)
   const [isViewingMode, setIsViewingMode] = useState<boolean>(false);
   
+  // Trạng thái loading spinner khi bấm nút
+  const [isSharing, setIsSharing] = useState<boolean>(false);
+  const [isSavingImage, setIsSavingImage] = useState<boolean>(false);
+
   const [visitorId, setVisitorId] = useState<string>('fp_loading');
   const [isClaimed, setIsClaimed] = useState<boolean>(false);
 
@@ -147,7 +151,7 @@ export default function HomePage() {
           setSender(params.get('s') || '');
         }
         if (params.has('w')) {
-          const idx = parseInt(params.get('w') || '0', 10);
+          const idx = parseInt(params.get('w') || '', 10);
           const curRel = compactRel;
           const wishes = (params.get('l') || 'vi') === 'vi' ? curRel.wishesVi : curRel.wishesEn;
           if (!isNaN(idx) && wishes[idx]) {
@@ -195,68 +199,78 @@ export default function HomePage() {
     return slug ? `happy-womens-day-${slug}.png` : "happy-womens-day-card.png";
   };
 
-  // Chia sẻ thiệp
+  // Chia sẻ thiệp kèm hiệu ứng loading spinner
   const handleShare = async () => {
-    let activeCardId = cardId;
-    if (!activeCardId) {
-      activeCardId = generateCardId();
-      setCardId(activeCardId);
-    }
-
-    const shareUrl = getCardShareUrl(activeCardId);
-    const shareTitle = language === 'vi' ? "Thiệp chúc mừng 20/10 gửi tặng bạn 🌸" : "Happy Vietnamese Women's Day E-Card 🌸";
-    const shareText = language === 'vi'
-      ? "Mình vừa tạo một tấm thiệp 20/10 gửi tặng bạn. Nhấp vào đây để xem nhé!"
-      : "I've created a heartfelt Women's Day e-card for you. Tap to open!";
-
-    window.history.replaceState(null, '', `#id=${activeCardId}`);
-
-    const res = await syncToGoogleSheet({
-      action: 'save_card',
-      cardId: activeCardId,
-      visitorId,
-      sender: sender.trim() || 'Ẩn danh',
-      receiver: receiver.trim() || (language === 'vi' ? relationship.nameVi : relationship.nameEn),
-      relationship: relationship.id,
-      message: message.trim() || (language === 'vi' ? relationship.wishesVi[0] : relationship.wishesEn[0]),
-      language,
-    });
-
-    if (res && res.status === 'success' && res.action === 'updated') {
-      showToast(t.toastCardUpdated);
-    }
-
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: shareTitle,
-          text: shareText,
-          url: shareUrl,
-        });
-        showToast(t.toastCopied);
-        openIceCreamWithConfetti();
-        return;
-      } catch (err: any) {
-        if (err.name !== 'AbortError') {
-          console.log('Share canceled/fallback');
-        }
-      }
-    }
+    if (isSharing) return;
+    setIsSharing(true);
 
     try {
-      await navigator.clipboard.writeText(shareUrl);
-      showToast(t.toastCopied);
-    } catch {
-      prompt("Copy đường link thiệp bên dưới để gửi qua Zalo/Messenger:", shareUrl);
-    }
+      let activeCardId = cardId;
+      if (!activeCardId) {
+        activeCardId = generateCardId();
+        setCardId(activeCardId);
+      }
 
-    openIceCreamWithConfetti();
+      const shareUrl = getCardShareUrl(activeCardId);
+      const shareTitle = language === 'vi' ? "Thiệp chúc mừng 20/10 gửi tặng bạn 🌸" : "Happy Vietnamese Women's Day E-Card 🌸";
+      const shareText = language === 'vi'
+        ? "Mình vừa tạo một tấm thiệp 20/10 gửi tặng bạn. Nhấp vào đây để xem nhé!"
+        : "I've created a heartfelt Women's Day e-card for you. Tap to open!";
+
+      window.history.replaceState(null, '', `#id=${activeCardId}`);
+
+      const res = await syncToGoogleSheet({
+        action: 'save_card',
+        cardId: activeCardId,
+        visitorId,
+        sender: sender.trim() || 'Ẩn danh',
+        receiver: receiver.trim() || (language === 'vi' ? relationship.nameVi : relationship.nameEn),
+        relationship: relationship.id,
+        message: message.trim() || (language === 'vi' ? relationship.wishesVi[0] : relationship.wishesEn[0]),
+        language,
+      });
+
+      if (res && res.status === 'success' && res.action === 'updated') {
+        showToast(t.toastCardUpdated);
+      }
+
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: shareTitle,
+            text: shareText,
+            url: shareUrl,
+          });
+          showToast(t.toastCopied);
+          openIceCreamWithConfetti();
+          return;
+        } catch (err: any) {
+          if (err.name !== 'AbortError') {
+            console.log('Share canceled/fallback');
+          }
+        }
+      }
+
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        showToast(t.toastCopied);
+      } catch {
+        prompt("Copy đường link thiệp bên dưới để gửi qua Zalo/Messenger:", shareUrl);
+      }
+
+      openIceCreamWithConfetti();
+    } catch (err) {
+      console.error("Error sharing card:", err);
+    } finally {
+      setIsSharing(false);
+    }
   };
 
-  // Lưu ảnh thiệp bằng html2canvas
+  // Lưu ảnh thiệp bằng html2canvas kèm hiệu ứng spinner
   const handleSaveImage = async () => {
-    if (!cardRef.current) return;
-    showToast("Đang kết xuất ảnh thiệp...");
+    if (!cardRef.current || isSavingImage) return;
+    setIsSavingImage(true);
+    showToast(t.btnSavingText);
 
     try {
       const canvas = await html2canvas(cardRef.current, {
@@ -311,6 +325,8 @@ export default function HomePage() {
     } catch (err) {
       console.error(err);
       if (!isViewingMode) openIceCreamWithConfetti();
+    } finally {
+      setIsSavingImage(false);
     }
   };
 
@@ -439,10 +455,15 @@ export default function HomePage() {
               <button
                 type="button"
                 onClick={handleSaveImage}
-                className="bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 px-4 rounded-2xl text-xs flex items-center justify-center space-x-1.5 shadow-md shadow-rose-200 active:scale-95 transition"
+                disabled={isSavingImage}
+                className="bg-rose-600 hover:bg-rose-700 disabled:opacity-75 text-white font-bold py-3 px-4 rounded-2xl text-xs flex items-center justify-center space-x-1.5 shadow-md shadow-rose-200 active:scale-95 transition"
               >
-                <ImageIcon className="w-4 h-4" />
-                <span>{t.btnDownload}</span>
+                {isSavingImage ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <ImageIcon className="w-4 h-4" />
+                )}
+                <span>{isSavingImage ? t.btnSavingText : t.btnDownload}</span>
               </button>
 
               {cardId ? (
@@ -458,10 +479,15 @@ export default function HomePage() {
                 <button
                   type="button"
                   onClick={handleShare}
-                  className="bg-white hover:bg-rose-50 text-rose-700 border border-rose-200 font-bold py-3 px-4 rounded-2xl text-xs flex items-center justify-center space-x-1.5 shadow-sm active:scale-95 transition"
+                  disabled={isSharing}
+                  className="bg-white hover:bg-rose-50 disabled:opacity-75 text-rose-700 border border-rose-200 font-bold py-3 px-4 rounded-2xl text-xs flex items-center justify-center space-x-1.5 shadow-sm active:scale-95 transition"
                 >
-                  <Share2 className="w-4 h-4" />
-                  <span>{t.btnShareText}</span>
+                  {isSharing ? (
+                    <Loader2 className="w-4 h-4 animate-spin text-rose-600" />
+                  ) : (
+                    <Share2 className="w-4 h-4" />
+                  )}
+                  <span>{isSharing ? t.btnSharingText : t.btnShareText}</span>
                 </button>
               )}
             </div>
@@ -639,18 +665,38 @@ export default function HomePage() {
             <section className="space-y-2.5 pt-2">
               <button
                 onClick={handleShare}
-                className="w-full bg-gradient-to-r from-rose-600 via-pink-600 to-rose-500 hover:opacity-95 text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg shadow-rose-200 flex items-center justify-center space-x-2 active:scale-[0.98] transition"
+                disabled={isSharing}
+                className={`w-full bg-gradient-to-r from-rose-600 via-pink-600 to-rose-500 hover:opacity-95 text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg shadow-rose-200 flex items-center justify-center space-x-2 active:scale-[0.98] transition ${isSharing ? 'opacity-80 cursor-wait' : ''}`}
               >
-                <Share2 className="w-5 h-5" />
-                <span className="text-sm tracking-wide">{t.btnShareText}</span>
+                {isSharing ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <span className="text-sm tracking-wide">{t.btnSharingText}</span>
+                  </>
+                ) : (
+                  <>
+                    <Share2 className="w-5 h-5" />
+                    <span className="text-sm tracking-wide">{t.btnShareText}</span>
+                  </>
+                )}
               </button>
 
               <button
                 onClick={handleSaveImage}
-                className="w-full bg-white hover:bg-slate-50 text-slate-700 font-bold py-3.5 px-6 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-center space-x-2 active:scale-[0.98] transition"
+                disabled={isSavingImage}
+                className={`w-full bg-white hover:bg-slate-50 text-slate-700 font-bold py-3.5 px-6 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-center space-x-2 active:scale-[0.98] transition ${isSavingImage ? 'opacity-80 cursor-wait' : ''}`}
               >
-                <ImageIcon className="w-5 h-5 text-rose-500" />
-                <span className="text-sm tracking-wide">{t.btnSaveImgText}</span>
+                {isSavingImage ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin text-rose-500" />
+                    <span className="text-sm tracking-wide">{t.btnSavingText}</span>
+                  </>
+                ) : (
+                  <>
+                    <ImageIcon className="w-5 h-5 text-rose-500" />
+                    <span className="text-sm tracking-wide">{t.btnSaveImgText}</span>
+                  </>
+                )}
               </button>
             </section>
 

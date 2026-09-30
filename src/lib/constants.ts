@@ -269,7 +269,9 @@ export const I18N = {
     viewCardGreetingBadge: "💌 Tấm thiệp dành tặng riêng cho bạn",
     viewCardHeading: "Chúc mừng ngày Phụ nữ Việt Nam 20/10",
     btnCreateOwnCardAction: "Tự tạo thiệp của riêng bạn ngay 🌸",
-    btnEditCurrentCardAction: "Chỉnh sửa thiệp này"
+    btnEditCurrentCardAction: "Chỉnh sửa thiệp này",
+    btnSharingText: "Đang tạo liên kết...",
+    btnSavingText: "Đang xuất ảnh..."
   },
   en: {
     pageTitle: "Happy Vietnamese Women's Day 20/10 - E-Card",
@@ -319,6 +321,8 @@ export const I18N = {
     viewCardGreetingBadge: "💌 A heartfelt e-card for you",
     viewCardHeading: "Happy Vietnamese Women's Day 20/10",
     btnCreateOwnCardAction: "Create your own e-card now 🌸",
-    btnEditCurrentCardAction: "Edit this card"
+    btnEditCurrentCardAction: "Edit this card",
+    btnSharingText: "Creating link...",
+    btnSavingText: "Rendering image..."
   }
 };
