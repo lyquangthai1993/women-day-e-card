@@ -1273,13 +1273,28 @@
       return 'c_' + Math.random().toString(36).substring(2, 8) + Date.now().toString(36).slice(-4);
     }
 
-    // Gói dữ liệu thiệp với Card ID cố định trên Google Sheet
     function getCardShareUrl() {
       if (!currentCardId) {
         currentCardId = generateCardId();
       }
       const baseUrl = window.location.origin + window.location.pathname;
-      return `${baseUrl}#id=${currentCardId}`;
+      const p = new URLSearchParams();
+      p.set('id', currentCardId);
+      if (currentRelationship.id !== 'mother') p.set('rel', currentRelationship.id);
+      if (currentLang !== 'vi') p.set('l', currentLang);
+      const r = document.getElementById('receiverNameInput').value.trim();
+      if (r) p.set('r', r);
+      const s = document.getElementById('senderNameInput').value.trim();
+      if (s) p.set('s', s);
+      const m = document.getElementById('messageInput').value.trim();
+      const wishes = currentLang === 'vi' ? currentRelationship.wishesVi : currentRelationship.wishesEn;
+      const wishIdx = wishes.indexOf(m);
+      if (wishIdx >= 0) {
+        p.set('w', wishIdx.toString());
+      } else if (m) {
+        p.set('m', m);
+      }
+      return `${baseUrl}#${p.toString()}`;
     }
 
     // 1. Chia sẻ thiệp
@@ -1539,74 +1554,11 @@
         params = new URLSearchParams(window.location.search);
       }
 
-      // 1. Nếu có ID thiệp trên Google Sheet (Real-time Cloud Sync)
       const cardIdParam = params.get('id') || params.get('cardId');
-      if (cardIdParam) {
-        currentCardId = cardIdParam.trim();
-        setViewingMode(true);
-        showToast(I18N[currentLang].toastCardLoading);
+      const hasInlineData = params.has('rel') || params.has('r') || params.has('m') || params.has('w');
 
-        if (GOOGLE_SHEET_API_URL && GOOGLE_SHEET_API_URL.trim() !== '') {
-          try {
-            const res = await fetch(`${GOOGLE_SHEET_API_URL}?action=get_card&id=${encodeURIComponent(currentCardId)}`);
-            const json = await res.json();
-            if (json && json.status === 'success' && json.data) {
-              const d = json.data;
-              if (d.receiver) document.getElementById('receiverNameInput').value = d.receiver;
-              if (d.message) document.getElementById('messageInput').value = d.message;
-              if (d.sender) document.getElementById('senderNameInput').value = d.sender;
-              if (d.relationship) {
-                const rel = RELATIONSHIPS.find(item => item.id === d.relationship || item.nameVi === d.relationship);
-                if (rel) currentRelationship = rel;
-              }
-              if (d.language && (d.language === 'vi' || d.language === 'en')) {
-                currentLang = d.language;
-              }
-              applyLanguage();
-              updateCardTheme();
-              updatePreview();
-              showToast(I18N[currentLang].toastCardLoaded);
-              return;
-            } else {
-              showToast(I18N[currentLang].toastCardNotFound);
-            }
-          } catch (err) {
-            console.warn("Lỗi tải thiệp từ Google Sheet:", err);
-          }
-        }
-      }
-
-      const hash = window.location.hash;
-      if (!hash) return;
-
-      // 2. Hỗ trợ định dạng cũ #card=... (backward compatibility)
-      if (hash.includes('card=')) {
-        try {
-          const encoded = hash.split('card=')[1];
-          const jsonStr = decodeURIComponent(atob(encoded));
-          const data = JSON.parse(jsonStr);
-
-          setViewingMode(true);
-          if (data.r) document.getElementById('receiverNameInput').value = data.r;
-          if (data.m) document.getElementById('messageInput').value = data.m;
-          if (data.s) document.getElementById('senderNameInput').value = data.s;
-          if (data.rel) {
-            const rel = RELATIONSHIPS.find(item => item.id === data.rel);
-            if (rel) currentRelationship = rel;
-          }
-          if (data.lang) currentLang = data.lang;
-
-          applyLanguage();
-          updateCardTheme();
-          updatePreview();
-          return;
-        } catch (e) {
-          console.warn("Invalid legacy card URL parameter:", e);
-        }
-      }
-
-      // 3. Định dạng compact hash: #rel=... hoặc #r=... hoặc #m=...
-      if (hash.includes('rel=') || hash.includes('r=') || hash.includes('m=')) {
+      // 1. Nếu có dữ liệu compact inline, hiển thị tức thì trong 0ms để tránh nháy thiệp mặc định
+      if (hasInlineData) {
         try {
           setViewingMode(true);
           if (params.has('rel')) {
@@ -1640,7 +1592,75 @@
           updateCardTheme();
           updatePreview();
         } catch (err) {
-          console.warn("Error parsing URL hash params:", err);
+          console.warn("Error parsing inline URL params:", err);
+        }
+      }
+
+      // 2. Nếu có ID thiệp trên Google Sheet (Real-time Cloud Sync)
+      if (cardIdParam) {
+        currentCardId = cardIdParam.trim();
+        setViewingMode(true);
+        if (!hasInlineData) {
+          showToast(I18N[currentLang].toastCardLoading);
+        }
+
+        if (GOOGLE_SHEET_API_URL && GOOGLE_SHEET_API_URL.trim() !== '') {
+          try {
+            const res = await fetch(`${GOOGLE_SHEET_API_URL}?action=get_card&id=${encodeURIComponent(currentCardId)}`);
+            const json = await res.json();
+            if (json && json.status === 'success' && json.data) {
+              const d = json.data;
+              if (d.receiver) document.getElementById('receiverNameInput').value = d.receiver;
+              if (d.message) document.getElementById('messageInput').value = d.message;
+              if (d.sender) document.getElementById('senderNameInput').value = d.sender;
+              if (d.relationship) {
+                const rel = RELATIONSHIPS.find(item => item.id === d.relationship || item.nameVi === d.relationship);
+                if (rel) currentRelationship = rel;
+              }
+              if (d.language && (d.language === 'vi' || d.language === 'en')) {
+                currentLang = d.language;
+              }
+              applyLanguage();
+              updateCardTheme();
+              updatePreview();
+              showToast(I18N[currentLang].toastCardLoaded);
+              return;
+            } else if (!hasInlineData) {
+              showToast(I18N[currentLang].toastCardNotFound);
+            }
+          } catch (err) {
+            console.warn("Lỗi tải thiệp từ Google Sheet:", err);
+          }
+        }
+        return;
+      }
+
+      const hash = window.location.hash;
+      if (!hash) return;
+
+      // 3. Hỗ trợ định dạng cũ #card=... (backward compatibility)
+      if (hash.includes('card=')) {
+        try {
+          const encoded = hash.split('card=')[1];
+          const jsonStr = decodeURIComponent(atob(encoded));
+          const data = JSON.parse(jsonStr);
+
+          setViewingMode(true);
+          if (data.r) document.getElementById('receiverNameInput').value = data.r;
+          if (data.m) document.getElementById('messageInput').value = data.m;
+          if (data.s) document.getElementById('senderNameInput').value = data.s;
+          if (data.rel) {
+            const rel = RELATIONSHIPS.find(item => item.id === data.rel);
+            if (rel) currentRelationship = rel;
+          }
+          if (data.lang) currentLang = data.lang;
+
+          applyLanguage();
+          updateCardTheme();
+          updatePreview();
+          return;
+        } catch (e) {
+          console.warn("Invalid legacy card URL parameter:", e);
         }
       }
     }

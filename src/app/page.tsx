@@ -25,6 +25,7 @@ export default function HomePage() {
 
   // Chế độ xem thiệp chuyên biệt (khi mở từ link chia sẻ / hash)
   const [isViewingMode, setIsViewingMode] = useState<boolean>(false);
+  const [isLoadingCard, setIsLoadingCard] = useState<boolean>(false);
   
   // Trạng thái loading spinner khi bấm nút
   const [isSharing, setIsSharing] = useState<boolean>(false);
@@ -70,66 +71,16 @@ export default function HomePage() {
     if (typeof window === 'undefined') return;
     const hash = window.location.hash;
     
-    // 1. Kiểm tra Card ID trên Google Sheet (Real-time Cloud Sync)
     let queryStr = hash.startsWith('#') ? hash.substring(1) : hash;
     let params = new URLSearchParams(queryStr);
     if (!params.has('id') && !params.has('cardId') && window.location.search) {
       params = new URLSearchParams(window.location.search);
     }
     const cloudCardId = params.get('id') || params.get('cardId');
-    if (cloudCardId) {
-      const cleanId = cloudCardId.trim();
-      setCardId(cleanId);
-      setIsViewingMode(true);
-      showToast(t.toastCardLoading);
-      getCardFromGoogleSheet(cleanId).then((data) => {
-        if (data) {
-          if (data.receiver) setReceiver(data.receiver);
-          if (data.message) setMessage(data.message);
-          if (data.sender) setSender(data.sender);
-          if (data.relationship) {
-            const found = RELATIONSHIPS.find((item) => item.id === data.relationship || item.nameVi === data.relationship);
-            if (found) setRelationship(found);
-          }
-          if (data.language && (data.language === 'vi' || data.language === 'en')) {
-            setLanguage(data.language as Language);
-          }
-          showToast(t.toastCardLoaded);
-        } else {
-          showToast(t.toastCardNotFound);
-        }
-      });
-      return;
-    }
+    const hasInlineData = params.has('rel') || params.has('r') || params.has('m') || params.has('w');
 
-    if (!hash) return;
-
-    // 2. Backward compatibility: #card=...
-    if (hash.includes('card=')) {
-      try {
-        const encoded = hash.split('card=')[1];
-        const jsonStr = decodeURIComponent(atob(encoded));
-        const data = JSON.parse(jsonStr);
-
-        setIsViewingMode(true);
-        if (data.r) setReceiver(data.r);
-        if (data.m) setMessage(data.m);
-        if (data.s) setSender(data.s);
-        if (data.rel) {
-          const found = RELATIONSHIPS.find((item) => item.id === data.rel);
-          if (found) {
-            setRelationship(found);
-          }
-        }
-        if (data.lang) setLanguage(data.lang as Language);
-        return;
-      } catch (e) {
-        console.warn('Invalid URL hash:', e);
-      }
-    }
-
-    // 3. Compact format: #r=...&s=...&rel=...&w=...&m=... (Luôn < 150 ký tự)
-    if (hash.includes('rel=') || hash.includes('r=') || hash.includes('m=')) {
+    // 1. Nếu có dữ liệu inline trên URL, nạp tức thì trong 0ms để tránh nháy thiệp mặc định
+    if (hasInlineData) {
       try {
         setIsViewingMode(true);
         let compactRel = RELATIONSHIPS[0];
@@ -161,7 +112,66 @@ export default function HomePage() {
           setMessage(params.get('m') || '');
         }
       } catch (e) {
-        console.warn('Error parsing compact URL hash:', e);
+        console.warn('Error parsing inline compact URL params:', e);
+      }
+    }
+
+    // 2. Kiểm tra Card ID trên Google Sheet (Real-time Cloud Sync)
+    if (cloudCardId) {
+      const cleanId = cloudCardId.trim();
+      setCardId(cleanId);
+      setIsViewingMode(true);
+
+      // Nếu chưa có inline data (chỉ mở thuần link #id=...), bật skeleton loading
+      if (!hasInlineData) {
+        setIsLoadingCard(true);
+      }
+
+      getCardFromGoogleSheet(cleanId).then((data) => {
+        setIsLoadingCard(false);
+        if (data) {
+          if (data.receiver) setReceiver(data.receiver);
+          if (data.message) setMessage(data.message);
+          if (data.sender) setSender(data.sender);
+          if (data.relationship) {
+            const found = RELATIONSHIPS.find((item) => item.id === data.relationship || item.nameVi === data.relationship);
+            if (found) setRelationship(found);
+          }
+          if (data.language && (data.language === 'vi' || data.language === 'en')) {
+            setLanguage(data.language as Language);
+          }
+        } else if (!hasInlineData) {
+          showToast(t.toastCardNotFound);
+        }
+      }).catch(() => {
+        setIsLoadingCard(false);
+      });
+      return;
+    }
+
+    if (!hash) return;
+
+    // 3. Backward compatibility: #card=...
+    if (hash.includes('card=')) {
+      try {
+        const encoded = hash.split('card=')[1];
+        const jsonStr = decodeURIComponent(atob(encoded));
+        const data = JSON.parse(jsonStr);
+
+        setIsViewingMode(true);
+        if (data.r) setReceiver(data.r);
+        if (data.m) setMessage(data.m);
+        if (data.s) setSender(data.s);
+        if (data.rel) {
+          const found = RELATIONSHIPS.find((item) => item.id === data.rel);
+          if (found) {
+            setRelationship(found);
+          }
+        }
+        if (data.lang) setLanguage(data.lang as Language);
+        return;
+      } catch (e) {
+        console.warn('Invalid URL hash:', e);
       }
     }
   };
@@ -184,10 +194,24 @@ export default function HomePage() {
     showToast(t.toastWishSelected);
   };
 
-  // Tạo URL chia sẻ với Card ID cố định
+  // Tạo URL chia sẻ kết hợp Card ID (Google Sheet) + Compact Inline Data (Load tức thì 0ms)
   const getCardShareUrl = (activeId: string) => {
     const baseUrl = window.location.origin + window.location.pathname;
-    return `${baseUrl}#id=${activeId}`;
+    const p = new URLSearchParams();
+    p.set('id', activeId);
+    if (relationship.id !== 'mother') p.set('rel', relationship.id);
+    if (language !== 'vi') p.set('l', language);
+    if (receiver.trim()) p.set('r', receiver.trim());
+    if (sender.trim()) p.set('s', sender.trim());
+
+    const wishes = language === 'vi' ? relationship.wishesVi : relationship.wishesEn;
+    const wishIdx = wishes.indexOf(message);
+    if (wishIdx >= 0) {
+      p.set('w', wishIdx.toString());
+    } else if (message.trim()) {
+      p.set('m', message.trim());
+    }
+    return `${baseUrl}#${p.toString()}`;
   };
 
   // Tên file tiếng Anh chuẩn cho download
@@ -438,13 +462,33 @@ export default function HomePage() {
 
           {/* Khung Thiệp Trực Quan (Chính giữa trang) */}
           <div ref={cardRef}>
-            <CardPreview
-              relationship={relationship}
-              language={language}
-              receiver={receiver}
-              message={message}
-              sender={sender}
-            />
+            {isLoadingCard ? (
+              <div className="w-full max-w-sm mx-auto aspect-[3/4] rounded-3xl bg-gradient-to-br from-rose-50/90 via-pink-50/70 to-amber-50/80 border-2 border-dashed border-rose-200 shadow-xl flex flex-col items-center justify-center p-8 text-center animate-pulse">
+                <div className="w-16 h-16 rounded-full bg-rose-100/90 text-rose-500 flex items-center justify-center text-3xl mb-4 shadow-sm animate-bounce">
+                  🌸
+                </div>
+                <div className="flex items-center space-x-2 text-rose-800 font-serif font-bold text-base mb-2">
+                  <Loader2 className="w-4 h-4 animate-spin text-rose-600" />
+                  <span>{language === 'vi' ? 'Đang mở tấm thiệp yêu thương...' : 'Opening your heartfelt e-card...'}</span>
+                </div>
+                <p className="text-xs text-slate-500 max-w-xs leading-relaxed">
+                  {language === 'vi' ? 'Đang tải nội dung thiệp được gửi riêng cho bạn, vui lòng đợi trong giây lát...' : 'Loading your custom e-card, please wait a moment...'}
+                </p>
+                <div className="w-full mt-6 space-y-2.5 opacity-60">
+                  <div className="h-3.5 bg-rose-200/60 rounded-full w-2/3 mx-auto"></div>
+                  <div className="h-3.5 bg-rose-200/50 rounded-full w-4/5 mx-auto"></div>
+                  <div className="h-3.5 bg-rose-200/40 rounded-full w-1/2 mx-auto"></div>
+                </div>
+              </div>
+            ) : (
+              <CardPreview
+                relationship={relationship}
+                language={language}
+                receiver={receiver}
+                message={message}
+                sender={sender}
+              />
+            )}
           </div>
 
           {/* Các nút hành động dành cho người nhận */}
@@ -457,8 +501,8 @@ export default function HomePage() {
               <button
                 type="button"
                 onClick={handleSaveImage}
-                disabled={isSavingImage}
-                className="bg-rose-600 hover:bg-rose-700 disabled:opacity-75 text-white font-bold py-3 px-4 rounded-2xl text-xs flex items-center justify-center space-x-1.5 shadow-md shadow-rose-200 active:scale-95 transition"
+                disabled={isSavingImage || isLoadingCard}
+                className="bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white font-bold py-3 px-4 rounded-2xl text-xs flex items-center justify-center space-x-1.5 shadow-md shadow-rose-200 active:scale-95 transition"
               >
                 {isSavingImage ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -472,7 +516,8 @@ export default function HomePage() {
                 <button
                   type="button"
                   onClick={handleSwitchToEditMode}
-                  className="bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-4 rounded-2xl text-xs flex items-center justify-center space-x-1.5 shadow-md shadow-amber-200 active:scale-95 transition"
+                  disabled={isLoadingCard}
+                  className="bg-amber-500 hover:bg-amber-600 disabled:opacity-50 text-white font-bold py-3 px-4 rounded-2xl text-xs flex items-center justify-center space-x-1.5 shadow-md shadow-amber-200 active:scale-95 transition"
                 >
                   <span>✏️</span>
                   <span>{t.btnEditCard}</span>
@@ -481,8 +526,8 @@ export default function HomePage() {
                 <button
                   type="button"
                   onClick={handleShare}
-                  disabled={isSharing}
-                  className="bg-white hover:bg-rose-50 disabled:opacity-75 text-rose-700 border border-rose-200 font-bold py-3 px-4 rounded-2xl text-xs flex items-center justify-center space-x-1.5 shadow-sm active:scale-95 transition"
+                  disabled={isSharing || isLoadingCard}
+                  className="bg-white hover:bg-rose-50 disabled:opacity-50 text-rose-700 border border-rose-200 font-bold py-3 px-4 rounded-2xl text-xs flex items-center justify-center space-x-1.5 shadow-sm active:scale-95 transition"
                 >
                   {isSharing ? (
                     <Loader2 className="w-4 h-4 animate-spin text-rose-600" />
