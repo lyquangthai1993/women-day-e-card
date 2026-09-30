@@ -240,7 +240,11 @@ export default function HomePage() {
             url: shareUrl,
           });
           showToast(t.toastCopied);
-          openIceCreamWithConfetti();
+          if (!forceNew) {
+            openIceCreamWithConfetti();
+          } else {
+            confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } });
+          }
           return;
         } catch (err: any) {
           if (err.name !== 'AbortError') {
@@ -256,7 +260,11 @@ export default function HomePage() {
         prompt("Copy đường link thiệp bên dưới để gửi qua Zalo/Messenger:", shareUrl);
       }
 
-      openIceCreamWithConfetti();
+      if (!forceNew) {
+        openIceCreamWithConfetti();
+      } else {
+        confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } });
+      }
     } catch (err) {
       console.error("Error sharing card:", err);
     } finally {
