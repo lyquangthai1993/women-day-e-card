@@ -10,8 +10,9 @@ const config: Config = {
     extend: {
       fontFamily: {
         sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-        serif: ['"Cormorant Garamond"', 'serif'],
-        script: ['"Alex Brush"', 'cursive'],
+        serif: ['"Playfair Display"', '"Lora"', 'serif'],
+        script: ['"Dancing Script"', 'cursive'],
+        body: ['"Lora"', 'serif'],
       },
       colors: {
         rose: {

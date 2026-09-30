@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Thiệp Chúc Mừng 20/10 - E-Card</title>
   
-  <!-- Google Fonts: Cormorant Garamond (thiệp sang trọng) & Plus Jakarta Sans (UI mượt mà) -->
+  <!-- Google Fonts: Playfair Display, Dancing Script, Lora & Plus Jakarta Sans (Hỗ trợ 100% tiếng Việt chuẩn) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Alex+Brush&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Playfair+Display:ital,wght@0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -18,8 +18,9 @@
         extend: {
           fontFamily: {
             sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-            serif: ['"Cormorant Garamond"', 'serif'],
-            script: ['"Alex Brush"', 'cursive'],
+            serif: ['"Playfair Display"', '"Lora"', 'serif'],
+            script: ['"Dancing Script"', 'cursive'],
+            body: ['"Lora"', 'serif'],
           },
           colors: {
             rose: {
@@ -308,7 +309,7 @@
 
         <!-- Đầu thiệp: Lời đề tặng -->
         <div class="relative z-10 text-center pt-2">
-          <p class="font-script text-2xl sm:text-3xl mb-1 tracking-wide leading-normal" id="previewSalutation">Thương gửi</p>
+          <p class="font-script font-bold text-2xl sm:text-3xl mb-1 tracking-wide leading-normal" id="previewSalutation">Thương gửi</p>
           <h2 class="font-serif font-bold text-2xl sm:text-3xl tracking-wide theme-title-text px-4 break-words leading-normal pb-1" id="previewReceiver">
             Người Phụ Nữ Của Tôi
           </h2>
@@ -1319,7 +1320,7 @@
       // Đổi màu lời đề tặng
       const salutationEl = document.getElementById('previewSalutation');
       if (salutationEl) {
-        salutationEl.className = `font-script text-2xl sm:text-3xl mb-1 tracking-wide leading-normal ${currentRelationship.salutationColor || 'text-rose-700/80'}`;
+        salutationEl.className = `font-script font-bold text-2xl sm:text-3xl mb-1 tracking-wide leading-normal ${currentRelationship.salutationColor || 'text-rose-700/80'}`;
       }
 
       // Đổi màu chữ theo quan hệ

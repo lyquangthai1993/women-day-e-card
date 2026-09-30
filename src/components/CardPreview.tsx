@@ -295,7 +295,7 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
 
       {/* Salutation & Recipient */}
       <div className="relative z-10 text-center pt-2">
-        <p className={`font-script text-2xl sm:text-3xl mb-1 tracking-wide leading-normal ${relationship.salutationColor || 'text-rose-700/80'}`}>
+        <p className={`font-script font-bold text-2xl sm:text-3xl mb-1 tracking-wide leading-normal ${relationship.salutationColor || 'text-rose-700/80'}`}>
           {defaultSalutation}
         </p>
         <h2 className={`font-serif font-bold text-2xl sm:text-3xl tracking-wide px-4 break-words leading-normal pb-1 ${relationship.titleColor}`}>
