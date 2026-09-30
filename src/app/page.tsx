@@ -62,18 +62,26 @@ export default function HomePage() {
         const jsonStr = decodeURIComponent(atob(encoded));
         const data = JSON.parse(jsonStr);
 
+        let targetRel = RELATIONSHIPS[0];
         if (data.r) setReceiver(data.r);
         if (data.m) setMessage(data.m);
         if (data.s) setSender(data.s);
         if (data.rel) {
           const found = RELATIONSHIPS.find((item) => item.id === data.rel);
-          if (found) setRelationship(found);
+          if (found) {
+            targetRel = found;
+            setRelationship(found);
+          }
         }
         if (data.lang) setLanguage(data.lang as Language);
 
         setTimeout(async () => {
           if (cardRef.current) {
-            const canvas = await html2canvas(cardRef.current, { scale: 2, backgroundColor: null });
+            const canvas = await html2canvas(cardRef.current, {
+              scale: 2,
+              useCORS: true,
+              backgroundColor: targetRel.bgColor || '#ffffff',
+            });
             setGeneratedImageUrl(canvas.toDataURL('image/png'));
             setIsViewCardModalOpen(true);
           }
@@ -88,10 +96,14 @@ export default function HomePage() {
     try {
       const queryStr = hash.startsWith('#') ? hash.substring(1) : hash;
       const params = new URLSearchParams(queryStr);
+      let compactRel = RELATIONSHIPS[0];
 
       if (params.has('rel')) {
         const found = RELATIONSHIPS.find((item) => item.id === params.get('rel'));
-        if (found) setRelationship(found);
+        if (found) {
+          compactRel = found;
+          setRelationship(found);
+        }
       }
       if (params.has('l')) {
         setLanguage(params.get('l') as Language);
@@ -104,7 +116,7 @@ export default function HomePage() {
       }
       if (params.has('w')) {
         const idx = parseInt(params.get('w') || '0', 10);
-        const curRel = RELATIONSHIPS.find((item) => item.id === (params.get('rel') || 'mother')) || RELATIONSHIPS[0];
+        const curRel = compactRel;
         const wishes = (params.get('l') || 'vi') === 'vi' ? curRel.wishesVi : curRel.wishesEn;
         if (!isNaN(idx) && wishes[idx]) {
           setMessage(wishes[idx]);
@@ -115,7 +127,11 @@ export default function HomePage() {
 
       setTimeout(async () => {
         if (cardRef.current) {
-          const canvas = await html2canvas(cardRef.current, { scale: 2, backgroundColor: null });
+          const canvas = await html2canvas(cardRef.current, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: compactRel.bgColor || '#ffffff',
+          });
           setGeneratedImageUrl(canvas.toDataURL('image/png'));
           setIsViewCardModalOpen(true);
         }
@@ -215,7 +231,7 @@ export default function HomePage() {
       const canvas = await html2canvas(cardRef.current, {
         scale: 2.5,
         useCORS: true,
-        backgroundColor: null,
+        backgroundColor: relationship.bgColor || '#ffffff',
         logging: false,
       });
 

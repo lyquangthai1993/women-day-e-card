@@ -9,6 +9,7 @@ export const RELATIONSHIPS: RelationshipTheme[] = [
     flowerVi: 'Hoa Mẫu Đơn',
     flowerEn: 'Pink Peony',
     bgClass: 'bg-[#fdf2f8]', // Hồng ấm áp
+    bgColor: '#fdf2f8',
     titleColor: 'text-pink-900',
     bodyColor: 'text-pink-950',
     senderColor: 'text-pink-800',
@@ -39,6 +40,7 @@ export const RELATIONSHIPS: RelationshipTheme[] = [
     flowerVi: 'Hoa Hồng Đỏ',
     flowerEn: 'Red Rose',
     bgClass: 'bg-[#fff1f2]', // Hồng đỏ nồng thắm
+    bgColor: '#fff1f2',
     titleColor: 'text-rose-900',
     bodyColor: 'text-rose-950',
     senderColor: 'text-rose-800',
@@ -69,6 +71,7 @@ export const RELATIONSHIPS: RelationshipTheme[] = [
     flowerVi: 'Hoa Anh Đào',
     flowerEn: 'Cherry Blossom',
     bgClass: 'bg-[#fff7ed]', // Anh đào hồng phấn
+    bgColor: '#fff7ed',
     titleColor: 'text-orange-950',
     bodyColor: 'text-stone-800',
     senderColor: 'text-rose-700',
@@ -99,6 +102,7 @@ export const RELATIONSHIPS: RelationshipTheme[] = [
     flowerVi: 'Cúc Họa Mi',
     flowerEn: 'Daisy',
     bgClass: 'bg-[#fefce8]', // Vàng kem ấm áp
+    bgColor: '#fefce8',
     titleColor: 'text-yellow-950',
     bodyColor: 'text-yellow-900',
     senderColor: 'text-amber-800',
@@ -129,6 +133,7 @@ export const RELATIONSHIPS: RelationshipTheme[] = [
     flowerVi: 'Hoa Lilac',
     flowerEn: 'Lilac',
     bgClass: 'bg-[#faf5ff]', // Tím lilac thanh nhã
+    bgColor: '#faf5ff',
     titleColor: 'text-purple-950',
     bodyColor: 'text-purple-900',
     senderColor: 'text-purple-700',
@@ -159,6 +164,7 @@ export const RELATIONSHIPS: RelationshipTheme[] = [
     flowerVi: 'Mao Lương San Hô',
     flowerEn: 'Ranunculus',
     bgClass: 'bg-[#fff5f5]', // San hô ngọt ngào
+    bgColor: '#fff5f5',
     titleColor: 'text-rose-950',
     bodyColor: 'text-rose-900',
     senderColor: 'text-rose-700',
@@ -189,6 +195,7 @@ export const RELATIONSHIPS: RelationshipTheme[] = [
     flowerVi: 'Hoa Trắng Thanh Khiết',
     flowerEn: 'White Lily',
     bgClass: 'bg-[#f8fafc]', // Trắng xám trang nhã
+    bgColor: '#f8fafc',
     titleColor: 'text-slate-800',
     bodyColor: 'text-slate-700',
     senderColor: 'text-slate-600',

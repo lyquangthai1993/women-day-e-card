@@ -8,6 +8,7 @@ export interface RelationshipTheme {
   flowerVi: string;
   flowerEn: string;
   bgClass: string;
+  bgColor: string;
   titleColor: string;
   bodyColor: string;
   senderColor: string;

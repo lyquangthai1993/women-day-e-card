@@ -33,6 +33,7 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
     <div
       ref={cardRef}
       id="cardCaptureArea"
+      style={{ backgroundColor: relationship.bgColor }}
       className={`relative w-full aspect-[4/5] rounded-2xl shadow-xl overflow-hidden p-6 flex flex-col justify-between transition-colors duration-500 card-border-gold ${relationship.bgClass}`}
     >
       {/* 4 Corner Botanical Ornaments */}
