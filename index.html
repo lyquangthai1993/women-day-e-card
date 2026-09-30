@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-full bg-slate-50">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Thiệp Chúc Mừng 20/10 - E-Card</title>
+  
+  <!-- Google Fonts: Cormorant Garamond (thiệp sang trọng) & Plus Jakarta Sans (UI mượt mà) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Alex+Brush&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            serif: ['"Cormorant Garamond"', 'serif'],
+            script: ['"Alex Brush"', 'cursive'],
+          },
+          colors: {
+            rose: {
+              50: '#fff1f2',
+              100: '#ffe4e6',
+              200: '#fecdd3',
+              500: '#f43f5e',
+              600: '#e11d48',
+              700: '#be123c',
+            },
+            gold: {
+              400: '#fbbf24',
+              500: '#d97706',
+              600: '#b45309',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- FingerprintJS v3 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3/dist/fp.min.js"></script>
+  
+  <!-- html2canvas CDN (Xuất ảnh thiệp sắc nét) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <!-- Canvas Confetti CDN (Hiệu ứng pháo hoa khi hoàn thành nhiệm vụ) -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    /* Chống giật trang trên mobile safari */
+    html, body {
+      -webkit-tap-highlight-color: transparent;
+      overscroll-behavior-y: none;
+    }
+
+    /* Hiệu ứng khung viền thiệp kim loại tinh tế */
+    .card-border-gold {
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      outline: 1px solid rgba(212, 175, 55, 0.25);
+      outline-offset: -7px;
+    }
+
+    /* Hoa văn góc thẻ thiệp dạng SVG */
+    .corner-decor {
+      position: absolute;
+      width: 70px;
+      height: 70px;
+      pointer-events: none;
+      opacity: 0.85;
+    }
+
+    /* Ticker animation */
+    @keyframes pulse-slow {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(1.03); }
+    }
+    .animate-pulse-slow {
+      animation: pulse-slow 3s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="min-h-full flex flex-col text-slate-800 antialiased selection:bg-rose-200">
+
+  <!-- ================= CẤU HÌNH GOOGLE SHEET API ================= -->
+  <script>
+    // Dán URL Web App Google Apps Script của bạn vào đây khi đã deploy
+    const GOOGLE_SHEET_API_URL = ""; 
+  </script>
+
+  <!-- Thanh thông báo trạng thái nhận kem nổi (nếu đã nhận hoặc đã có vé) -->
+  <div id="claimedBanner" class="hidden bg-gradient-to-r from-amber-500 via-rose-500 to-pink-500 text-white text-xs font-semibold py-2 px-4 shadow-sm flex items-center justify-between z-30 sticky top-0">
+    <div class="flex items-center space-x-2">
+      <span class="text-base">🍦</span>
+      <span id="claimedBannerText">Bạn đã có vé nhận kem tại quầy!</span>
+    </div>
+    <button onclick="openIceCreamModal()" class="bg-white/20 hover:bg-white/30 backdrop-blur-sm px-2.5 py-1 rounded-full text-white text-[11px] font-bold tracking-wide transition">
+      Xem vé
+    </button>
+  </div>
+
+  <!-- Header & Chuyển đổi ngôn ngữ -->
+  <header class="bg-white/80 backdrop-blur-md border-b border-rose-100 sticky top-0 z-20">
+    <div class="max-w-md mx-auto px-4 h-14 flex items-center justify-between">
+      <div class="flex items-center space-x-2">
+        <span class="text-xl">🌸</span>
+        <div>
+          <h1 class="font-serif font-bold text-lg text-rose-700 leading-tight">20 · 10 E-Card</h1>
+          <p class="text-[10px] text-slate-400 font-medium leading-none" id="subHeader">Trao gửi yêu thương</p>
+        </div>
+      </div>
+
+      <!-- Nút đổi ngôn ngữ Song ngữ VI/EN -->
+      <button id="langToggleBtn" onclick="toggleLanguage()" class="flex items-center space-x-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-semibold px-2.5 py-1.5 rounded-full transition">
+        <span id="langFlag">🇻🇳</span>
+        <span id="langLabel">VI / EN</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Banner thông điệp riêng tư (Theo yêu cầu HR: không lưu lén, tôn trọng riêng tư) -->
+  <div class="bg-rose-50/70 border-b border-rose-100 py-1.5 px-4 text-center">
+    <p class="text-[11px] text-rose-800" id="privacyNotice">
+      🔒 <strong>Riêng tư tuyệt đối:</strong> Thiệp tạo trực tiếp trên máy của bạn.
+    </p>
+  </div>
+
+  <!-- Nội dung chính (Mobile First Container) -->
+  <main class="flex-1 max-w-md mx-auto w-full px-4 py-5 space-y-6">
+    
+    <!-- BƯỚC 1: CHỌN MỐI QUAN HỆ (Hoa văn & Theme tương ứng) -->
+    <section>
+      <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2.5" id="labelRelationship">
+        1. Người phụ nữ bạn muốn gửi gắm:
+      </label>
+      <div class="grid grid-cols-3 sm:grid-cols-4 gap-2" id="relationshipGrid">
+        <!-- Render bằng Javascript -->
+      </div>
+    </section>
+
+    <!-- BƯỚC 2: NHẬP TÊN NGƯỜI NHẬN & NGƯỜI GỬI -->
+    <section class="space-y-3 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+      <div>
+        <label class="block text-xs font-bold text-slate-600 mb-1" id="labelReceiverName">
+          Tên người nhận (ví dụ: Mẹ yêu, Chị Mai, Em Thảo...):
+        </label>
+        <input type="text" id="receiverNameInput" maxlength="40" 
+          placeholder="Gửi đến ai đó..." 
+          class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition bg-slate-50/50">
+      </div>
+
+      <!-- GỢI Ý CÂU CHÚC NHANH (Tap to insert) -->
+      <div>
+        <div class="flex items-center justify-between mb-1.5">
+          <label class="text-xs font-bold text-slate-600" id="labelSuggestions">
+            Gợi ý lời chúc (Chạm để điền nhanh):
+          </label>
+          <span class="text-[10px] text-rose-500 font-medium" id="hintTap">Chạm để chọn</span>
+        </div>
+        <div class="flex space-x-2 overflow-x-auto pb-2 scrollbar-none" id="suggestionsContainer">
+          <!-- Render câu chúc bằng JS -->
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-600 mb-1" id="labelMessage">
+          Lời nhắn chân thành từ bạn:
+        </label>
+        <textarea id="messageInput" rows="3" maxlength="300"
+          placeholder="Viết những điều bạn chưa kịp nói..." 
+          class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition bg-slate-50/50 resize-none"></textarea>
+        <div class="text-right text-[10px] text-slate-400" id="charCount">0/300</div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-600 mb-1" id="labelSenderName">
+          Tên người gửi (hoặc để trống nếu gửi ẩn danh):
+        </label>
+        <input type="text" id="senderNameInput" maxlength="35"
+          placeholder="Tên của bạn..." 
+          class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition bg-slate-50/50">
+      </div>
+    </section>
+
+    <!-- BƯỚC 3: LIVE PREVIEW TẤM THIỆP -->
+    <section>
+      <div class="flex items-center justify-between mb-2">
+        <label class="text-xs font-bold text-slate-700 uppercase tracking-wider" id="labelPreview">
+          2. Xem trước tấm thiệp của bạn:
+        </label>
+        <span class="text-[11px] text-slate-400" id="livePreviewHint">Cập nhật theo thời gian thực</span>
+      </div>
+
+      <!-- KHUNG THIỆP ĐỂ RENDER VÀ XUẤT ẢNH -->
+      <div id="cardCaptureArea" class="relative w-full aspect-[4/5] rounded-2xl shadow-xl overflow-hidden p-6 flex flex-col justify-between transition-colors duration-500 card-border-gold">
+        
+        <!-- Hoa văn 4 góc (Botanical SVG watercolor) -->
+        <svg class="corner-decor top-2 left-2" viewBox="0 0 100 100" fill="none">
+          <path d="M10,80 Q20,30 80,10 M20,60 Q35,35 60,20 M15,40 Q40,40 40,15" stroke="currentColor" class="theme-flower-stroke" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="20" cy="30" r="10" fill="currentColor" class="theme-flower-petal" opacity="0.6"/>
+          <circle cx="35" cy="18" r="8" fill="currentColor" class="theme-flower-petal" opacity="0.5"/>
+          <circle cx="45" cy="35" r="9" fill="currentColor" class="theme-flower-petal" opacity="0.7"/>
+          <circle cx="30" cy="25" r="5" fill="#fef08a" opacity="0.9"/>
+        </svg>
+
+        <svg class="corner-decor top-2 right-2 transform scale-x-[-1]" viewBox="0 0 100 100" fill="none">
+          <path d="M10,80 Q20,30 80,10 M20,60 Q35,35 60,20 M15,40 Q40,40 40,15" stroke="currentColor" class="theme-flower-stroke" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="20" cy="30" r="10" fill="currentColor" class="theme-flower-petal" opacity="0.6"/>
+          <circle cx="35" cy="18" r="8" fill="currentColor" class="theme-flower-petal" opacity="0.5"/>
+          <circle cx="45" cy="35" r="9" fill="currentColor" class="theme-flower-petal" opacity="0.7"/>
+          <circle cx="30" cy="25" r="5" fill="#fef08a" opacity="0.9"/>
+        </svg>
+
+        <svg class="corner-decor bottom-2 left-2 transform scale-y-[-1]" viewBox="0 0 100 100" fill="none">
+          <path d="M10,80 Q20,30 80,10 M20,60 Q35,35 60,20 M15,40 Q40,40 40,15" stroke="currentColor" class="theme-flower-stroke" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="20" cy="30" r="10" fill="currentColor" class="theme-flower-petal" opacity="0.6"/>
+          <circle cx="35" cy="18" r="8" fill="currentColor" class="theme-flower-petal" opacity="0.5"/>
+          <circle cx="45" cy="35" r="9" fill="currentColor" class="theme-flower-petal" opacity="0.7"/>
+          <circle cx="30" cy="25" r="5" fill="#fef08a" opacity="0.9"/>
+        </svg>
+
+        <svg class="corner-decor bottom-2 right-2 transform scale-[-1]" viewBox="0 0 100 100" fill="none">
+          <path d="M10,80 Q20,30 80,10 M20,60 Q35,35 60,20 M15,40 Q40,40 40,15" stroke="currentColor" class="theme-flower-stroke" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="20" cy="30" r="10" fill="currentColor" class="theme-flower-petal" opacity="0.6"/>
+          <circle cx="35" cy="18" r="8" fill="currentColor" class="theme-flower-petal" opacity="0.5"/>
+          <circle cx="45" cy="35" r="9" fill="currentColor" class="theme-flower-petal" opacity="0.7"/>
+          <circle cx="30" cy="25" r="5" fill="#fef08a" opacity="0.9"/>
+        </svg>
+
+        <!-- Đầu thiệp: Lời đề tặng -->
+        <div class="relative z-10 text-center pt-3">
+          <p class="font-script text-2xl text-rose-700/80 mb-0.5 tracking-wide" id="previewSalutation">Thương gửi</p>
+          <h2 class="font-serif font-bold text-2xl tracking-wide theme-title-text px-4 break-words leading-tight" id="previewReceiver">
+            Người Phụ Nữ Của Tôi
+          </h2>
+          <div class="w-12 h-[1px] bg-amber-400/60 mx-auto mt-2.5"></div>
+        </div>
+
+        <!-- Thân thiệp: Lời chúc -->
+        <div class="relative z-10 px-4 py-3 my-auto text-center flex items-center justify-center">
+          <p class="font-serif text-lg leading-relaxed italic theme-body-text break-words line-clamp-6" id="previewMessage">
+            "Cảm ơn vì đã luôn là ánh sáng ấm áp, mang lại nụ cười và sự dịu dàng cho cuộc sống này. Chúc bạn một ngày 20/10 thật bình an và hạnh phúc."
+          </p>
+        </div>
+
+        <!-- Chân thiệp: Người gửi & Ngày 20.10 -->
+        <div class="relative z-10 text-center pb-2">
+          <div class="w-12 h-[1px] bg-amber-400/60 mx-auto mb-2"></div>
+          <p class="text-xs uppercase tracking-widest font-sans font-semibold theme-sender-text" id="previewSender">
+            Từ: Một người thầm trân quý
+          </p>
+          <p class="font-serif text-[11px] tracking-[0.3em] text-slate-400 mt-1">
+            20 · 10 · 2026
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- BƯỚC 4: 2 NÚT HÀNH ĐỘNG CHÍNH (THEO YÊU CẦU HR) -->
+    <section class="space-y-2.5 pt-2">
+      <!-- Nút 1: Chia sẻ (Mở link thiệp / gửi qua Zalo/Messenger) -->
+      <button onclick="handleShareCard()" class="w-full bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-700 hover:to-pink-700 text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg shadow-rose-200 flex items-center justify-center space-x-2 active:scale-[0.98] transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+        </svg>
+        <span class="text-sm tracking-wide" id="btnShareText">Chia sẻ thiệp</span>
+      </button>
+
+      <!-- Nút 2: Lưu thành file ảnh -->
+      <button onclick="handleSaveImage()" class="w-full bg-white hover:bg-slate-50 text-slate-700 font-bold py-3.5 px-6 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-center space-x-2 active:scale-[0.98] transition">
+        <svg class="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+        </svg>
+        <span class="text-sm tracking-wide" id="btnSaveImgText">Lưu thành file ảnh</span>
+      </button>
+    </section>
+
+    <!-- Footer thông tin thiết bị (Fingerprint ID ẩn danh) -->
+    <footer class="pt-4 pb-6 text-center text-[11px] text-slate-400 space-y-1">
+      <p id="footerMadeWith">Được tạo với tấm lòng dành cho ngày Phụ nữ Việt Nam 20/10</p>
+      <p class="font-mono text-[10px] text-slate-300">Device ID: <span id="deviceFingerprintLabel">Đang nhận diện...</span></p>
+    </footer>
+  </main>
+
+  <!-- ================= MODAL 1: HOÀN THÀNH NHIỆM VỤ & VÉ NHẬN KEM (MISSION COMPLETE) ================= -->
+  <div id="iceCreamModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white max-w-sm w-full rounded-3xl p-6 shadow-2xl text-center space-y-5 animate-scale-up relative overflow-hidden">
+      
+      <!-- Pháo hoa / Decor icon -->
+      <div class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto text-3xl shadow-inner animate-pulse-slow">
+        🍦
+      </div>
+
+      <div>
+        <span class="inline-block bg-rose-100 text-rose-700 text-[11px] font-bold px-3 py-1 rounded-full mb-2 uppercase tracking-wider" id="modalTag">
+          Nhiệm vụ hoàn thành!
+        </span>
+        <h3 class="font-serif font-bold text-2xl text-slate-800" id="modalTitle">
+          Giờ thì đi lấy kem thôi!
+        </h3>
+        <p class="text-xs text-slate-500 mt-1 leading-relaxed" id="modalDesc">
+          Lời nhắn đã trên đường đến người bạn thương. Hãy đưa màn hình này cho ban lãnh đạo tại quầy kem nhé!
+        </p>
+      </div>
+
+      <!-- TẤM VÉ ĐIỆN TỬ (DIGITAL ICE CREAM PASS) -->
+      <div id="ticketContainer" class="bg-gradient-to-br from-amber-50 to-pink-50 border-2 border-dashed border-rose-300 rounded-2xl p-4 text-left space-y-2 relative">
+        <div class="flex justify-between items-center border-b border-rose-200/60 pb-2">
+          <span class="text-[10px] font-bold text-rose-600 uppercase tracking-widest">ICE CREAM PASS</span>
+          <span class="text-[10px] font-mono font-bold text-slate-500" id="ticketLiveTime">10:15:20 AM</span>
+        </div>
+
+        <div class="flex items-center justify-between pt-1">
+          <div>
+            <div class="text-[10px] text-slate-400">Mã nhận kem</div>
+            <div class="font-mono font-bold text-xl text-rose-700 tracking-wider" id="ticketCode">#ICE-2010</div>
+          </div>
+          <div class="text-right">
+            <div class="text-[10px] text-slate-400">Trạng thái</div>
+            <div id="ticketStatusBadge" class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700">
+              ● SẴN SÀNG
+            </div>
+          </div>
+        </div>
+
+        <div class="text-[10px] text-slate-400 font-mono truncate pt-1 border-t border-rose-200/60">
+          Device: <span id="ticketDevice">fp_loading</span>
+        </div>
+      </div>
+
+      <!-- Nút xác nhận tại quầy kem -->
+      <div class="space-y-2 pt-1">
+        <button id="btnClaimIceCream" onclick="claimIceCreamAction()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-xl text-xs tracking-wide transition shadow-sm">
+          Xác nhận đã nhận kem tại quầy
+        </button>
+        <button onclick="closeIceCreamModal()" class="w-full text-slate-400 hover:text-slate-600 text-xs py-1.5 transition">
+          Đóng và quay lại
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL 2: XEM LẠI THIỆP ĐÃ LƯU HOẶC NHẬN TỪ LINK ================= -->
+  <div id="viewCardModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white max-w-sm w-full rounded-3xl p-5 shadow-2xl space-y-4 max-h-[90vh] flex flex-col">
+      <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+        <h3 class="font-serif font-bold text-lg text-rose-700" id="viewModalTitle">Tấm thiệp dành tặng bạn</h3>
+        <button onclick="closeViewCardModal()" class="text-slate-400 hover:text-slate-600 p-1">✕</button>
+      </div>
+      
+      <div class="flex-1 overflow-auto flex items-center justify-center">
+        <img id="generatedCardImage" class="w-full rounded-xl shadow-md border border-slate-200" alt="Thiệp 20/10">
+      </div>
+
+      <div class="space-y-2">
+        <p class="text-[11px] text-center text-slate-400" id="longPressHint">
+          💡 Gợi ý: Nhấn giữ vào ảnh để lưu trực tiếp vào thư viện ảnh điện thoại.
+        </p>
+        <div class="flex space-x-2">
+          <a id="downloadImageLink" download="thiep-20-10.png" class="flex-1 bg-rose-600 text-white text-center font-bold py-2.5 rounded-xl text-xs flex items-center justify-center">
+            Tải ảnh về máy
+          </a>
+          <button onclick="openCreateOwnCard()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl text-xs">
+            Tạo thiệp của bạn
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast thông báo nhỏ -->
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900/90 text-white text-xs font-medium px-4 py-2.5 rounded-full shadow-lg transition-all duration-300 opacity-0 pointer-events-none z-50">
+    Thông báo
+  </div>
+
+  <!-- ================= JAVASCRIPT LOGIC ================= -->
+  <script>
+    // --- 1. DỮ LIỆU ĐA NGÔN NGỮ & MỐI QUAN HỆ THEO YÊU CẦU HR ---
+    const RELATIONSHIPS = [
+      {
+        id: 'mother',
+        icon: '🌺',
+        nameVi: 'Mẹ',
+        nameEn: 'Mother',
+        flowerVi: 'Hoa Mẫu Đơn',
+        flowerEn: 'Pink Peony',
+        bgClass: 'bg-[#fdf2f8]', // Hồng ấm áp
+        titleColor: 'text-pink-900',
+        bodyColor: 'text-pink-950',
+        senderColor: 'text-pink-800',
+        strokeColor: '#f472b6',
+        petalColor: '#fbcfe8',
+        defaultReceiverVi: 'Mẹ Yêu Quý',
+        defaultReceiverEn: 'Dearest Mother',
+        defaultSalutationVi: 'Kính gửi',
+        defaultSalutationEn: 'To My Loving',
+        wishesVi: [
+          "Cảm ơn mẹ vì cả một đời hy sinh và luôn là chỗ dựa vững chãi nhất của con. Chúc mẹ 20/10 nhiều sức khỏe và luôn an yên.",
+          "Điều con ngưỡng mộ nhất ở mẹ là sự dịu dàng và kiên cường. Mong mẹ mỗi ngày đều tìm thấy niềm vui bình dị.",
+          "Có một điều con ít khi nói thành lời: Con yêu mẹ rất nhiều và cảm ơn vì đã là mẹ của con.",
+          "Chúc mẹ ngày 20/10 rạng rỡ như những đóa hoa mẫu đơn, luôn vui vẻ và hạnh phúc bên con cháu."
+        ],
+        wishesEn: [
+          "Thank you, Mom, for your endless love, sacrifices, and warmth. Wishing you a peaceful and joyful Vietnamese Women's Day.",
+          "What I admire most about you is your graceful strength. May every day bring you health and gentle happiness.",
+          "Something I don't say often enough: I love you deeply and am eternally grateful to be your child.",
+          "Wishing you a day as blooming and beautiful as pink peonies. Always stay cheerful and healthy!"
+        ]
+      },
+      {
+        id: 'wife',
+        icon: '🌹',
+        nameVi: 'Vợ',
+        nameEn: 'Wife',
+        flowerVi: 'Hoa Hồng Đỏ',
+        flowerEn: 'Red Rose',
+        bgClass: 'bg-[#fff1f2]', // Hồng đỏ nồng thắm
+        titleColor: 'text-rose-900',
+        bodyColor: 'text-rose-950',
+        senderColor: 'text-rose-800',
+        strokeColor: '#f43f5e',
+        petalColor: '#fecdd3',
+        defaultReceiverVi: 'Vợ Yêu Của Anh',
+        defaultReceiverEn: 'My Beloved Wife',
+        defaultSalutationVi: 'Thương gửi',
+        defaultSalutationEn: 'With all my love to',
+        wishesVi: [
+          "Cảm ơn em vì đã cùng anh vun vén mái ấm và luôn bên cạnh anh qua mọi thăng trầm. 20/10 chúc vợ luôn xinh đẹp và hạnh phúc!",
+          "Nếu không có em, cuộc sống của anh chắc chắn sẽ rất tẻ nhạt. Cảm ơn vì em đã là người bạn đồng hành tuyệt vời nhất.",
+          "Hôm nay anh chỉ muốn nói với em rằng: Với anh, nụ cười của em luôn là điều quý giá nhất.",
+          "Chúc bà xã 20/10 ngập tràn niềm vui, bớt lo toan và luôn cảm nhận được tình yêu thương của anh."
+        ],
+        wishesEn: [
+          "Thank you for building our home with love and being my constant anchor. Happy Women's Day to my wonderful wife!",
+          "Life would be dull without you by my side. Thank you for being the most loving partner I could ever ask for.",
+          "Today I just want to remind you: Your smile is, and will always be, my greatest treasure.",
+          "Wishing my dearest wife a day full of sweet moments, laughter, and relaxation."
+        ]
+      },
+      {
+        id: 'sister',
+        icon: '🌸',
+        nameVi: 'Chị / Em gái',
+        nameEn: 'Sister',
+        flowerVi: 'Hoa Anh Đào',
+        flowerEn: 'Cherry Blossom',
+        bgClass: 'bg-[#fff7ed]', // Anh đào hồng phấn
+        titleColor: 'text-orange-950',
+        bodyColor: 'text-stone-800',
+        senderColor: 'text-rose-700',
+        strokeColor: '#fb7185',
+        petalColor: '#fed7aa',
+        defaultReceiverVi: 'Chị / Em Gái',
+        defaultReceiverEn: 'My Dear Sister',
+        defaultSalutationVi: 'Thân gửi',
+        defaultSalutationEn: 'Dearest',
+        wishesVi: [
+          "Chúc người chị/em gái tuyệt vời luôn tự tin tỏa sáng và đạt được mọi ước mơ của mình nhé!",
+          "Cảm ơn vì đã luôn là nơi để chia sẻ và tíu tít đủ thứ chuyện trên đời. 20/10 vui vẻ và rực rỡ nha!",
+          "Chúc em/chị luôn giữ nụ cười tươi tắn trên môi và luôn được yêu thương trọn vẹn.",
+          "Mong mọi điều tốt lành, may mắn và hạnh phúc nhất sẽ đến với chị/em trong ngày hôm nay."
+        ],
+        wishesEn: [
+          "Wishing my amazing sister a vibrant day! Keep shining brightly and chasing your dreams.",
+          "Thank you for all the shared laughter and memories. Happy Vietnamese Women's Day!",
+          "May your smile stay radiant, and may you always be surrounded by love and kindness.",
+          "Sending warm hugs and wishing you endless success and joy!"
+        ]
+      },
+      {
+        id: 'friend',
+        icon: '🌼',
+        nameVi: 'Bạn thân',
+        nameEn: 'Best Friend',
+        flowerVi: 'Cúc Họa Mi',
+        flowerEn: 'Daisy',
+        bgClass: 'bg-[#fefce8]', // Vàng kem ấm áp
+        titleColor: 'text-yellow-950',
+        bodyColor: 'text-yellow-900',
+        senderColor: 'text-amber-800',
+        strokeColor: '#eab308',
+        petalColor: '#fef08a',
+        defaultReceiverVi: 'Bạn Thân Của Tôi',
+        defaultReceiverEn: 'My Best Friend',
+        defaultSalutationVi: 'Gửi bạn',
+        defaultSalutationEn: 'To My Buddy',
+        wishesVi: [
+          "Chúc bạn thân 20/10 luôn tràn đầy năng lượng, tiền vào như nước và sớm có người rước nha!",
+          "Cảm ơn bạn vì luôn lắng nghe và đồng hành những lúc vui buồn. 20/10 thật hạnh phúc nhé người bạn tuyệt vời!",
+          "Chúc bạn luôn xinh đẹp, tự tin làm chủ cuộc sống và luôn yêu thương chính mình.",
+          "Hôm nay xứng đáng nhận hoa, quà và thật nhiều niềm vui. Happy Women's Day!"
+        ],
+        wishesEn: [
+          "Happy Women's Day to my favorite partner in crime! Stay fabulous, rich, and cheerful!",
+          "Thanks for always being there through thick and thin. Have a truly wonderful 20/10!",
+          "Wishing you confidence, success, and tons of love. You deserve the best!",
+          "Go treat yourself to something nice today—you truly rock!"
+        ]
+      },
+      {
+        id: 'colleague',
+        icon: '💜',
+        nameVi: 'Đồng nghiệp',
+        nameEn: 'Colleague',
+        flowerVi: 'Hoa Lilac',
+        flowerEn: 'Lilac',
+        bgClass: 'bg-[#faf5ff]', // Tím lilac thanh nhã
+        titleColor: 'text-purple-950',
+        bodyColor: 'text-purple-900',
+        senderColor: 'text-purple-700',
+        strokeColor: '#a855f7',
+        petalColor: '#e9d5ff',
+        defaultReceiverVi: 'Chị / Em Đồng Nghiệp',
+        defaultReceiverEn: 'Dear Colleague',
+        defaultSalutationVi: 'Thân chúc',
+        defaultSalutationEn: 'Wishing',
+        wishesVi: [
+          "Cảm ơn bạn vì sự hợp tác và năng lượng tích cực luôn mang lại cho team. Chúc bạn 20/10 thật nhiều niềm vui!",
+          "Chúc đồng nghiệp tài năng công việc luôn thuận lợi, deadline luôn êm đẹp và luôn xinh tươi!",
+          "Rất may mắn vì được làm việc cùng một đồng nghiệp tận tâm và dễ thương như bạn. Chúc bạn 20/10 tuyệt vời!",
+          "Chúc toàn thể chị em đồng nghiệp ngày 20/10 ngập tràn hoa, quà và những lời chúc tốt đẹp nhất."
+        ],
+        wishesEn: [
+          "Thank you for your fantastic teamwork and positive energy. Happy Vietnamese Women's Day!",
+          "Wishing you great success, stress-free deadlines, and continued growth in everything you do!",
+          "It's a pleasure collaborating with someone as dedicated and inspiring as you. Have a great 20/10!",
+          "Wishing all our female colleagues a joyful day filled with flowers and appreciation!"
+        ]
+      },
+      {
+        id: 'lover',
+        icon: '🧡',
+        nameVi: 'Người yêu',
+        nameEn: 'Girlfriend',
+        flowerVi: 'Mao Lương San Hô',
+        flowerEn: 'Ranunculus',
+        bgClass: 'bg-[#fff5f5]', // San hô ngọt ngào
+        titleColor: 'text-rose-950',
+        bodyColor: 'text-rose-900',
+        senderColor: 'text-rose-700',
+        strokeColor: '#fb923c',
+        petalColor: '#fed7aa',
+        defaultReceiverVi: 'Em Yêu Của Anh',
+        defaultReceiverEn: 'My Sweetheart',
+        defaultSalutationVi: 'Dành tặng',
+        defaultSalutationEn: 'Forever with',
+        wishesVi: [
+          "Chúc cô gái của anh ngày 20/10 luôn nở nụ cười rạng rỡ nhất. Yêu em nhiều hơn mỗi ngày!",
+          "Cảm ơn em đã đến và mang theo muôn vàn ấm áp vào thế giới của anh. 20/10 ngọt ngào nha em!",
+          "Anh không giỏi nói lời hoa mỹ, chỉ mong em luôn an yên và hạnh phúc khi ở bên anh.",
+          "Hôm nay hãy để anh lo tất cả nhé. Chúc em một ngày 20/10 ngập tràn sự cưng chiều!"
+        ],
+        wishesEn: [
+          "Wishing the sweetest girl a very Happy Women's Day! You bring so much sunshine into my world.",
+          "Thank you for being my favorite person and best blessing. Loving you more each day!",
+          "I might not always find poetic words, but I promise to always care for you and make you smile.",
+          "Today is your day to be pampered! Happy 20/10 my love."
+        ]
+      },
+      {
+        id: 'memorial',
+        icon: '🕊️',
+        nameVi: 'Người tôi muốn nhớ về',
+        nameEn: 'In Loving Memory',
+        flowerVi: 'Hoa Trắng Thanh Khiết',
+        flowerEn: 'White Lily',
+        bgClass: 'bg-[#f8fafc]', // Trắng xám trang nhã
+        titleColor: 'text-slate-800',
+        bodyColor: 'text-slate-700',
+        senderColor: 'text-slate-600',
+        strokeColor: '#94a3b8',
+        petalColor: '#e2e8f0',
+        defaultReceiverVi: 'Người Phụ Nữ Trong Tim Tôi',
+        defaultReceiverEn: 'Forever In My Heart',
+        defaultSalutationVi: 'Tưởng nhớ',
+        defaultSalutationEn: 'Remembering',
+        wishesVi: [
+          "Dù ở đâu, hình bóng và sự ấm áp của người vẫn luôn sống mãi trong trái tim và từng ký ức của con/tôi.",
+          "Cảm ơn vì những yêu thương dịu dàng đã từng để lại. Hôm nay con nhớ về người với lòng biết ơn vô hạn.",
+          "Gửi một lời tri ân bình yên đến nơi xa. Người sẽ luôn là ngọn hải đăng soi sáng cho con.",
+          "Nhớ về người với tất cả sự kính trọng, yêu thương và lòng trân quý sâu sắc nhất."
+        ],
+        wishesEn: [
+          "Wherever you are, your warmth and gentle presence will forever stay alive in my heart.",
+          "Thank you for all the precious love you left behind. Remembering you today with endless gratitude.",
+          "Sending peaceful thoughts to you. You remain my guiding light always.",
+          "Cherishing your memory today with all my love, respect, and admiration."
+        ]
+      }
+    ];
+
+    // Từ điển Song ngữ
+    const I18N = {
+      vi: {
+        subHeader: "Trao gửi yêu thương",
+        privacyNotice: "🔒 <strong>Riêng tư tuyệt đối:</strong> Thiệp tạo trực tiếp trên máy của bạn.",
+        labelRelationship: "1. Người phụ nữ bạn muốn gửi gắm:",
+        labelReceiverName: "Tên người nhận (ví dụ: Mẹ yêu, Chị Mai, Em Thảo...):",
+        receiverPlaceholder: "Gửi đến ai đó...",
+        labelSuggestions: "Gợi ý lời chúc (Chạm để điền nhanh):",
+        hintTap: "Chạm để chọn",
+        labelMessage: "Lời nhắn chân thành từ bạn:",
+        messagePlaceholder: "Viết những điều bạn chưa kịp nói...",
+        labelSenderName: "Tên người gửi (hoặc để trống nếu gửi ẩn danh):",
+        senderPlaceholder: "Tên của bạn...",
+        labelPreview: "2. Xem trước tấm thiệp của bạn:",
+        livePreviewHint: "Cập nhật theo thời gian thực",
+        btnShareText: "Chia sẻ thiệp",
+        btnSaveImgText: "Lưu thành file ảnh",
+        footerMadeWith: "Được tạo với tấm lòng dành cho ngày Phụ nữ Việt Nam 20/10",
+        claimedBannerText: "Bạn đã có vé nhận kem tại quầy!",
+        modalTag: "Nhiệm vụ hoàn thành!",
+        modalTitle: "Giờ thì đi lấy kem thôi! 🍦",
+        modalDesc: "Lời nhắn đã trên đường đến người bạn thương. Hãy đưa màn hình này cho ban lãnh đạo tại quầy kem nhé!",
+        btnClaim: "Xác nhận đã nhận kem tại quầy",
+        btnClaimed: "ĐÃ NHẬN KEM 🍦 (XONG)",
+        btnClose: "Đóng và quay lại",
+        viewModalTitle: "Tấm thiệp dành tặng bạn",
+        longPressHint: "💡 Gợi ý: Nhấn giữ vào ảnh để lưu trực tiếp vào thư viện ảnh điện thoại.",
+        btnDownload: "Tải ảnh về máy",
+        btnCreateOwn: "Tạo thiệp của bạn",
+        defaultAnonymous: "Từ: Một người thầm trân quý",
+        toastCopied: "Đã sao chép liên kết thiệp vào bộ nhớ tạm!",
+        toastImageSaved: "Ảnh thiệp đã được tạo thành công!",
+        toastClaimed: "Chúc mừng bạn đã nhận kem thành công!"
+      },
+      en: {
+        subHeader: "Send Love & Gratitude",
+        privacyNotice: "🔒 <strong>Strictly Private:</strong> Generated locally on your device.",
+        labelRelationship: "1. The special woman in your story:",
+        labelReceiverName: "Recipient's Name (e.g. Mom, Sarah, Sister...):",
+        receiverPlaceholder: "To someone special...",
+        labelSuggestions: "Inspiration wishes (Tap to insert):",
+        hintTap: "Tap to insert",
+        labelMessage: "Your heartfelt message:",
+        messagePlaceholder: "Words you haven't said yet...",
+        labelSenderName: "Sender's Name (or leave blank for anonymous):",
+        senderPlaceholder: "Your name...",
+        labelPreview: "2. Live Card Preview:",
+        livePreviewHint: "Updates in real-time",
+        btnShareText: "Share E-Card",
+        btnSaveImgText: "Save as Image",
+        footerMadeWith: "Crafted with love for Vietnamese Women's Day 20/10",
+        claimedBannerText: "You have an ice cream ticket ready!",
+        modalTag: "Mission Complete!",
+        modalTitle: "Now Go Pick Up Your Ice Cream! 🍦",
+        modalDesc: "Your card is on its way to your loved one. Show this pass to the leadership team at the ice cream cart!",
+        btnClaim: "Confirm Ice Cream Claimed",
+        btnClaimed: "ICE CREAM CLAIMED 🍦 (DONE)",
+        btnClose: "Close & Return",
+        viewModalTitle: "An E-Card For You",
+        longPressHint: "💡 Tip: Long press the image to save directly to your photos.",
+        btnDownload: "Download Image",
+        btnCreateOwn: "Create Your Own Card",
+        defaultAnonymous: "From: Someone who cherishes you",
+        toastCopied: "Card link copied to clipboard!",
+        toastImageSaved: "Card image rendered successfully!",
+        toastClaimed: "Ice cream claimed successfully! Enjoy!"
+      }
+    };
+
+    // --- 2. BIẾN TOÀN CỤC & KHỞI TẠO STATE ---
+    let currentLang = 'vi';
+    let currentRelationship = RELATIONSHIPS[0];
+    let deviceVisitorId = 'fp_generating...';
+    let isClaimed = false;
+
+    // --- 3. KHỞI TẠO FINGERPRINTJS (Nhận diện thiết bị không cần login) ---
+    async function initDeviceFingerprint() {
+      try {
+        // Fallback LocalStorage UUID nếu mạng chậm
+        let localId = localStorage.getItem('ecard_device_uuid');
+        if (!localId) {
+          localId = 'dev_' + Math.random().toString(36).substring(2, 9);
+          localStorage.setItem('ecard_device_uuid', localId);
+        }
+
+        // Tải FingerprintJS
+        if (window.FingerprintJS) {
+          const fp = await FingerprintJS.load();
+          const result = await fp.get();
+          deviceVisitorId = result.visitorId || localId;
+        } else {
+          deviceVisitorId = localId;
+        }
+
+        document.getElementById('deviceFingerprintLabel').innerText = deviceVisitorId.substring(0, 10) + '...';
+        document.getElementById('ticketDevice').innerText = deviceVisitorId.substring(0, 12);
+        
+        // Tạo mã vé kem từ 4 số cuối của fingerprint
+        const ticketCodeSuffix = deviceVisitorId.slice(-4).toUpperCase();
+        document.getElementById('ticketCode').innerText = `#ICE-2010-${ticketCodeSuffix}`;
+
+        // Kiểm tra xem thiết bị này đã nhận kem chưa
+        checkClaimStatus();
+      } catch (err) {
+        console.warn("Fingerprint init error:", err);
+        deviceVisitorId = 'dev_' + Math.random().toString(36).substring(2, 8);
+        document.getElementById('deviceFingerprintLabel').innerText = deviceVisitorId;
+      }
+    }
+
+    function checkClaimStatus() {
+      const claimedKey = 'icecream_claimed_' + deviceVisitorId;
+      if (localStorage.getItem(claimedKey) === 'true') {
+        isClaimed = true;
+        document.getElementById('claimedBanner').classList.remove('hidden');
+        updateTicketUIClaimed();
+      }
+    }
+
+    function updateTicketUIClaimed() {
+      const badge = document.getElementById('ticketStatusBadge');
+      badge.className = "inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-200 text-slate-600";
+      badge.innerText = "✓ ĐÃ NHẬN KEM";
+
+      const btn = document.getElementById('btnClaimIceCream');
+      btn.innerText = I18N[currentLang].btnClaimed;
+      btn.disabled = true;
+      btn.className = "w-full bg-slate-300 text-slate-500 font-bold py-3 px-4 rounded-xl text-xs cursor-not-allowed";
+    }
+
+    // --- 4. RENDER GIAO DIỆN & SỰ KIỆN ---
+    function renderRelationships() {
+      const container = document.getElementById('relationshipGrid');
+      container.innerHTML = '';
+
+      RELATIONSHIPS.forEach((rel) => {
+        const isSelected = rel.id === currentRelationship.id;
+        const name = currentLang === 'vi' ? rel.nameVi : rel.nameEn;
+        
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `flex flex-col items-center justify-center p-2 rounded-xl border text-center transition ${
+          isSelected 
+            ? 'bg-rose-50 border-rose-400 ring-2 ring-rose-200 shadow-sm' 
+            : 'bg-white border-slate-200 hover:border-rose-200 text-slate-600'
+        }`;
+        
+        btn.innerHTML = `
+          <span class="text-xl mb-1">${rel.icon}</span>
+          <span class="text-[11px] font-bold leading-tight ${isSelected ? 'text-rose-700' : 'text-slate-700'}">${name}</span>
+        `;
+
+        btn.onclick = () => selectRelationship(rel);
+        container.appendChild(btn);
+      });
+    }
+
+    function selectRelationship(rel) {
+      currentRelationship = rel;
+      renderRelationships();
+      renderSuggestions();
+      updateCardTheme();
+      updatePreview();
+    }
+
+    function renderSuggestions() {
+      const container = document.getElementById('suggestionsContainer');
+      container.innerHTML = '';
+      const wishes = currentLang === 'vi' ? currentRelationship.wishesVi : currentRelationship.wishesEn;
+
+      wishes.forEach((wish) => {
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = "flex-shrink-0 max-w-[240px] text-left text-xs bg-slate-50 hover:bg-rose-50 hover:text-rose-700 border border-slate-200 hover:border-rose-300 rounded-xl px-3 py-2 transition leading-snug line-clamp-2";
+        chip.innerText = wish;
+        chip.onclick = () => {
+          document.getElementById('messageInput').value = wish;
+          updatePreview();
+        };
+        container.appendChild(chip);
+      });
+    }
+
+    function updateCardTheme() {
+      const card = document.getElementById('cardCaptureArea');
+      
+      // Đổi màu nền thẻ
+      card.className = `relative w-full aspect-[4/5] rounded-2xl shadow-xl overflow-hidden p-6 flex flex-col justify-between transition-colors duration-500 card-border-gold ${currentRelationship.bgClass}`;
+      
+      // Đổi màu chữ theo quan hệ
+      const titleEl = document.getElementById('previewReceiver');
+      titleEl.className = `font-serif font-bold text-2xl tracking-wide px-4 break-words leading-tight ${currentRelationship.titleColor}`;
+      
+      const bodyEl = document.getElementById('previewMessage');
+      bodyEl.className = `font-serif text-lg leading-relaxed italic break-words line-clamp-6 ${currentRelationship.bodyColor}`;
+      
+      const senderEl = document.getElementById('previewSender');
+      senderEl.className = `text-xs uppercase tracking-widest font-sans font-semibold ${currentRelationship.senderColor}`;
+
+      // Đổi màu hoa văn SVG 4 góc
+      document.querySelectorAll('.theme-flower-stroke').forEach(el => el.setAttribute('stroke', currentRelationship.strokeColor));
+      document.querySelectorAll('.theme-flower-petal').forEach(el => el.setAttribute('fill', currentRelationship.petalColor));
+    }
+
+    function updatePreview() {
+      const receiverInput = document.getElementById('receiverNameInput').value.trim();
+      const messageInput = document.getElementById('messageInput').value.trim();
+      const senderInput = document.getElementById('senderNameInput').value.trim();
+
+      // Cập nhật người nhận
+      const defaultReceiver = currentLang === 'vi' ? currentRelationship.defaultReceiverVi : currentRelationship.defaultReceiverEn;
+      document.getElementById('previewReceiver').innerText = receiverInput || defaultReceiver;
+
+      // Cập nhật lời chúc
+      const defaultMessage = currentLang === 'vi' ? currentRelationship.wishesVi[0] : currentRelationship.wishesEn[0];
+      document.getElementById('previewMessage').innerText = messageInput ? `"${messageInput}"` : `"${defaultMessage}"`;
+
+      // Cập nhật người gửi
+      const defaultSender = I18N[currentLang].defaultAnonymous;
+      document.getElementById('previewSender').innerText = senderInput ? (currentLang === 'vi' ? `Từ: ${senderInput}` : `From: ${senderInput}`) : defaultSender;
+
+      // Cập nhật lời đề tặng
+      const defaultSalutation = currentLang === 'vi' ? currentRelationship.defaultSalutationVi : currentRelationship.defaultSalutationEn;
+      document.getElementById('previewSalutation').innerText = defaultSalutation;
+
+      // Đếm ký tự
+      document.getElementById('charCount').innerText = `${document.getElementById('messageInput').value.length}/300`;
+    }
+
+    // --- 5. CHUYỂN ĐỔI NGÔN NGỮ (VI/EN) ---
+    function toggleLanguage() {
+      currentLang = currentLang === 'vi' ? 'en' : 'vi';
+      applyLanguage();
+    }
+
+    function applyLanguage() {
+      const t = I18N[currentLang];
+      
+      document.getElementById('langFlag').innerText = currentLang === 'vi' ? '🇻🇳' : '🇬🇧';
+      document.getElementById('langLabel').innerText = currentLang === 'vi' ? 'VI / EN' : 'EN / VI';
+      
+      document.getElementById('subHeader').innerText = t.subHeader;
+      document.getElementById('privacyNotice').innerHTML = t.privacyNotice;
+      document.getElementById('labelRelationship').innerText = t.labelRelationship;
+      document.getElementById('labelReceiverName').innerText = t.labelReceiverName;
+      document.getElementById('receiverNameInput').placeholder = t.receiverPlaceholder;
+      document.getElementById('labelSuggestions').innerText = t.labelSuggestions;
+      document.getElementById('hintTap').innerText = t.hintTap;
+      document.getElementById('labelMessage').innerText = t.labelMessage;
+      document.getElementById('messageInput').placeholder = t.messagePlaceholder;
+      document.getElementById('labelSenderName').innerText = t.labelSenderName;
+      document.getElementById('senderNameInput').placeholder = t.senderPlaceholder;
+      document.getElementById('labelPreview').innerText = t.labelPreview;
+      document.getElementById('livePreviewHint').innerText = t.livePreviewHint;
+      document.getElementById('btnShareText').innerText = t.btnShareText;
+      document.getElementById('btnSaveImgText').innerText = t.btnSaveImgText;
+      document.getElementById('footerMadeWith').innerText = t.footerMadeWith;
+      document.getElementById('claimedBannerText').innerText = t.claimedBannerText;
+      document.getElementById('modalTag').innerText = t.modalTag;
+      document.getElementById('modalTitle').innerText = t.modalTitle;
+      document.getElementById('modalDesc').innerText = t.modalDesc;
+      document.getElementById('btnClaimIceCream').innerText = isClaimed ? t.btnClaimed : t.btnClaim;
+      document.getElementById('viewModalTitle').innerText = t.viewModalTitle;
+      document.getElementById('longPressHint').innerText = t.longPressHint;
+      document.getElementById('downloadImageLink').innerText = t.btnDownload;
+      document.getElementById('btnCreateOwn').innerText = t.btnCreateOwn;
+
+      renderRelationships();
+      renderSuggestions();
+      updatePreview();
+    }
+
+    // --- 6. XỬ LÝ 2 HÀNH ĐỘNG CHÍNH (CHIA SẺ & LƯU ẢNH) ---
+
+    // Gói dữ liệu thiệp thành chuỗi Base64 UTF-8 để nhúng vào link
+    function getCardShareUrl() {
+      const cardData = {
+        r: document.getElementById('receiverNameInput').value.trim() || (currentLang === 'vi' ? currentRelationship.defaultReceiverVi : currentRelationship.defaultReceiverEn),
+        m: document.getElementById('messageInput').value.trim() || (currentLang === 'vi' ? currentRelationship.wishesVi[0] : currentRelationship.wishesEn[0]),
+        s: document.getElementById('senderNameInput').value.trim(),
+        rel: currentRelationship.id,
+        lang: currentLang
+      };
+      
+      const jsonStr = JSON.stringify(cardData);
+      const encoded = btoa(encodeURIComponent(jsonStr));
+      const baseUrl = window.location.origin + window.location.pathname;
+      return `${baseUrl}#card=${encoded}`;
+    }
+
+    // 1. Chia sẻ thiệp
+    async function handleShareCard() {
+      const shareUrl = getCardShareUrl();
+      const shareTitle = "Thiệp chúc mừng 20/10 gửi tặng bạn 🌸";
+      const shareText = "Mình vừa tạo một tấm thiệp 20/10 gửi tặng bạn. Nhấp vào đây để xem nhé!";
+
+      // Ghi nhận ngầm lên Google Sheet (nếu có cấu hình)
+      syncToGoogleSheet('create_card');
+
+      // Thử dùng Web Share API (native trên iOS/Android)
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: shareTitle,
+            text: shareText,
+            url: shareUrl
+          });
+          showToast(I18N[currentLang].toastCopied);
+          openIceCreamModal();
+          return;
+        } catch (err) {
+          if (err.name !== 'AbortError') {
+            console.log("Share API skipped, using clipboard fallback");
+          }
+        }
+      }
+
+      // Fallback: Copy link vào clipboard
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        showToast(I18N[currentLang].toastCopied);
+      } catch (err) {
+        prompt("Copy đường link thiệp bên dưới để gửi qua Zalo/Messenger:", shareUrl);
+      }
+
+      openIceCreamModal();
+    }
+
+    // 2. Lưu thành file ảnh (html2canvas chất lượng cao 2x)
+    async function handleSaveImage() {
+      const cardArea = document.getElementById('cardCaptureArea');
+      showToast("Đang kết xuất ảnh thiệp...");
+
+      try {
+        const canvas = await html2canvas(cardArea, {
+          scale: 2.5, // Tăng độ phân giải cho màn hình Retina
+          useCORS: true,
+          backgroundColor: null,
+          logging: false
+        });
+
+        const imgData = canvas.toDataURL('image/png');
+        
+        // Gắn vào thẻ download
+        const downloadLink = document.getElementById('downloadImageLink');
+        downloadLink.href = imgData;
+        const receiverName = document.getElementById('receiverNameInput').value.trim() || 'nguoi-thuong';
+        downloadLink.download = `thiep-20-10-${receiverName}.png`;
+
+        // Hiển thị modal xem ảnh (đặc biệt hữu ích trên Zalo Browser vì Zalo chặn download trực tiếp)
+        document.getElementById('generatedCardImage').src = imgData;
+        document.getElementById('viewCardModal').classList.remove('hidden');
+
+        // Ghi nhận ngầm lên Google Sheet
+        syncToGoogleSheet('create_card');
+
+        // Tự động kích hoạt download nếu trình duyệt cho phép
+        const tempLink = document.createElement('a');
+        tempLink.href = imgData;
+        tempLink.download = `thiep-20-10-${receiverName}.png`;
+        document.body.appendChild(tempLink);
+        tempLink.click();
+        document.body.removeChild(tempLink);
+
+        showToast(I18N[currentLang].toastImageSaved);
+        
+        // Mở modal lấy kem sau 1.5 giây
+        setTimeout(() => {
+          openIceCreamModal();
+        }, 1200);
+
+      } catch (error) {
+        console.error("Lỗi xuất ảnh:", error);
+        alert("Không thể xuất ảnh trực tiếp trên thiết bị này. Bạn có thể chụp ảnh màn hình tấm thiệp nhé!");
+        openIceCreamModal();
+      }
+    }
+
+    // --- 7. MODAL VÉ NHẬN KEM (MISSION COMPLETE) ---
+    function openIceCreamModal() {
+      document.getElementById('iceCreamModal').classList.remove('hidden');
+      
+      // Bắn pháo hoa Confetti chúc mừng!
+      if (window.confetti) {
+        confetti({
+          particleCount: 70,
+          spread: 60,
+          origin: { y: 0.6 }
+        });
+      }
+    }
+
+    function closeIceCreamModal() {
+      document.getElementById('iceCreamModal').classList.add('hidden');
+    }
+
+    function claimIceCreamAction() {
+      isClaimed = true;
+      const claimedKey = 'icecream_claimed_' + deviceVisitorId;
+      localStorage.setItem(claimedKey, 'true');
+
+      updateTicketUIClaimed();
+      document.getElementById('claimedBanner').classList.remove('hidden');
+      showToast(I18N[currentLang].toastClaimed);
+
+      // Đồng bộ trạng thái đã nhận kem lên Google Sheet
+      syncToGoogleSheet('claim_icecream');
+
+      if (window.confetti) {
+        confetti({
+          particleCount: 100,
+          spread: 80,
+          origin: { y: 0.5 }
+        });
+      }
+    }
+
+    // Đồng hồ nhảy giây trên vé nhận kem
+    setInterval(() => {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('vi-VN');
+      const timeEl = document.getElementById('ticketLiveTime');
+      if (timeEl) timeEl.innerText = timeStr;
+    }, 1000);
+
+    // --- 8. XỬ LÝ KHI NGƯỜI NHẬN MỞ LINK TỪ ZALO / MESSENGER (#card=...) ---
+    function checkUrlCardParam() {
+      const hash = window.location.hash;
+      if (hash && hash.includes('card=')) {
+        try {
+          const encoded = hash.split('card=')[1];
+          const jsonStr = decodeURIComponent(atob(encoded));
+          const data = JSON.parse(jsonStr);
+
+          // Điền dữ liệu từ URL vào thiệp
+          if (data.r) document.getElementById('receiverNameInput').value = data.r;
+          if (data.m) document.getElementById('messageInput').value = data.m;
+          if (data.s) document.getElementById('senderNameInput').value = data.s;
+          
+          if (data.rel) {
+            const rel = RELATIONSHIPS.find(item => item.id === data.rel);
+            if (rel) currentRelationship = rel;
+          }
+
+          if (data.lang) currentLang = data.lang;
+
+          applyLanguage();
+
+          // Tự động hiển thị thiệp dạng pop-up cho người nhận
+          setTimeout(() => {
+            renderCardToImagePopup();
+          }, 600);
+
+        } catch (e) {
+          console.warn("Invalid card URL parameter:", e);
+        }
+      }
+    }
+
+    async function renderCardToImagePopup() {
+      const cardArea = document.getElementById('cardCaptureArea');
+      try {
+        const canvas = await html2canvas(cardArea, { scale: 2, backgroundColor: null });
+        const imgData = canvas.toDataURL('image/png');
+        document.getElementById('generatedCardImage').src = imgData;
+        document.getElementById('downloadImageLink').href = imgData;
+        document.getElementById('viewCardModal').classList.remove('hidden');
+      } catch (err) {}
+    }
+
+    function closeViewCardModal() {
+      document.getElementById('viewCardModal').classList.add('hidden');
+    }
+
+    function openCreateOwnCard() {
+      closeViewCardModal();
+      window.location.hash = '';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // --- 9. ĐỒNG BỘ VỚI GOOGLE SHEET BACKEND ---
+    function syncToGoogleSheet(action) {
+      if (!GOOGLE_SHEET_API_URL || GOOGLE_SHEET_API_URL.trim() === '') {
+        return; // Chưa cấu hình URL thì bỏ qua an toàn
+      }
+
+      const payload = {
+        action: action,
+        visitorId: deviceVisitorId,
+        sender: document.getElementById('senderNameInput').value.trim() || 'Ẩn danh',
+        receiver: document.getElementById('receiverNameInput').value.trim() || '',
+        relationship: currentRelationship.nameVi,
+        message: document.getElementById('messageInput').value.trim() || '',
+        timestamp: new Date().toISOString()
+      };
+
+      // Gửi ngầm không chặn luồng UI (dùng text/plain tránh CORS options)
+      fetch(GOOGLE_SHEET_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      }).catch(err => console.log("Sheet sync notice:", err));
+    }
+
+    // --- 10. TOAST THÔNG BÁO ---
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.innerText = msg;
+      toast.classList.remove('opacity-0');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0');
+      }, 3000);
+    }
+
+    // --- LẮNG NGHE SỰ KIỆN GÕ PHÍM ---
+    document.getElementById('receiverNameInput').addEventListener('input', updatePreview);
+    document.getElementById('messageInput').addEventListener('input', updatePreview);
+    document.getElementById('senderNameInput').addEventListener('input', updatePreview);
+
+    // --- KHỞI CHẠY LẦN ĐẦU ---
+    window.addEventListener('DOMContentLoaded', () => {
+      initDeviceFingerprint();
+      applyLanguage();
+      checkUrlCardParam();
+    });
+  </script>
+</body>
+</html>
