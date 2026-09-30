@@ -1535,7 +1535,8 @@
         }
 
         // Thử dùng Web Share API (native trên iOS/Android)
-        if (navigator.share) {
+        const isMobile = /mobile|android|iphone|ipad|ipod/i.test(navigator.userAgent || '');
+        if (isMobile && navigator.share) {
           try {
             await navigator.share({
               title: shareTitle,

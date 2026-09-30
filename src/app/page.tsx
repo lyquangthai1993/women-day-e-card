@@ -221,7 +221,8 @@ export default function HomePage() {
         showToast(t.toastCardUpdated);
       }
 
-      if (navigator.share) {
+      const isMobile = /mobile|android|iphone|ipad|ipod/i.test(navigator.userAgent || '');
+      if (isMobile && navigator.share) {
         try {
           await navigator.share({
             title: shareTitle,
