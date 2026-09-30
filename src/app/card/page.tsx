@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef, Suspense } from 'react';
 import html2canvas from 'html2canvas';
 import { Image as ImageIcon, Loader2 } from 'lucide-react';
 import Link from 'next/link';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 
 import { RelationshipTheme, Language } from '../../types';
 import { RELATIONSHIPS, I18N } from '../../lib/constants';
@@ -13,7 +13,6 @@ import { CardPreview } from '../../components/CardPreview';
 
 function CardViewContent() {
   const searchParams = useSearchParams();
-  const router = useRouter();
 
   const [language, setLanguage] = useState<Language>('vi');
   const [relationship, setRelationship] = useState<RelationshipTheme>(RELATIONSHIPS[0]);
@@ -169,18 +168,7 @@ function CardViewContent() {
     }
   };
 
-  // Điều hướng về Trang chủ để chỉnh sửa thiệp
-  const handleEditCard = () => {
-    const p = new URLSearchParams();
-    if (cardId) p.set('edit', cardId);
-    if (relationship.id !== 'mother') p.set('rel', relationship.id);
-    if (language !== 'vi') p.set('l', language);
-    if (receiver.trim()) p.set('r', receiver.trim());
-    if (sender.trim()) p.set('s', sender.trim());
-    if (message.trim()) p.set('m', message.trim());
 
-    router.push(`/?${p.toString()}`);
-  };
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
@@ -266,33 +254,22 @@ function CardViewContent() {
             {t.longPressHint}
           </p>
 
-          <div className="grid grid-cols-2 gap-2.5">
-            <button
-              type="button"
-              onClick={handleSaveImage}
-              disabled={isSavingImage || isLoadingCard}
-              className="bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white font-bold py-3 px-4 rounded-2xl text-xs flex items-center justify-center space-x-1.5 shadow-md shadow-rose-200 active:scale-95 transition"
-            >
-              {isSavingImage ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <ImageIcon className="w-4 h-4" />
-              )}
-              <span>{isSavingImage ? t.btnSavingText : t.btnDownload}</span>
-            </button>
+          {/* Nút 1: Tải ảnh về máy */}
+          <button
+            type="button"
+            onClick={handleSaveImage}
+            disabled={isSavingImage || isLoadingCard}
+            className="w-full bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white font-bold py-3.5 px-5 rounded-2xl text-sm flex items-center justify-center space-x-2 shadow-md shadow-rose-200 active:scale-95 transition"
+          >
+            {isSavingImage ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <ImageIcon className="w-5 h-5" />
+            )}
+            <span>{isSavingImage ? t.btnSavingText : t.btnDownload}</span>
+          </button>
 
-            <button
-              type="button"
-              onClick={handleEditCard}
-              disabled={isLoadingCard}
-              className="bg-amber-500 hover:bg-amber-600 disabled:opacity-50 text-white font-bold py-3 px-4 rounded-2xl text-xs flex items-center justify-center space-x-1.5 shadow-md shadow-amber-200 active:scale-95 transition"
-            >
-              <span>✏️</span>
-              <span>{t.btnEditCard}</span>
-            </button>
-          </div>
-
-          {/* Nút lớn quay về Trang chủ tạo thiệp */}
+          {/* Nút 2: Lớn quay về Trang chủ tạo thiệp */}
           <Link
             href="/"
             className="w-full bg-gradient-to-r from-rose-600 via-pink-600 to-rose-500 hover:opacity-95 text-white font-bold py-3.5 px-5 rounded-2xl text-sm flex items-center justify-center space-x-2 shadow-lg shadow-rose-200 active:scale-95 transition"

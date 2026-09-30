@@ -89,7 +89,7 @@
   <!-- ================= CẤU HÌNH GOOGLE SHEET API ================= -->
   <script>
     // URL Web App Google Apps Script kết nối trực tiếp Google Sheets của HR
-    const GOOGLE_SHEET_API_URL = "https://script.google.com/macros/s/AKfycbx7EoYi99gYNarWJzrxsX538w9zuLvlPc_rMS92sUeYuHmhpjIFxjJ7oy4vHXb_2BaCAw/exec"; 
+    const GOOGLE_SHEET_API_URL = "https://script.google.com/macros/s/AKfycby_4b2e1psYo9rChMmeIS-LwWz8pz23KyRxSH1HswqBay5zyWhS18mr1i_RgaZczr3x9w/exec"; 
   </script>
 
   <!-- Thanh thông báo trạng thái nhận kem nổi (nếu đã nhận hoặc đã có vé) -->
@@ -328,19 +328,13 @@
           💡 Gợi ý: Nhấn giữ vào ảnh để lưu trực tiếp vào thư viện ảnh điện thoại.
         </p>
 
-        <div class="grid grid-cols-2 gap-2.5">
-          <button id="btnViewDownload" type="button" onclick="handleSaveImage()" class="bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 px-4 rounded-2xl text-xs flex items-center justify-center space-x-1.5 shadow-md shadow-rose-200 active:scale-95 transition">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-            <span id="btnViewDownloadText">Tải ảnh về máy</span>
-          </button>
+        <!-- Nút 1: Tải ảnh về máy -->
+        <button id="btnViewDownload" type="button" onclick="handleSaveImage()" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-3.5 px-5 rounded-2xl text-sm flex items-center justify-center space-x-2 shadow-md shadow-rose-200 active:scale-95 transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          <span id="btnViewDownloadText">Tải ảnh về máy</span>
+        </button>
 
-          <button type="button" id="btnViewEditCard" onclick="openEditCurrentCard()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-4 rounded-2xl text-xs flex items-center justify-center space-x-1.5 shadow-md shadow-amber-200 active:scale-95 transition">
-            <span>✏️</span>
-            <span id="btnViewEditText">Chỉnh sửa thiệp này</span>
-          </button>
-        </div>
-
-        <!-- Nút lớn dẫn về Trang chủ để tạo thiệp -->
+        <!-- Nút 2: Lớn dẫn về Trang chủ để tạo thiệp -->
         <button type="button" onclick="openCreateOwnCard()" class="w-full bg-gradient-to-r from-rose-600 via-pink-600 to-rose-500 hover:opacity-95 text-white font-bold py-3.5 px-5 rounded-2xl text-sm flex items-center justify-center space-x-2 shadow-lg shadow-rose-200 active:scale-95 transition">
           <span>🌸</span>
           <span id="btnViewCreateOwnText">Tự tạo thiệp của riêng bạn ngay 🌸</span>

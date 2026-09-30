@@ -444,47 +444,20 @@ export default function HomePage() {
               {t.longPressHint}
             </p>
 
-            <div className="grid grid-cols-2 gap-2.5">
-              <button
-                type="button"
-                onClick={handleSaveImage}
-                disabled={isSavingImage || isLoadingCard}
-                className="bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white font-bold py-3 px-4 rounded-2xl text-xs flex items-center justify-center space-x-1.5 shadow-md shadow-rose-200 active:scale-95 transition"
-              >
-                {isSavingImage ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <ImageIcon className="w-4 h-4" />
-                )}
-                <span>{isSavingImage ? t.btnSavingText : t.btnDownload}</span>
-              </button>
-
-              {cardId ? (
-                <button
-                  type="button"
-                  onClick={handleSwitchToEditMode}
-                  disabled={isLoadingCard}
-                  className="bg-amber-500 hover:bg-amber-600 disabled:opacity-50 text-white font-bold py-3 px-4 rounded-2xl text-xs flex items-center justify-center space-x-1.5 shadow-md shadow-amber-200 active:scale-95 transition"
-                >
-                  <span>✏️</span>
-                  <span>{t.btnEditCard}</span>
-                </button>
+            {/* Nút 1: Tải ảnh về máy */}
+            <button
+              type="button"
+              onClick={handleSaveImage}
+              disabled={isSavingImage || isLoadingCard}
+              className="w-full bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white font-bold py-3.5 px-5 rounded-2xl text-sm flex items-center justify-center space-x-2 shadow-md shadow-rose-200 active:scale-95 transition"
+            >
+              {isSavingImage ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
-                <button
-                  type="button"
-                  onClick={handleShare}
-                  disabled={isSharing || isLoadingCard}
-                  className="bg-white hover:bg-rose-50 disabled:opacity-50 text-rose-700 border border-rose-200 font-bold py-3 px-4 rounded-2xl text-xs flex items-center justify-center space-x-1.5 shadow-sm active:scale-95 transition"
-                >
-                  {isSharing ? (
-                    <Loader2 className="w-4 h-4 animate-spin text-rose-600" />
-                  ) : (
-                    <Share2 className="w-4 h-4" />
-                  )}
-                  <span>{isSharing ? t.btnSharingText : t.btnShareText}</span>
-                </button>
+                <ImageIcon className="w-5 h-5" />
               )}
-            </div>
+              <span>{isSavingImage ? t.btnSavingText : t.btnDownload}</span>
+            </button>
 
             {/* Nút lớn dẫn về Trang chủ để tạo thiệp */}
             <button

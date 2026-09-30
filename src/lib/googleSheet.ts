@@ -1,4 +1,4 @@
-export const GOOGLE_SHEET_API_URL = process.env.NEXT_PUBLIC_GOOGLE_SHEET_API_URL || "https://script.google.com/macros/s/AKfycbx7EoYi99gYNarWJzrxsX538w9zuLvlPc_rMS92sUeYuHmhpjIFxjJ7oy4vHXb_2BaCAw/exec";
+export const GOOGLE_SHEET_API_URL = process.env.NEXT_PUBLIC_GOOGLE_SHEET_API_URL || "https://script.google.com/macros/s/AKfycby_4b2e1psYo9rChMmeIS-LwWz8pz23KyRxSH1HswqBay5zyWhS18mr1i_RgaZczr3x9w/exec";
 
 export interface SheetPayload {
   action: 'create_card' | 'claim_icecream' | 'save_card' | 'update_card';
