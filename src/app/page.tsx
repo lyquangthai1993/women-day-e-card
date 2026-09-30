@@ -364,7 +364,7 @@ export default function HomePage() {
             onClick={() => setIsIceCreamModalOpen(true)}
             className="bg-white/20 hover:bg-white/30 backdrop-blur-sm px-2.5 py-1 rounded-full text-white text-[11px] font-bold tracking-wide transition"
           >
-            Xem vé
+            {t.btnViewTicket}
           </button>
         </div>
       )}

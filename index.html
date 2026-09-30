@@ -99,7 +99,7 @@
       <span id="claimedBannerText">Bạn đã có vé nhận kem tại quầy!</span>
     </div>
     <button onclick="openIceCreamModal()" class="bg-white/20 hover:bg-white/30 backdrop-blur-sm px-2.5 py-1 rounded-full text-white text-[11px] font-bold tracking-wide transition">
-      Xem vé
+      <span id="btnViewTicketText">Xem vé</span>
     </button>
   </div>
 
@@ -759,6 +759,7 @@
         btnSaveImgText: "Lưu thành file ảnh",
         footerMadeWith: "Được tạo với tấm lòng dành cho ngày Phụ nữ Việt Nam 20/10",
         claimedBannerText: "Bạn đã có vé nhận kem tại quầy!",
+        btnViewTicket: "Xem vé",
         modalTag: "Nhiệm vụ hoàn thành!",
         modalTitle: "Giờ thì đi lấy kem thôi! 🍦",
         modalDesc: "Lời nhắn đã trên đường đến người bạn thương. Hãy đưa màn hình này cho ban lãnh đạo tại quầy kem nhé!",
@@ -812,6 +813,7 @@
         btnSaveImgText: "Save as Image",
         footerMadeWith: "Crafted with love for Vietnamese Women's Day 20/10",
         claimedBannerText: "You have an ice cream ticket ready!",
+        btnViewTicket: "View Ticket",
         modalTag: "Mission Complete!",
         modalTitle: "Now Go Pick Up Your Ice Cream! 🍦",
         modalDesc: "Your card is on its way to your loved one. Show this pass to the leadership team at the ice cream cart!",
@@ -1234,6 +1236,7 @@
       document.getElementById('btnSaveImgText').innerText = t.btnSaveImgText;
       document.getElementById('footerMadeWith').innerText = t.footerMadeWith;
       document.getElementById('claimedBannerText').innerText = t.claimedBannerText;
+      if (document.getElementById('btnViewTicketText')) document.getElementById('btnViewTicketText').innerText = t.btnViewTicket;
       document.getElementById('modalTag').innerText = t.modalTag;
       document.getElementById('modalTitle').innerText = t.modalTitle;
       document.getElementById('modalDesc').innerText = t.modalDesc;
