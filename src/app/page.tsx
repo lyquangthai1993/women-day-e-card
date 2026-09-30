@@ -189,15 +189,16 @@ export default function HomePage() {
     return slug ? `happy-womens-day-${slug}.png` : "happy-womens-day-card.png";
   };
 
-  // Chia sẻ thiệp kèm hiệu ứng loading spinner (hỗ trợ forceNew để tạo thiệp mới gửi người khác)
-  const handleShare = async (forceNew: boolean = false) => {
+  // Chia sẻ thiệp kèm hiệu ứng loading spinner (hỗ trợ tạo mới và cập nhật thiệp)
+  const handleShare = async () => {
     if (isSharing) return;
-    const actionType = forceNew ? 'new' : (cardId ? 'update' : 'default');
+    const isNewCard = !cardId;
+    const actionType = cardId ? 'update' : 'default';
     setSharingAction(actionType);
 
     try {
       let activeCardId = cardId;
-      if (!activeCardId || forceNew) {
+      if (!activeCardId) {
         activeCardId = generateCardId();
         setCardId(activeCardId);
       }
@@ -222,13 +223,13 @@ export default function HomePage() {
         message: message.trim() || (language === 'vi' ? relationship.wishesVi[0] : relationship.wishesEn[0]),
         language,
       }).then((res) => {
-        if (!forceNew && res && res.status === 'success' && res.action === 'updated') {
+        if (!isNewCard && res && res.status === 'success' && res.action === 'updated') {
           showToast(t.toastCardUpdated);
         }
       });
 
-      if (forceNew) {
-        showToast(t.toastNewCardCreated);
+      if (!isNewCard) {
+        showToast(t.toastCardUpdated);
       }
 
       const isMobile = /mobile|android|iphone|ipad|ipod/i.test(navigator.userAgent || '');
@@ -240,7 +241,7 @@ export default function HomePage() {
             url: shareUrl,
           });
           showToast(t.toastCopied);
-          if (!forceNew) {
+          if (isNewCard && !isClaimed) {
             openIceCreamWithConfetti();
           } else {
             confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } });
@@ -260,7 +261,7 @@ export default function HomePage() {
         prompt("Copy đường link thiệp bên dưới để gửi qua Zalo/Messenger:", shareUrl);
       }
 
-      if (!forceNew) {
+      if (isNewCard && !isClaimed) {
         openIceCreamWithConfetti();
       } else {
         confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } });
@@ -350,6 +351,17 @@ export default function HomePage() {
     setSender('');
     setRelationship(RELATIONSHIPS[0]);
     setIsViewCardModalOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Bắt đầu tạo thiệp mới gửi người khác (Phương án A: Làm mới người nhận & lời chúc, giữ lại tên người gửi)
+  const handleCreateNewForOther = () => {
+    setCardId(null);
+    window.history.pushState(null, '', window.location.pathname);
+    setReceiver('');
+    setMessage('');
+    setRelationship(RELATIONSHIPS[0]);
+    showToast(language === 'vi' ? 'Sẵn sàng tạo thiệp mới gửi người khác! 🌸' : 'Ready to create a new card for someone else! 🌸');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -685,7 +697,7 @@ export default function HomePage() {
                   {/* Nút 1: Cập nhật thiệp hiện tại */}
                   <button
                     type="button"
-                    onClick={() => handleShare(false)}
+                    onClick={() => handleShare()}
                     disabled={isSharing || isSavingImage}
                     className={`w-full bg-gradient-to-r from-rose-600 via-pink-600 to-rose-500 hover:opacity-95 text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg shadow-rose-200 flex items-center justify-center space-x-2 active:scale-[0.98] transition ${isSharing ? 'opacity-80 cursor-wait' : ''}`}
                   >
@@ -702,31 +714,22 @@ export default function HomePage() {
                     )}
                   </button>
 
-                  {/* Nút 2: Force tạo thiệp mới gửi người khác */}
+                  {/* Nút 2: Bắt đầu tạo thiệp mới gửi người khác (Phương án A) */}
                   <button
                     type="button"
-                    onClick={() => handleShare(true)}
+                    onClick={handleCreateNewForOther}
                     disabled={isSharing || isSavingImage}
-                    className={`w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-500 hover:opacity-95 text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg shadow-emerald-200 flex items-center justify-center space-x-2 active:scale-[0.98] transition ${isSharing ? 'opacity-80 cursor-wait' : ''}`}
+                    className="w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-500 hover:opacity-95 text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg shadow-emerald-200 flex items-center justify-center space-x-2 active:scale-[0.98] transition"
                   >
-                    {sharingAction === 'new' ? (
-                      <>
-                        <Loader2 className="w-5 h-5 animate-spin" />
-                        <span className="text-sm tracking-wide">{t.btnSharingText}</span>
-                      </>
-                    ) : (
-                      <>
-                        <PlusCircle className="w-4 h-4" />
-                        <span className="text-sm tracking-wide">{t.btnCreateAsNewCard}</span>
-                      </>
-                    )}
+                    <PlusCircle className="w-4 h-4" />
+                    <span className="text-sm tracking-wide">{t.btnCreateAsNewCard}</span>
                   </button>
                 </>
               ) : (
                 /* Nút mặc định khi chưa có cardId */
                 <button
                   type="button"
-                  onClick={() => handleShare(false)}
+                  onClick={() => handleShare()}
                   disabled={isSharing || isSavingImage}
                   className={`w-full bg-gradient-to-r from-rose-600 via-pink-600 to-rose-500 hover:opacity-95 text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg shadow-rose-200 flex items-center justify-center space-x-2 active:scale-[0.98] transition ${isSharing ? 'opacity-80 cursor-wait' : ''}`}
                 >
