@@ -254,10 +254,18 @@ export const I18N = {
     longPressHint: "💡 Gợi ý: Nhấn giữ vào ảnh để lưu trực tiếp vào thư viện ảnh điện thoại.",
     btnDownload: "Tải ảnh về máy",
     btnCreateOwn: "Tạo thiệp của bạn",
+    btnEditCard: "Chỉnh sửa thiệp",
+    editingBannerTitle: "Đang chỉnh sửa thiệp đã lưu",
+    editingBannerSubtitle: "Mọi thay đổi sẽ được cập nhật đồng bộ vào cùng liên kết này.",
+    btnCancelEditText: "Tạo mới",
     defaultAnonymous: "Từ: Một người thầm trân quý",
     toastCopied: "Đã sao chép liên kết thiệp vào bộ nhớ tạm!",
     toastImageSaved: "Ảnh thiệp đã được tạo thành công!",
-    toastClaimed: "Chúc mừng bạn đã nhận kem thành công!"
+    toastClaimed: "Chúc mừng bạn đã nhận kem thành công!",
+    toastCardLoading: "Đang tải dữ liệu thiệp từ Google Sheet...",
+    toastCardLoaded: "Đã tải xong nội dung thiệp!",
+    toastCardUpdated: "Đã đồng bộ cập nhật lên Google Sheet!",
+    toastCardNotFound: "Không tìm thấy thiệp trên Google Sheet!"
   },
   en: {
     pageTitle: "Happy Vietnamese Women's Day 20/10 - E-Card",
@@ -292,9 +300,17 @@ export const I18N = {
     longPressHint: "💡 Tip: Long press the image to save directly to your photos.",
     btnDownload: "Download Image",
     btnCreateOwn: "Create Your Own Card",
+    btnEditCard: "Edit E-Card",
+    editingBannerTitle: "Editing saved e-card",
+    editingBannerSubtitle: "All changes will automatically sync to this same link.",
+    btnCancelEditText: "New card",
     defaultAnonymous: "From: Someone who cherishes you",
     toastCopied: "Card link copied to clipboard!",
     toastImageSaved: "Card image rendered successfully!",
-    toastClaimed: "Ice cream claimed successfully! Enjoy!"
+    toastClaimed: "Ice cream claimed successfully! Enjoy!",
+    toastCardLoading: "Loading e-card from Google Sheet...",
+    toastCardLoaded: "E-card loaded successfully!",
+    toastCardUpdated: "E-card updated on Google Sheet!",
+    toastCardNotFound: "E-card not found on Google Sheet!"
   }
 };

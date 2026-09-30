@@ -132,6 +132,22 @@
   <!-- Nội dung chính (Mobile First Container) -->
   <main class="flex-1 max-w-md mx-auto w-full px-4 py-5 space-y-6">
     
+    <!-- BANNER CHẾ ĐỘ CHỈNH SỬA THIỆP ĐÃ LƯU (ĐỒNG BỘ 1 LINK) -->
+    <div id="editingBanner" class="hidden bg-amber-50 border border-amber-200 rounded-2xl p-3.5 flex items-center justify-between text-xs text-amber-900 shadow-sm animate-pulse-slow">
+      <div class="flex items-center space-x-2.5">
+        <span class="text-xl">✏️</span>
+        <div>
+          <span class="font-bold block text-sm" id="editingBannerTitle">Đang chỉnh sửa thiệp đã lưu</span>
+          <span class="text-[11px] text-amber-700/90 block leading-tight mt-0.5" id="editingBannerSubtitle">
+            Mọi thay đổi sẽ được cập nhật đồng bộ vào cùng liên kết này.
+          </span>
+        </div>
+      </div>
+      <button type="button" onclick="cancelEditingCard()" class="text-[11px] bg-white border border-amber-200 hover:bg-amber-100 font-bold px-2.5 py-1.5 rounded-xl text-amber-800 transition shadow-2xs">
+        <span id="btnCancelEditText">Tạo mới</span>
+      </button>
+    </div>
+
     <!-- BƯỚC 1: CHỌN MỐI QUAN HỆ (Hoa văn & Theme tương ứng) -->
     <section>
       <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2.5" id="labelRelationship">
@@ -393,14 +409,18 @@
         <p class="text-[11px] text-center text-slate-400" id="longPressHint">
           💡 Gợi ý: Nhấn giữ vào ảnh để lưu trực tiếp vào thư viện ảnh điện thoại.
         </p>
-        <div class="flex space-x-2">
-          <a id="downloadImageLink" download="happy-womens-day-card.png" class="flex-1 bg-rose-600 text-white text-center font-bold py-2.5 rounded-xl text-xs flex items-center justify-center">
-            Tải ảnh về máy
+        <div class="grid grid-cols-2 gap-2">
+          <a id="downloadImageLink" download="happy-womens-day-card.png" class="bg-rose-600 hover:bg-rose-700 text-white text-center font-bold py-2.5 rounded-xl text-xs flex items-center justify-center shadow-xs transition">
+            <span id="btnDownloadText">Tải ảnh về máy</span>
           </a>
-          <button id="btnCreateOwn" onclick="openCreateOwnCard()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl text-xs">
-            Tạo thiệp của bạn
+          <button id="btnEditCard" onclick="openEditCurrentCard()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center space-x-1 shadow-xs transition">
+            <span>✏️</span>
+            <span id="btnEditText">Chỉnh sửa thiệp</span>
           </button>
         </div>
+        <button id="btnCreateOwn" onclick="openCreateOwnCard()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2 rounded-xl text-xs transition">
+          🌸 Tạo thiệp mới của bạn
+        </button>
       </div>
     </div>
   </div>
@@ -716,10 +736,18 @@
         longPressHint: "💡 Gợi ý: Nhấn giữ vào ảnh để lưu trực tiếp vào thư viện ảnh điện thoại.",
         btnDownload: "Tải ảnh về máy",
         btnCreateOwn: "Tạo thiệp của bạn",
+        btnEditCard: "Chỉnh sửa thiệp",
+        editingBannerTitle: "Đang chỉnh sửa thiệp đã lưu",
+        editingBannerSubtitle: "Mọi thay đổi sẽ được cập nhật đồng bộ vào cùng liên kết này.",
+        btnCancelEditText: "Tạo mới",
         defaultAnonymous: "Từ: Một người thầm trân quý",
         toastCopied: "Đã sao chép liên kết thiệp vào bộ nhớ tạm!",
         toastImageSaved: "Ảnh thiệp đã được tạo thành công!",
-        toastClaimed: "Chúc mừng bạn đã nhận kem thành công!"
+        toastClaimed: "Chúc mừng bạn đã nhận kem thành công!",
+        toastCardLoading: "Đang tải dữ liệu thiệp từ Google Sheet...",
+        toastCardLoaded: "Đã tải xong nội dung thiệp!",
+        toastCardUpdated: "Đã đồng bộ cập nhật lên Google Sheet!",
+        toastCardNotFound: "Không tìm thấy thiệp trên Google Sheet!"
       },
       en: {
         pageTitle: "Happy Vietnamese Women's Day 20/10 - E-Card",
@@ -754,10 +782,18 @@
         longPressHint: "💡 Tip: Long press the image to save directly to your photos.",
         btnDownload: "Download Image",
         btnCreateOwn: "Create Your Own Card",
+        btnEditCard: "Edit E-Card",
+        editingBannerTitle: "Editing saved e-card",
+        editingBannerSubtitle: "All changes will automatically sync to this same link.",
+        btnCancelEditText: "New card",
         defaultAnonymous: "From: Someone who cherishes you",
         toastCopied: "Card link copied to clipboard!",
         toastImageSaved: "Card image rendered successfully!",
-        toastClaimed: "Ice cream claimed successfully! Enjoy!"
+        toastClaimed: "Ice cream claimed successfully! Enjoy!",
+        toastCardLoading: "Loading e-card from Google Sheet...",
+        toastCardLoaded: "E-card loaded successfully!",
+        toastCardUpdated: "E-card updated on Google Sheet!",
+        toastCardNotFound: "E-card not found on Google Sheet!"
       }
     };
 
@@ -766,6 +802,7 @@
     let currentRelationship = RELATIONSHIPS[0];
     let deviceVisitorId = 'fp_generating...';
     let isClaimed = false;
+    let currentCardId = null;
 
     // --- 3. KHỞI TẠO FINGERPRINTJS (Nhận diện thiết bị không cần login) ---
     async function initDeviceFingerprint() {
@@ -1155,8 +1192,12 @@
       document.getElementById('btnClaimIceCream').innerText = isClaimed ? t.btnClaimed : t.btnClaim;
       document.getElementById('viewModalTitle').innerText = t.viewModalTitle;
       document.getElementById('longPressHint').innerText = t.longPressHint;
-      document.getElementById('downloadImageLink').innerText = t.btnDownload;
-      document.getElementById('btnCreateOwn').innerText = t.btnCreateOwn;
+      if (document.getElementById('btnDownloadText')) document.getElementById('btnDownloadText').innerText = t.btnDownload;
+      if (document.getElementById('btnEditText')) document.getElementById('btnEditText').innerText = t.btnEditCard;
+      if (document.getElementById('btnCreateOwn')) document.getElementById('btnCreateOwn').innerText = '🌸 ' + t.btnCreateOwn;
+      if (document.getElementById('editingBannerTitle')) document.getElementById('editingBannerTitle').innerText = t.editingBannerTitle;
+      if (document.getElementById('editingBannerSubtitle')) document.getElementById('editingBannerSubtitle').innerText = t.editingBannerSubtitle;
+      if (document.getElementById('btnCancelEditText')) document.getElementById('btnCancelEditText').innerText = t.btnCancelEditText;
 
       renderRelationships();
       updateCardTheme();
@@ -1168,40 +1209,33 @@
 
     // --- 6. XỬ LÝ 2 HÀNH ĐỘNG CHÍNH (CHIA SẺ & LƯU ẢNH) ---
 
-    // Gói dữ liệu thiệp thành URL siêu ngắn (Luôn < 150 ký tự, tránh lỗi QR code > 400 chars)
+    function generateCardId() {
+      return 'c_' + Math.random().toString(36).substring(2, 8) + Date.now().toString(36).slice(-4);
+    }
+
+    // Gói dữ liệu thiệp với Card ID cố định trên Google Sheet
     function getCardShareUrl() {
-      const receiver = document.getElementById('receiverNameInput').value.trim();
-      const message = document.getElementById('messageInput').value.trim();
-      const sender = document.getElementById('senderNameInput').value.trim();
-      
-      const wishes = currentLang === 'vi' ? currentRelationship.wishesVi : currentRelationship.wishesEn;
-      const wishIdx = wishes.findIndex(w => w.trim() === message);
-
-      const params = new URLSearchParams();
-      if (receiver) params.set('r', receiver);
-      if (sender) params.set('s', sender);
-      params.set('rel', currentRelationship.id);
-      if (currentLang !== 'vi') params.set('l', currentLang);
-
-      // Nếu là câu gợi ý mẫu: chỉ lưu chỉ số w=0,1,2 (giảm chiều dài URL từ 800 ký tự xuống còn ~70 ký tự!)
-      if (wishIdx >= 0) {
-        params.set('w', wishIdx.toString());
-      } else if (message) {
-        params.set('m', message);
+      if (!currentCardId) {
+        currentCardId = generateCardId();
       }
-
       const baseUrl = window.location.origin + window.location.pathname;
-      return `${baseUrl}#${params.toString()}`;
+      return `${baseUrl}#id=${currentCardId}`;
     }
 
     // 1. Chia sẻ thiệp
     async function handleShareCard() {
       const shareUrl = getCardShareUrl();
-      const shareTitle = "Thiệp chúc mừng 20/10 gửi tặng bạn 🌸";
-      const shareText = "Mình vừa tạo một tấm thiệp 20/10 gửi tặng bạn. Nhấp vào đây để xem nhé!";
+      const shareTitle = currentLang === 'vi' ? "Thiệp chúc mừng 20/10 gửi tặng bạn 🌸" : "Happy Vietnamese Women's Day E-Card 🌸";
+      const shareText = currentLang === 'vi' 
+        ? "Mình vừa tạo một tấm thiệp 20/10 gửi tặng bạn. Nhấp vào đây để xem nhé!" 
+        : "I've sent you a heartfelt Women's Day e-card. Tap to open!";
 
-      // Ghi nhận ngầm lên Google Sheet (nếu có cấu hình)
-      syncToGoogleSheet('create_card');
+      // Hiển thị banner chỉnh sửa và cập nhật URL
+      document.getElementById('editingBanner').classList.remove('hidden');
+      window.history.replaceState(null, '', `#id=${currentCardId}`);
+
+      // Đồng bộ dữ liệu thiệp lên Google Sheet
+      await syncToGoogleSheet('save_card');
 
       // Thử dùng Web Share API (native trên iOS/Android)
       if (navigator.share) {
@@ -1218,7 +1252,6 @@
           if (err.name !== 'AbortError') {
             console.log("Share API skipped, using clipboard fallback");
           }
-        }
       }
 
       // Fallback: Copy link vào clipboard
@@ -1263,8 +1296,11 @@
         document.getElementById('generatedCardImage').src = imgData;
         document.getElementById('viewCardModal').classList.remove('hidden');
 
-        // Ghi nhận ngầm lên Google Sheet
-        syncToGoogleSheet('create_card');
+        // Ghi nhận / đồng bộ lên Google Sheet
+        if (!currentCardId) {
+          currentCardId = generateCardId();
+        }
+        syncToGoogleSheet('save_card');
 
         // Tự động kích hoạt download nếu trình duyệt cho phép
         const tempLink = document.createElement('a');
@@ -1336,11 +1372,55 @@
     }, 1000);
 
     // --- 8. XỬ LÝ KHI NGƯỜI NHẬN MỞ LINK TỪ ZALO / MESSENGER ---
-    function checkUrlCardParam() {
+    async function checkUrlCardParam() {
+      let queryStr = window.location.hash.startsWith('#') ? window.location.hash.substring(1) : window.location.hash;
+      let params = new URLSearchParams(queryStr);
+
+      if (!params.has('id') && !params.has('cardId') && window.location.search) {
+        params = new URLSearchParams(window.location.search);
+      }
+
+      // 1. Nếu có ID thiệp trên Google Sheet (Real-time Cloud Sync)
+      const cardIdParam = params.get('id') || params.get('cardId');
+      if (cardIdParam) {
+        currentCardId = cardIdParam.trim();
+        const banner = document.getElementById('editingBanner');
+        if (banner) banner.classList.remove('hidden');
+        showToast(I18N[currentLang].toastCardLoading);
+
+        if (GOOGLE_SHEET_API_URL && GOOGLE_SHEET_API_URL.trim() !== '') {
+          try {
+            const res = await fetch(`${GOOGLE_SHEET_API_URL}?action=get_card&id=${encodeURIComponent(currentCardId)}`);
+            const json = await res.json();
+            if (json && json.status === 'success' && json.data) {
+              const d = json.data;
+              if (d.receiver) document.getElementById('receiverNameInput').value = d.receiver;
+              if (d.message) document.getElementById('messageInput').value = d.message;
+              if (d.sender) document.getElementById('senderNameInput').value = d.sender;
+              if (d.relationship) {
+                const rel = RELATIONSHIPS.find(item => item.id === d.relationship || item.nameVi === d.relationship);
+                if (rel) currentRelationship = rel;
+              }
+              if (d.language && (d.language === 'vi' || d.language === 'en')) {
+                currentLang = d.language;
+              }
+              applyLanguage();
+              showToast(I18N[currentLang].toastCardLoaded);
+              setTimeout(() => renderCardToImagePopup(), 600);
+              return;
+            } else {
+              showToast(I18N[currentLang].toastCardNotFound);
+            }
+          } catch (err) {
+            console.warn("Lỗi tải thiệp từ Google Sheet:", err);
+          }
+        }
+      }
+
       const hash = window.location.hash;
       if (!hash) return;
 
-      // 1. Hỗ trợ định dạng cũ #card=... (backward compatibility)
+      // 2. Hỗ trợ định dạng cũ #card=... (backward compatibility)
       if (hash.includes('card=')) {
         try {
           const encoded = hash.split('card=')[1];
@@ -1364,11 +1444,8 @@
         }
       }
 
-      // 2. Định dạng mới siêu gọn #r=...&s=...&rel=...&w=...&m=... (Luôn < 150 ký tự)
+      // 3. Định dạng compact hash cũ: #r=...&s=...&rel=...&w=...&m=...
       try {
-        const queryStr = hash.startsWith('#') ? hash.substring(1) : hash;
-        const params = new URLSearchParams(queryStr);
-
         if (params.has('rel')) {
           const rel = RELATIONSHIPS.find(item => item.id === params.get('rel'));
           if (rel) currentRelationship = rel;
@@ -1409,7 +1486,18 @@
         const canvas = await html2canvas(cardArea, { scale: 2, useCORS: true, backgroundColor: currentRelationship.bgColor || '#ffffff' });
         const imgData = canvas.toDataURL('image/png');
         document.getElementById('generatedCardImage').src = imgData;
-        document.getElementById('downloadImageLink').href = imgData;
+        
+        // Tên file download tiếng Anh
+        const rawReceiver = document.getElementById('receiverNameInput').value.trim();
+        const slug = rawReceiver
+          ? rawReceiver.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").replace(/[^a-zA-Z0-9]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "").toLowerCase()
+          : "";
+        const finalFileName = slug ? `happy-womens-day-${slug}.png` : "happy-womens-day-card.png";
+        
+        const downloadLink = document.getElementById('downloadImageLink');
+        downloadLink.href = imgData;
+        downloadLink.download = finalFileName;
+        
         document.getElementById('viewCardModal').classList.remove('hidden');
       } catch (err) {}
     }
@@ -1418,34 +1506,62 @@
       document.getElementById('viewCardModal').classList.add('hidden');
     }
 
-    function openCreateOwnCard() {
+    function openEditCurrentCard() {
       closeViewCardModal();
-      window.location.hash = '';
+      const banner = document.getElementById('editingBanner');
+      if (banner) banner.classList.remove('hidden');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+    function cancelEditingCard() {
+      currentCardId = null;
+      const banner = document.getElementById('editingBanner');
+      if (banner) banner.classList.add('hidden');
+      window.history.replaceState(null, '', window.location.pathname);
+      document.getElementById('receiverNameInput').value = '';
+      document.getElementById('messageInput').value = '';
+      document.getElementById('senderNameInput').value = '';
+      currentRelationship = RELATIONSHIPS[0];
+      applyLanguage();
+      updatePreview();
+    }
+
+    function openCreateOwnCard() {
+      closeViewCardModal();
+      cancelEditingCard();
+    }
+
     // --- 9. ĐỒNG BỘ VỚI GOOGLE SHEET BACKEND ---
-    function syncToGoogleSheet(action) {
+    async function syncToGoogleSheet(action) {
       if (!GOOGLE_SHEET_API_URL || GOOGLE_SHEET_API_URL.trim() === '') {
         return; // Chưa cấu hình URL thì bỏ qua an toàn
       }
 
       const payload = {
-        action: action,
+        action: action || (currentCardId ? 'save_card' : 'create_card'),
+        cardId: currentCardId || '',
         visitorId: deviceVisitorId,
         sender: document.getElementById('senderNameInput').value.trim() || 'Ẩn danh',
         receiver: document.getElementById('receiverNameInput').value.trim() || '',
-        relationship: currentRelationship.nameVi,
+        relationship: currentRelationship.id,
         message: document.getElementById('messageInput').value.trim() || '',
+        language: currentLang,
         timestamp: new Date().toISOString()
       };
 
-      // Gửi ngầm không chặn luồng UI (dùng text/plain tránh CORS options)
-      fetch(GOOGLE_SHEET_API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(payload)
-      }).catch(err => console.log("Sheet sync notice:", err));
+      try {
+        const res = await fetch(GOOGLE_SHEET_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+        if (result && result.status === 'success' && result.action === 'updated') {
+          showToast(I18N[currentLang].toastCardUpdated);
+        }
+      } catch (err) {
+        console.log("Sheet sync notice:", err);
+      }
     }
 
     // --- 10. TOAST THÔNG BÁO ---

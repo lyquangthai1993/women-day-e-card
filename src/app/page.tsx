@@ -3,12 +3,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import html2canvas from 'html2canvas';
 import confetti from 'canvas-confetti';
-import { Sparkles, Share2, Image as ImageIcon, Globe, Lock } from 'lucide-react';
+import { Sparkles, Share2, Image as ImageIcon } from 'lucide-react';
 
 import { RelationshipTheme, Language } from '../types';
 import { RELATIONSHIPS, I18N } from '../lib/constants';
 import { getDeviceFingerprint } from '../lib/fingerprint';
-import { syncToGoogleSheet } from '../lib/googleSheet';
+import { syncToGoogleSheet, getCardFromGoogleSheet } from '../lib/googleSheet';
 
 import { CardPreview } from '../components/CardPreview';
 import { SuggestionsModal } from '../components/SuggestionsModal';
@@ -21,6 +21,7 @@ export default function HomePage() {
   const [receiver, setReceiver] = useState<string>('');
   const [message, setMessage] = useState<string>('');
   const [sender, setSender] = useState<string>('');
+  const [cardId, setCardId] = useState<string | null>(null);
   
   const [visitorId, setVisitorId] = useState<string>('fp_loading');
   const [isClaimed, setIsClaimed] = useState<boolean>(false);
@@ -33,6 +34,10 @@ export default function HomePage() {
 
   const cardRef = useRef<HTMLDivElement>(null);
   const t = I18N[language];
+
+  const generateCardId = () => {
+    return 'c_' + Math.random().toString(36).substring(2, 8) + Date.now().toString(36).slice(-4);
+  };
 
   // Khởi tạo FingerprintJS và kiểm tra trạng thái vé kem
   useEffect(() => {
@@ -57,9 +62,52 @@ export default function HomePage() {
   const checkUrlHash = () => {
     if (typeof window === 'undefined') return;
     const hash = window.location.hash;
+    
+    // 1. Kiểm tra Card ID trên Google Sheet (Real-time Cloud Sync)
+    let queryStr = hash.startsWith('#') ? hash.substring(1) : hash;
+    let params = new URLSearchParams(queryStr);
+    if (!params.has('id') && !params.has('cardId') && window.location.search) {
+      params = new URLSearchParams(window.location.search);
+    }
+    const cloudCardId = params.get('id') || params.get('cardId');
+    if (cloudCardId) {
+      const cleanId = cloudCardId.trim();
+      setCardId(cleanId);
+      showToast(t.toastCardLoading);
+      getCardFromGoogleSheet(cleanId).then((data) => {
+        if (data) {
+          if (data.receiver) setReceiver(data.receiver);
+          if (data.message) setMessage(data.message);
+          if (data.sender) setSender(data.sender);
+          if (data.relationship) {
+            const found = RELATIONSHIPS.find((item) => item.id === data.relationship || item.nameVi === data.relationship);
+            if (found) setRelationship(found);
+          }
+          if (data.language && (data.language === 'vi' || data.language === 'en')) {
+            setLanguage(data.language as Language);
+          }
+          showToast(t.toastCardLoaded);
+          setTimeout(async () => {
+            if (cardRef.current) {
+              const canvas = await html2canvas(cardRef.current, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#ffffff',
+              });
+              setGeneratedImageUrl(canvas.toDataURL('image/png'));
+              setIsViewCardModalOpen(true);
+            }
+          }, 600);
+        } else {
+          showToast(t.toastCardNotFound);
+        }
+      });
+      return;
+    }
+
     if (!hash) return;
 
-    // 1. Backward compatibility: #card=...
+    // 2. Backward compatibility: #card=...
     if (hash.includes('card=')) {
       try {
         const encoded = hash.split('card=')[1];
@@ -96,10 +144,8 @@ export default function HomePage() {
       }
     }
 
-    // 2. Compact format: #r=...&s=...&rel=...&w=...&m=... (Luôn < 150 ký tự)
+    // 3. Compact format: #r=...&s=...&rel=...&w=...&m=... (Luôn < 150 ký tự)
     try {
-      const queryStr = hash.startsWith('#') ? hash.substring(1) : hash;
-      const params = new URLSearchParams(queryStr);
       let compactRel = RELATIONSHIPS[0];
 
       if (params.has('rel')) {
@@ -163,41 +209,51 @@ export default function HomePage() {
     showToast(t.toastWishSelected);
   };
 
-  // Tạo URL chia sẻ siêu ngắn (Luôn < 150 ký tự, tránh lỗi QR code > 400 chars)
-  const getCardShareUrl = () => {
-    const wishes = language === 'vi' ? relationship.wishesVi : relationship.wishesEn;
-    const wishIdx = wishes.findIndex((w) => w.trim() === message.trim());
-
-    const params = new URLSearchParams();
-    if (receiver.trim()) params.set('r', receiver.trim());
-    if (sender.trim()) params.set('s', sender.trim());
-    params.set('rel', relationship.id);
-    if (language !== 'vi') params.set('l', language);
-
-    if (wishIdx >= 0) {
-      params.set('w', wishIdx.toString());
-    } else if (message.trim()) {
-      params.set('m', message.trim());
-    }
-
+  // Tạo URL chia sẻ với Card ID cố định
+  const getCardShareUrl = (activeId: string) => {
     const baseUrl = window.location.origin + window.location.pathname;
-    return `${baseUrl}#${params.toString()}`;
+    return `${baseUrl}#id=${activeId}`;
+  };
+
+  // Tên file tiếng Anh chuẩn cho download
+  const getDownloadFileName = () => {
+    const rawRec = receiver.trim();
+    const slug = rawRec
+      ? rawRec.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").replace(/[^a-zA-Z0-9]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "").toLowerCase()
+      : "";
+    return slug ? `happy-womens-day-${slug}.png` : "happy-womens-day-card.png";
   };
 
   // Chia sẻ thiệp
   const handleShare = async () => {
-    const shareUrl = getCardShareUrl();
-    const shareTitle = "Thiệp chúc mừng 20/10 gửi tặng bạn 🌸";
-    const shareText = "Mình vừa tạo một tấm thiệp 20/10 gửi tặng bạn. Nhấp vào đây để xem nhé!";
+    let activeCardId = cardId;
+    if (!activeCardId) {
+      activeCardId = generateCardId();
+      setCardId(activeCardId);
+    }
 
-    syncToGoogleSheet({
-      action: 'create_card',
+    const shareUrl = getCardShareUrl(activeCardId);
+    const shareTitle = language === 'vi' ? "Thiệp chúc mừng 20/10 gửi tặng bạn 🌸" : "Happy Vietnamese Women's Day E-Card 🌸";
+    const shareText = language === 'vi'
+      ? "Mình vừa tạo một tấm thiệp 20/10 gửi tặng bạn. Nhấp vào đây để xem nhé!"
+      : "I've created a heartfelt Women's Day e-card for you. Tap to open!";
+
+    window.history.replaceState(null, '', `#id=${activeCardId}`);
+
+    const res = await syncToGoogleSheet({
+      action: 'save_card',
+      cardId: activeCardId,
       visitorId,
       sender: sender.trim() || 'Ẩn danh',
-      receiver: receiver.trim() || relationship.nameVi,
-      relationship: relationship.nameVi,
-      message: message.trim() || relationship.wishesVi[0],
+      receiver: receiver.trim() || (language === 'vi' ? relationship.nameVi : relationship.nameEn),
+      relationship: relationship.id,
+      message: message.trim() || (language === 'vi' ? relationship.wishesVi[0] : relationship.wishesEn[0]),
+      language,
     });
+
+    if (res && res.status === 'success' && res.action === 'updated') {
+      showToast(t.toastCardUpdated);
+    }
 
     if (navigator.share) {
       try {
@@ -243,21 +299,24 @@ export default function HomePage() {
       setGeneratedImageUrl(imgData);
       setIsViewCardModalOpen(true);
 
+      let activeCardId = cardId;
+      if (!activeCardId) {
+        activeCardId = generateCardId();
+        setCardId(activeCardId);
+      }
+
       syncToGoogleSheet({
-        action: 'create_card',
+        action: 'save_card',
+        cardId: activeCardId,
         visitorId,
         sender: sender.trim() || 'Ẩn danh',
-        receiver: receiver.trim() || relationship.nameVi,
-        relationship: relationship.nameVi,
-        message: message.trim() || relationship.wishesVi[0],
+        receiver: receiver.trim() || (language === 'vi' ? relationship.nameVi : relationship.nameEn),
+        relationship: relationship.id,
+        message: message.trim() || (language === 'vi' ? relationship.wishesVi[0] : relationship.wishesEn[0]),
+        language,
       });
 
-      // Tạo tên file tiếng Anh chuẩn (bỏ dấu tiếng Việt, ví dụ: happy-womens-day-me-yeu.png)
-      const rawRec = receiver.trim();
-      const slug = rawRec
-        ? rawRec.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").replace(/[^a-zA-Z0-9]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "").toLowerCase()
-        : "";
-      const finalFileName = slug ? `happy-womens-day-${slug}.png` : "happy-womens-day-card.png";
+      const finalFileName = getDownloadFileName();
 
       // Tự động tải về nếu trình duyệt hỗ trợ
       const link = document.createElement('a');
@@ -276,6 +335,21 @@ export default function HomePage() {
       console.error(err);
       openIceCreamWithConfetti();
     }
+  };
+
+  const handleCancelEditing = () => {
+    setCardId(null);
+    window.history.replaceState(null, '', window.location.pathname);
+    setReceiver('');
+    setMessage('');
+    setSender('');
+    setRelationship(RELATIONSHIPS[0]);
+    setIsViewCardModalOpen(false);
+  };
+
+  const handleOpenEdit = () => {
+    setIsViewCardModalOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const openIceCreamWithConfetti = () => {
@@ -353,6 +427,28 @@ export default function HomePage() {
       {/* Main Content */}
       <main className="flex-1 max-w-md mx-auto w-full px-4 py-5 space-y-6">
         
+        {/* Banner đang chỉnh sửa thiệp đã lưu */}
+        {cardId && (
+          <div className="bg-amber-50 border border-amber-200/80 rounded-2xl p-3 flex items-center justify-between text-amber-900 shadow-sm animate-fade-in">
+            <div className="flex items-center space-x-2.5">
+              <span className="text-lg">✏️</span>
+              <div>
+                <span className="font-bold block text-sm">{t.editingBannerTitle}</span>
+                <span className="text-[11px] text-amber-700/90 block leading-tight mt-0.5">
+                  {t.editingBannerSubtitle}
+                </span>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={handleCancelEditing}
+              className="text-[11px] bg-white border border-amber-200 hover:bg-amber-100 font-bold px-2.5 py-1.5 rounded-xl text-amber-800 transition shadow-2xs"
+            >
+              {t.btnCancelEditText}
+            </button>
+          </div>
+        )}
+
         {/* Bước 1: Chọn đối tượng */}
         <section>
           <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2.5">
@@ -399,7 +495,6 @@ export default function HomePage() {
             />
           </div>
 
-          {/* Lời nhắn & Nút mở Popup gợi ý */}
           <div>
             <div className="flex items-center justify-between mb-1.5">
               <label className="block text-xs font-bold text-slate-600">
@@ -410,11 +505,10 @@ export default function HomePage() {
                 onClick={() => setIsSuggestionsOpen(true)}
                 className="inline-flex items-center space-x-1.5 text-xs font-bold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 px-3 py-1 rounded-full active:scale-95 transition shadow-sm"
               >
-                <Sparkles className="w-3.5 h-3.5" />
+                <span>✨</span>
                 <span>{t.btnOpenSuggestions}</span>
               </button>
             </div>
-
             <textarea
               rows={3}
               maxLength={300}
@@ -423,7 +517,6 @@ export default function HomePage() {
               placeholder={t.messagePlaceholder}
               className="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition bg-slate-50/50 resize-none"
             />
-            
             <div className="flex items-center justify-between mt-1">
               <button
                 type="button"
@@ -433,7 +526,9 @@ export default function HomePage() {
                 <span className="text-xs group-hover:rotate-12 transition-transform">💡</span>
                 <span className="underline decoration-rose-300 underline-offset-2">{t.quickOpenPrompt}</span>
               </button>
-              <div className="text-[10px] text-slate-400 font-mono">{message.length}/300</div>
+              <div className="text-[10px] text-slate-400 font-mono">
+                {message.length}/300
+              </div>
             </div>
           </div>
 
@@ -452,30 +547,33 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Bước 3: Xem trước thiệp */}
+        {/* Bước 3: Live Preview */}
         <section>
           <div className="flex items-center justify-between mb-2">
             <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
               {t.labelPreview}
             </label>
-            <span className="text-[11px] text-slate-400">{t.livePreviewHint}</span>
+            <span className="text-[10px] text-slate-400 font-medium">
+              {t.livePreviewHint}
+            </span>
           </div>
 
-          <CardPreview
-            cardRef={cardRef}
-            relationship={relationship}
-            receiver={receiver}
-            sender={sender}
-            message={message}
-            language={language}
-          />
+          <div ref={cardRef}>
+            <CardPreview
+              relationship={relationship}
+              language={language}
+              receiver={receiver}
+              message={message}
+              sender={sender}
+            />
+          </div>
         </section>
 
-        {/* Bước 4: 2 Nút hành động chính */}
+        {/* Nút Call To Action */}
         <section className="space-y-2.5 pt-2">
           <button
             onClick={handleShare}
-            className="w-full bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-700 hover:to-pink-700 text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg shadow-rose-200 flex items-center justify-center space-x-2 active:scale-[0.98] transition"
+            className="w-full bg-gradient-to-r from-rose-600 via-pink-600 to-rose-500 hover:opacity-95 text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg shadow-rose-200 flex items-center justify-center space-x-2 active:scale-[0.98] transition"
           >
             <Share2 className="w-5 h-5" />
             <span className="text-sm tracking-wide">{t.btnShareText}</span>
@@ -521,11 +619,9 @@ export default function HomePage() {
         onClose={() => setIsViewCardModalOpen(false)}
         language={language}
         imageUrl={generatedImageUrl}
-        onOpenCreateOwn={() => {
-          setIsViewCardModalOpen(false);
-          window.location.hash = '';
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
+        downloadFileName={getDownloadFileName()}
+        onEdit={handleOpenEdit}
+        onOpenCreateOwn={handleCancelEditing}
       />
 
       {/* Toast Notification */}

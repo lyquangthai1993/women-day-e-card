@@ -9,6 +9,8 @@ interface ViewCardModalProps {
   onClose: () => void;
   language: Language;
   imageUrl: string;
+  downloadFileName?: string;
+  onEdit?: () => void;
   onOpenCreateOwn: () => void;
 }
 
@@ -17,6 +19,8 @@ export const ViewCardModal: React.FC<ViewCardModalProps> = ({
   onClose,
   language,
   imageUrl,
+  downloadFileName = 'happy-womens-day-card.png',
+  onEdit,
   onOpenCreateOwn,
 }) => {
   if (!isOpen) return null;
@@ -39,21 +43,31 @@ export const ViewCardModal: React.FC<ViewCardModalProps> = ({
           <p className="text-[11px] text-center text-slate-400">
             {t.longPressHint}
           </p>
-          <div className="flex space-x-2">
+          <div className="grid grid-cols-2 gap-2">
             <a
               href={imageUrl}
-              download="happy-womens-day-card.png"
-              className="flex-1 bg-rose-600 hover:bg-rose-700 text-white text-center font-bold py-2.5 rounded-xl text-xs flex items-center justify-center transition shadow-sm"
+              download={downloadFileName}
+              className="bg-rose-600 hover:bg-rose-700 text-white text-center font-bold py-2.5 rounded-xl text-xs flex items-center justify-center transition shadow-xs"
             >
               {t.btnDownload}
             </a>
-            <button
-              onClick={onOpenCreateOwn}
-              className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl text-xs transition"
-            >
-              {t.btnCreateOwn}
-            </button>
+            {onEdit && (
+              <button
+                type="button"
+                onClick={onEdit}
+                className="bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center space-x-1 transition shadow-xs"
+              >
+                <span>✏️</span>
+                <span>{t.btnEditCard}</span>
+              </button>
+            )}
           </div>
+          <button
+            onClick={onOpenCreateOwn}
+            className="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2 rounded-xl text-xs transition"
+          >
+            🌸 {t.btnCreateOwn}
+          </button>
         </div>
       </div>
     </div>
