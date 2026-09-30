@@ -13,8 +13,9 @@ import { CardPreview } from '../../components/CardPreview';
 
 function CardViewContent() {
   const searchParams = useSearchParams();
+  const urlLang = searchParams.get('lang') || searchParams.get('l');
 
-  const [language, setLanguage] = useState<Language>('vi');
+  const [language, setLanguage] = useState<Language>(urlLang === 'en' ? 'en' : 'vi');
   const [relationship, setRelationship] = useState<RelationshipTheme>(RELATIONSHIPS[0]);
   const [receiver, setReceiver] = useState<string>('');
   const [message, setMessage] = useState<string>('');
@@ -44,7 +45,7 @@ function CardViewContent() {
   useEffect(() => {
     let id = searchParams.get('id') || searchParams.get('cardId');
     let rel = searchParams.get('rel');
-    let lang = searchParams.get('l');
+    let lang = searchParams.get('lang') || searchParams.get('l');
     let rec = searchParams.get('r');
     let send = searchParams.get('s');
     let msg = searchParams.get('m');
@@ -56,11 +57,15 @@ function CardViewContent() {
       const hashParams = new URLSearchParams(hashStr);
       if (!id) id = hashParams.get('id') || hashParams.get('cardId');
       if (!rel) rel = hashParams.get('rel');
-      if (!lang) lang = hashParams.get('l');
+      if (!lang) lang = hashParams.get('lang') || hashParams.get('l');
       if (!rec) rec = hashParams.get('r');
       if (!send) send = hashParams.get('s');
       if (!msg) msg = hashParams.get('m');
       if (!wishIdx) wishIdx = hashParams.get('w');
+    }
+
+    if (lang === 'vi' || lang === 'en') {
+      setLanguage(lang as Language);
     }
 
     const hasInlineData = Boolean(rel || rec || msg || wishIdx);

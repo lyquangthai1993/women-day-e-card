@@ -88,7 +88,8 @@ export default function HomePage() {
         const found = RELATIONSHIPS.find((item) => item.id === params.get('rel'));
         if (found) setRelationship(found);
       }
-      if (params.has('l')) setLanguage(params.get('l') as Language);
+      const editLang = params.get('lang') || params.get('l');
+      if (editLang === 'vi' || editLang === 'en') setLanguage(editLang as Language);
       if (params.has('r')) setReceiver(params.get('r') || '');
       if (params.has('s')) setSender(params.get('s') || '');
       if (params.has('m')) setMessage(params.get('m') || '');
@@ -141,13 +142,13 @@ export default function HomePage() {
     showToast(t.toastWishSelected);
   };
 
-  // Tạo URL chia sẻ hướng về trang con /card?id=... (Đúng chuẩn trang con)
+  // Tạo URL chia sẻ hướng về trang con /card?id=... (Luôn định nghĩa sẵn ngôn ngữ vi/en trên URL)
   const getCardShareUrl = (activeId: string) => {
     const baseUrl = `${window.location.origin}/card`;
     const p = new URLSearchParams();
     p.set('id', activeId);
+    p.set('lang', language);
     if (relationship.id !== 'mother') p.set('rel', relationship.id);
-    if (language !== 'vi') p.set('l', language);
     if (receiver.trim()) p.set('r', receiver.trim());
     if (sender.trim()) p.set('s', sender.trim());
 

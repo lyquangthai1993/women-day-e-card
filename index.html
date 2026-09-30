@@ -1274,8 +1274,8 @@
       const baseUrl = window.location.origin + window.location.pathname;
       const p = new URLSearchParams();
       p.set('id', currentCardId);
+      p.set('lang', currentLang);
       if (currentRelationship.id !== 'mother') p.set('rel', currentRelationship.id);
-      if (currentLang !== 'vi') p.set('l', currentLang);
       const r = document.getElementById('receiverNameInput').value.trim();
       if (r) p.set('r', r);
       const s = document.getElementById('senderNameInput').value.trim();
@@ -1549,6 +1549,12 @@
       }
 
       const cardIdParam = params.get('id') || params.get('cardId');
+      const langParam = params.get('lang') || params.get('l');
+      if (langParam === 'vi' || langParam === 'en') {
+        currentLang = langParam;
+        applyLanguage();
+      }
+
       const hasInlineData = params.has('rel') || params.has('r') || params.has('m') || params.has('w');
 
       // 1. Nếu có dữ liệu compact inline, hiển thị tức thì trong 0ms để tránh nháy thiệp mặc định
@@ -1558,10 +1564,6 @@
           if (params.has('rel')) {
             const rel = RELATIONSHIPS.find(item => item.id === params.get('rel'));
             if (rel) currentRelationship = rel;
-          }
-
-          if (params.has('l')) {
-            currentLang = params.get('l');
           }
 
           if (params.has('r')) {
