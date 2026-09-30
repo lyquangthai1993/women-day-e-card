@@ -403,23 +403,25 @@ export default function HomePage() {
     <>
       {/* Banner nhận kem sticky */}
       {isClaimed && !isViewingMode && (
-        <div className="bg-gradient-to-r from-amber-500 via-rose-500 to-pink-500 text-white text-xs font-semibold py-2 px-4 shadow-sm flex items-center justify-between z-30 sticky top-0">
-          <div className="flex items-center space-x-2">
-            <span className="text-base">🍦</span>
-            <span>{t.claimedBannerText}</span>
+        <div className="bg-gradient-to-r from-amber-500 via-rose-500 to-pink-500 text-white text-xs font-semibold py-2 px-4 shadow-sm z-30 sticky top-0">
+          <div className="max-w-md lg:max-w-5xl mx-auto flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <span className="text-base">🍦</span>
+              <span>{t.claimedBannerText}</span>
+            </div>
+            <button
+              onClick={() => setIsIceCreamModalOpen(true)}
+              className="bg-white/20 hover:bg-white/30 backdrop-blur-sm px-2.5 py-1 rounded-full text-white text-[11px] font-bold tracking-wide transition"
+            >
+              {t.btnViewTicket}
+            </button>
           </div>
-          <button
-            onClick={() => setIsIceCreamModalOpen(true)}
-            className="bg-white/20 hover:bg-white/30 backdrop-blur-sm px-2.5 py-1 rounded-full text-white text-[11px] font-bold tracking-wide transition"
-          >
-            {t.btnViewTicket}
-          </button>
         </div>
       )}
 
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-md border-b border-rose-100 sticky top-0 z-20">
-        <div className="max-w-md mx-auto px-4 h-14 flex items-center justify-between">
+        <div className="max-w-md lg:max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
           <div 
             onClick={handleSwitchToCreateMode} 
             className="flex items-center space-x-2 cursor-pointer group select-none min-w-0 pr-2"
@@ -546,7 +548,7 @@ export default function HomePage() {
           </div>
 
           {/* Main Creator Content */}
-          <main className="flex-1 max-w-md mx-auto w-full px-4 py-5 space-y-6">
+          <main className="flex-1 max-w-md lg:max-w-5xl mx-auto w-full px-4 py-5 lg:py-8 space-y-6">
             
             {/* Banner đang chỉnh sửa thiệp đã lưu */}
             {cardId && (
@@ -570,206 +572,215 @@ export default function HomePage() {
               </div>
             )}
 
-            {/* Bước 1: Chọn đối tượng */}
-            <section>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2.5">
-                {t.labelRelationship}
-              </label>
-              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                {RELATIONSHIPS.map((rel) => {
-                  const isSelected = rel.id === relationship.id;
-                  const name = language === 'vi' ? rel.nameVi : rel.nameEn;
-                  return (
-                    <button
-                      key={rel.id}
-                      type="button"
-                      onClick={() => handleSelectRelationship(rel)}
-                      className={`flex flex-col items-center justify-center p-2 rounded-xl border text-center transition ${
-                        isSelected 
-                          ? 'bg-rose-50 border-rose-400 ring-2 ring-rose-200 shadow-sm' 
-                          : 'bg-white border-slate-200 hover:border-rose-200 text-slate-600'
-                      }`}
-                    >
-                      <span className="text-xl mb-1">{rel.icon}</span>
-                      <span className={`text-[11px] font-bold leading-tight ${isSelected ? 'text-rose-700' : 'text-slate-700'}`}>
-                        {name}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </section>
-
-            {/* Bước 2: Nhập thông tin & Lời chúc */}
-            <section className="space-y-3 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
-              <div>
-                <label className="block text-xs font-bold text-slate-600 mb-1">
-                  {t.labelReceiverName}
-                </label>
-                <input
-                  type="text"
-                  maxLength={40}
-                  value={receiver}
-                  onChange={(e) => setReceiver(e.target.value)}
-                  placeholder={t.receiverPlaceholder}
-                  className="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition bg-slate-50/50"
-                />
-              </div>
-
-              <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label className="block text-xs font-bold text-slate-600">
-                    {t.labelMessage}
+            {/* Grid 2 cột trên Desktop (lg:), 1 cột trên Mobile */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+              {/* CỘT TRÁI (Desktop): Bước 1 - Chọn đối tượng & Nhập nội dung */}
+              <div className="lg:col-span-6 space-y-5">
+                {/* Bước 1: Chọn đối tượng */}
+                <section>
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2.5">
+                    {t.labelRelationship}
                   </label>
-                  <button
-                    type="button"
-                    onClick={() => setIsSuggestionsOpen(true)}
-                    className="inline-flex items-center space-x-1.5 text-xs font-bold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 px-3 py-1 rounded-full active:scale-95 transition shadow-sm"
-                  >
-                    <span>✨</span>
-                    <span>{t.btnOpenSuggestions}</span>
-                  </button>
-                </div>
-                <textarea
-                  rows={3}
-                  maxLength={300}
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  placeholder={t.messagePlaceholder}
-                  className="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition bg-slate-50/50 resize-none"
-                />
-                <div className="flex items-center justify-between mt-1">
-                  <button
-                    type="button"
-                    onClick={() => setIsSuggestionsOpen(true)}
-                    className="text-[11px] text-rose-500 hover:text-rose-700 font-semibold inline-flex items-center space-x-1.5 group transition"
-                  >
-                    <span className="text-xs group-hover:rotate-12 transition-transform">💡</span>
-                    <span className="underline decoration-rose-300 underline-offset-2">{t.quickOpenPrompt}</span>
-                  </button>
-                  <div className="text-[10px] text-slate-400 font-mono">
-                    {message.length}/300
+                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                    {RELATIONSHIPS.map((rel) => {
+                      const isSelected = rel.id === relationship.id;
+                      const name = language === 'vi' ? rel.nameVi : rel.nameEn;
+                      return (
+                        <button
+                          key={rel.id}
+                          type="button"
+                          onClick={() => handleSelectRelationship(rel)}
+                          className={`flex flex-col items-center justify-center p-2 rounded-xl border text-center transition ${
+                            isSelected 
+                              ? 'bg-rose-50 border-rose-400 ring-2 ring-rose-200 shadow-sm' 
+                              : 'bg-white border-slate-200 hover:border-rose-200 text-slate-600'
+                          }`}
+                        >
+                          <span className="text-xl mb-1">{rel.icon}</span>
+                          <span className={`text-[11px] font-bold leading-tight ${isSelected ? 'text-rose-700' : 'text-slate-700'}`}>
+                            {name}
+                          </span>
+                        </button>
+                      );
+                    })}
                   </div>
-                </div>
+                </section>
+
+                {/* Bước 1 tiếp tục: Nhập thông tin & Lời chúc */}
+                <section className="space-y-3 bg-white p-4 lg:p-5 rounded-2xl border border-slate-100 shadow-sm">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-600 mb-1">
+                      {t.labelReceiverName}
+                    </label>
+                    <input
+                      type="text"
+                      maxLength={40}
+                      value={receiver}
+                      onChange={(e) => setReceiver(e.target.value)}
+                      placeholder={t.receiverPlaceholder}
+                      className="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition bg-slate-50/50"
+                    />
+                  </div>
+
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="block text-xs font-bold text-slate-600">
+                        {t.labelMessage}
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => setIsSuggestionsOpen(true)}
+                        className="inline-flex items-center space-x-1.5 text-xs font-bold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 px-3 py-1 rounded-full active:scale-95 transition shadow-sm"
+                      >
+                        <span>✨</span>
+                        <span>{t.btnOpenSuggestions}</span>
+                      </button>
+                    </div>
+                    <textarea
+                      rows={3}
+                      maxLength={300}
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      placeholder={t.messagePlaceholder}
+                      className="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition bg-slate-50/50 resize-none"
+                    />
+                    <div className="flex items-center justify-between mt-1">
+                      <button
+                        type="button"
+                        onClick={() => setIsSuggestionsOpen(true)}
+                        className="text-[11px] text-rose-500 hover:text-rose-700 font-semibold inline-flex items-center space-x-1.5 group transition"
+                      >
+                        <span className="text-xs group-hover:rotate-12 transition-transform">💡</span>
+                        <span className="underline decoration-rose-300 underline-offset-2">{t.quickOpenPrompt}</span>
+                      </button>
+                      <div className="text-[10px] text-slate-400 font-mono">
+                        {message.length}/300
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-600 mb-1">
+                      {t.labelSenderName}
+                    </label>
+                    <input
+                      type="text"
+                      maxLength={35}
+                      value={sender}
+                      onChange={(e) => setSender(e.target.value)}
+                      placeholder={t.senderPlaceholder}
+                      className="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition bg-slate-50/50"
+                    />
+                  </div>
+                </section>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-600 mb-1">
-                  {t.labelSenderName}
-                </label>
-                <input
-                  type="text"
-                  maxLength={35}
-                  value={sender}
-                  onChange={(e) => setSender(e.target.value)}
-                  placeholder={t.senderPlaceholder}
-                  className="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition bg-slate-50/50"
-                />
-              </div>
-            </section>
+              {/* CỘT PHẢI (Desktop): Bước 2 - Xem trước thiệp & Nút thao tác */}
+              <div className="lg:col-span-6 space-y-5 lg:sticky lg:top-20">
+                {/* Bước 2: Live Preview */}
+                <section>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                      {t.labelPreview}
+                    </label>
+                    <span className="text-[10px] text-slate-400 font-medium">
+                      {t.livePreviewHint}
+                    </span>
+                  </div>
 
-            {/* Bước 3: Live Preview */}
-            <section>
-              <div className="flex items-center justify-between mb-2">
-                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-                  {t.labelPreview}
-                </label>
-                <span className="text-[10px] text-slate-400 font-medium">
-                  {t.livePreviewHint}
-                </span>
-              </div>
+                  <div ref={cardRef}>
+                    <CardPreview
+                      relationship={relationship}
+                      language={language}
+                      receiver={receiver}
+                      message={message}
+                      sender={sender}
+                    />
+                  </div>
+                </section>
 
-              <div ref={cardRef}>
-                <CardPreview
-                  relationship={relationship}
-                  language={language}
-                  receiver={receiver}
-                  message={message}
-                  sender={sender}
-                />
-              </div>
-            </section>
+                {/* Nút Call To Action */}
+                <section className="space-y-2.5 pt-1">
+                  {cardId ? (
+                    <>
+                      {/* Nút 1: Cập nhật thiệp hiện tại */}
+                      <button
+                        type="button"
+                        onClick={() => handleShare()}
+                        disabled={isSharing || isSavingImage}
+                        className={`w-full bg-gradient-to-r from-rose-600 via-pink-600 to-rose-500 hover:opacity-95 text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg shadow-rose-200 flex items-center justify-center space-x-2 active:scale-[0.98] transition ${isSharing ? 'opacity-80 cursor-wait' : ''}`}
+                      >
+                        {sharingAction === 'update' ? (
+                          <>
+                            <Loader2 className="w-5 h-5 animate-spin" />
+                            <span className="text-sm tracking-wide">{t.btnSharingText}</span>
+                          </>
+                        ) : (
+                          <>
+                            <RefreshCw className="w-4 h-4" />
+                            <span className="text-sm tracking-wide">{t.btnUpdateCurrentCard}</span>
+                          </>
+                        )}
+                      </button>
 
-            {/* Nút Call To Action */}
-            <section className="space-y-2.5 pt-2">
-              {cardId ? (
-                <>
-                  {/* Nút 1: Cập nhật thiệp hiện tại */}
+                      {/* Nút 2: Bắt đầu tạo thiệp mới gửi người khác (Phương án A) */}
+                      <button
+                        type="button"
+                        onClick={handleCreateNewForOther}
+                        disabled={isSharing || isSavingImage}
+                        className="w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-500 hover:opacity-95 text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg shadow-emerald-200 flex items-center justify-center space-x-2 active:scale-[0.98] transition"
+                      >
+                        <PlusCircle className="w-4 h-4" />
+                        <span className="text-sm tracking-wide">{t.btnCreateAsNewCard}</span>
+                      </button>
+                    </>
+                  ) : (
+                    /* Nút mặc định khi chưa có cardId */
+                    <button
+                      type="button"
+                      onClick={() => handleShare()}
+                      disabled={isSharing || isSavingImage}
+                      className={`w-full bg-gradient-to-r from-rose-600 via-pink-600 to-rose-500 hover:opacity-95 text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg shadow-rose-200 flex items-center justify-center space-x-2 active:scale-[0.98] transition ${isSharing ? 'opacity-80 cursor-wait' : ''}`}
+                    >
+                      {sharingAction === 'default' ? (
+                        <>
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                          <span className="text-sm tracking-wide">{t.btnSharingText}</span>
+                        </>
+                      ) : (
+                        <>
+                          <Share2 className="w-5 h-5" />
+                          <span className="text-sm tracking-wide">{t.btnShareText}</span>
+                        </>
+                      )}
+                    </button>
+                  )}
+
+                  {/* Nút 3: Lưu ảnh về máy */}
                   <button
                     type="button"
-                    onClick={() => handleShare()}
-                    disabled={isSharing || isSavingImage}
-                    className={`w-full bg-gradient-to-r from-rose-600 via-pink-600 to-rose-500 hover:opacity-95 text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg shadow-rose-200 flex items-center justify-center space-x-2 active:scale-[0.98] transition ${isSharing ? 'opacity-80 cursor-wait' : ''}`}
+                    onClick={handleSaveImage}
+                    disabled={isSavingImage || isSharing}
+                    className={`w-full bg-white hover:bg-slate-50 text-slate-700 font-bold py-3.5 px-6 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-center space-x-2 active:scale-[0.98] transition ${isSavingImage ? 'opacity-80 cursor-wait' : ''}`}
                   >
-                    {sharingAction === 'update' ? (
+                    {isSavingImage ? (
                       <>
-                        <Loader2 className="w-5 h-5 animate-spin" />
-                        <span className="text-sm tracking-wide">{t.btnSharingText}</span>
+                        <Loader2 className="w-5 h-5 animate-spin text-rose-500" />
+                        <span className="text-sm tracking-wide">{t.btnSavingText}</span>
                       </>
                     ) : (
                       <>
-                        <RefreshCw className="w-4 h-4" />
-                        <span className="text-sm tracking-wide">{t.btnUpdateCurrentCard}</span>
+                        <ImageIcon className="w-5 h-5 text-rose-500" />
+                        <span className="text-sm tracking-wide">{t.btnSaveImgText}</span>
                       </>
                     )}
                   </button>
-
-                  {/* Nút 2: Bắt đầu tạo thiệp mới gửi người khác (Phương án A) */}
-                  <button
-                    type="button"
-                    onClick={handleCreateNewForOther}
-                    disabled={isSharing || isSavingImage}
-                    className="w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-500 hover:opacity-95 text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg shadow-emerald-200 flex items-center justify-center space-x-2 active:scale-[0.98] transition"
-                  >
-                    <PlusCircle className="w-4 h-4" />
-                    <span className="text-sm tracking-wide">{t.btnCreateAsNewCard}</span>
-                  </button>
-                </>
-              ) : (
-                /* Nút mặc định khi chưa có cardId */
-                <button
-                  type="button"
-                  onClick={() => handleShare()}
-                  disabled={isSharing || isSavingImage}
-                  className={`w-full bg-gradient-to-r from-rose-600 via-pink-600 to-rose-500 hover:opacity-95 text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg shadow-rose-200 flex items-center justify-center space-x-2 active:scale-[0.98] transition ${isSharing ? 'opacity-80 cursor-wait' : ''}`}
-                >
-                  {sharingAction === 'default' ? (
-                    <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      <span className="text-sm tracking-wide">{t.btnSharingText}</span>
-                    </>
-                  ) : (
-                    <>
-                      <Share2 className="w-5 h-5" />
-                      <span className="text-sm tracking-wide">{t.btnShareText}</span>
-                    </>
-                  )}
-                </button>
-              )}
-
-              {/* Nút 3: Lưu ảnh về máy */}
-              <button
-                type="button"
-                onClick={handleSaveImage}
-                disabled={isSavingImage || isSharing}
-                className={`w-full bg-white hover:bg-slate-50 text-slate-700 font-bold py-3.5 px-6 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-center space-x-2 active:scale-[0.98] transition ${isSavingImage ? 'opacity-80 cursor-wait' : ''}`}
-              >
-                {isSavingImage ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin text-rose-500" />
-                    <span className="text-sm tracking-wide">{t.btnSavingText}</span>
-                  </>
-                ) : (
-                  <>
-                    <ImageIcon className="w-5 h-5 text-rose-500" />
-                    <span className="text-sm tracking-wide">{t.btnSaveImgText}</span>
-                  </>
-                )}
-              </button>
-            </section>
+                </section>
+              </div>
+            </div>
 
             {/* Footer */}
-            <footer className="pt-4 pb-6 text-center text-[11px] text-slate-400 space-y-1">
+            <footer className="pt-6 pb-6 text-center text-[11px] text-slate-400 space-y-1">
               <p>{t.footerMadeWith}</p>
               <p className="font-mono text-[10px] text-slate-300">Device ID: {visitorId.substring(0, 10)}...</p>
             </footer>
