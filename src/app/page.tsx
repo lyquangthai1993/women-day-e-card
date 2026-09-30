@@ -203,7 +203,8 @@ export default function HomePage() {
 
       window.history.replaceState(null, '', `#id=${activeCardId}`);
 
-      const res = await syncToGoogleSheet({
+      // Đồng bộ ngầm lên Google Sheet (Optimistic UI - không bắt người dùng đợi mạng)
+      syncToGoogleSheet({
         action: 'save_card',
         cardId: activeCardId,
         cardUrl: shareUrl,
@@ -213,12 +214,14 @@ export default function HomePage() {
         relationship: relationship.id,
         message: message.trim() || (language === 'vi' ? relationship.wishesVi[0] : relationship.wishesEn[0]),
         language,
+      }).then((res) => {
+        if (!forceNew && res && res.status === 'success' && res.action === 'updated') {
+          showToast(t.toastCardUpdated);
+        }
       });
 
       if (forceNew) {
         showToast(t.toastNewCardCreated);
-      } else if (res && res.status === 'success' && res.action === 'updated') {
-        showToast(t.toastCardUpdated);
       }
 
       const isMobile = /mobile|android|iphone|ipad|ipod/i.test(navigator.userAgent || '');
