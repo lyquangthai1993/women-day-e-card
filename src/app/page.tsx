@@ -232,11 +232,17 @@ export default function HomePage() {
         message: message.trim() || relationship.wishesVi[0],
       });
 
+      // Tạo tên file tiếng Anh chuẩn (bỏ dấu tiếng Việt, ví dụ: happy-womens-day-me-yeu.png)
+      const rawRec = receiver.trim();
+      const slug = rawRec
+        ? rawRec.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").replace(/[^a-zA-Z0-9]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "").toLowerCase()
+        : "";
+      const finalFileName = slug ? `happy-womens-day-${slug}.png` : "happy-womens-day-card.png";
+
       // Tự động tải về nếu trình duyệt hỗ trợ
       const link = document.createElement('a');
       link.href = imgData;
-      const recName = receiver.trim() || 'nguoi-thuong';
-      link.download = `thiep-20-10-${recName}.png`;
+      link.download = finalFileName;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);

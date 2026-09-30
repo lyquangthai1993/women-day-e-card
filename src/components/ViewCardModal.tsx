@@ -42,7 +42,7 @@ export const ViewCardModal: React.FC<ViewCardModalProps> = ({
           <div className="flex space-x-2">
             <a
               href={imageUrl}
-              download="thiep-20-10.png"
+              download="happy-womens-day-card.png"
               className="flex-1 bg-rose-600 hover:bg-rose-700 text-white text-center font-bold py-2.5 rounded-xl text-xs flex items-center justify-center transition shadow-sm"
             >
               {t.btnDownload}

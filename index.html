@@ -361,7 +361,7 @@
           💡 Gợi ý: Nhấn giữ vào ảnh để lưu trực tiếp vào thư viện ảnh điện thoại.
         </p>
         <div class="flex space-x-2">
-          <a id="downloadImageLink" download="thiep-20-10.png" class="flex-1 bg-rose-600 text-white text-center font-bold py-2.5 rounded-xl text-xs flex items-center justify-center">
+          <a id="downloadImageLink" download="happy-womens-day-card.png" class="flex-1 bg-rose-600 text-white text-center font-bold py-2.5 rounded-xl text-xs flex items-center justify-center">
             Tải ảnh về máy
           </a>
           <button id="btnCreateOwn" onclick="openCreateOwnCard()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl text-xs">
@@ -1055,11 +1055,17 @@
 
         const imgData = canvas.toDataURL('image/png');
         
+        // Tạo tên file tiếng Anh chuẩn (loại bỏ dấu tiếng Việt, ví dụ: happy-womens-day-me-yeu.png)
+        const rawReceiver = document.getElementById('receiverNameInput').value.trim();
+        const slug = rawReceiver
+          ? rawReceiver.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").replace(/[^a-zA-Z0-9]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "").toLowerCase()
+          : "";
+        const finalFileName = slug ? `happy-womens-day-${slug}.png` : "happy-womens-day-card.png";
+
         // Gắn vào thẻ download
         const downloadLink = document.getElementById('downloadImageLink');
         downloadLink.href = imgData;
-        const receiverName = document.getElementById('receiverNameInput').value.trim() || 'nguoi-thuong';
-        downloadLink.download = `thiep-20-10-${receiverName}.png`;
+        downloadLink.download = finalFileName;
 
         // Hiển thị modal xem ảnh (đặc biệt hữu ích trên Zalo Browser vì Zalo chặn download trực tiếp)
         document.getElementById('generatedCardImage').src = imgData;
@@ -1071,7 +1077,7 @@
         // Tự động kích hoạt download nếu trình duyệt cho phép
         const tempLink = document.createElement('a');
         tempLink.href = imgData;
-        tempLink.download = `thiep-20-10-${receiverName}.png`;
+        tempLink.download = finalFileName;
         document.body.appendChild(tempLink);
         tempLink.click();
         document.body.removeChild(tempLink);
