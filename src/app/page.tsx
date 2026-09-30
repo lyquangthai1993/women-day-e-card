@@ -6,7 +6,7 @@ import confetti from 'canvas-confetti';
 import { Sparkles, Share2, Image as ImageIcon, Loader2, RefreshCw, PlusCircle } from 'lucide-react';
 
 import { RelationshipTheme, Language } from '../types';
-import { RELATIONSHIPS, I18N } from '../lib/constants';
+import { RELATIONSHIPS, I18N, getIceCreamClaimStorageKey } from '../lib/constants';
 import { getDeviceFingerprint } from '../lib/fingerprint';
 import { syncToGoogleSheet, getCardFromGoogleSheet } from '../lib/googleSheet';
 
@@ -60,7 +60,7 @@ export default function HomePage() {
       const id = await getDeviceFingerprint();
       setVisitorId(id);
       
-      const claimedKey = 'icecream_claimed_' + id;
+      const claimedKey = getIceCreamClaimStorageKey(id);
       if (localStorage.getItem(claimedKey) === 'true') {
         setIsClaimed(true);
       }
@@ -363,7 +363,7 @@ export default function HomePage() {
 
   const handleClaimIceCream = () => {
     setIsClaimed(true);
-    localStorage.setItem('icecream_claimed_' + visitorId, 'true');
+    localStorage.setItem(getIceCreamClaimStorageKey(visitorId), 'true');
     showToast(t.toastClaimed);
 
     syncToGoogleSheet({

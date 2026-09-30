@@ -1,5 +1,13 @@
 import { RelationshipTheme } from '../types';
 
+// Tiền tố / Key định danh trạng thái nhận kem trong localStorage (cấu hình động qua .env / Vercel)
+export const ICECREAM_CLAIM_KEY_PREFIX = process.env.NEXT_PUBLIC_ICECREAM_CLAIM_KEY || 'icecream_claimed';
+
+export const getIceCreamClaimStorageKey = (visitorId: string): string => {
+  const prefix = process.env.NEXT_PUBLIC_ICECREAM_CLAIM_KEY || 'icecream_claimed';
+  return `${prefix}_${visitorId}`;
+};
+
 export const RELATIONSHIPS: RelationshipTheme[] = [
   {
     id: 'mother',
