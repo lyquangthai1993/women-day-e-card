@@ -95,7 +95,9 @@ function CardViewContent() {
     // 1. Nạp trước dữ liệu inline nếu có
     let initialRel = RELATIONSHIPS[0];
     if (rel) {
-      const found = RELATIONSHIPS.find((item) => item.id === rel || item.nameVi === rel);
+      const found = RELATIONSHIPS.find(
+        (item) => item.id === rel || item.nameVi === rel || item.nameEn === rel || (item.id === 'other' && (rel.toLowerCase() === 'others' || rel === 'Khác - Others'))
+      );
       if (found) {
         initialRel = found;
         setRelationship(found);
@@ -126,7 +128,9 @@ function CardViewContent() {
           if (data.message) setMessage(data.message);
           if (data.sender) setSender(data.sender);
           if (data.relationship) {
-            const found = RELATIONSHIPS.find((item) => item.id === data.relationship || item.nameVi === data.relationship);
+            const found = RELATIONSHIPS.find(
+              (item) => item.id === data.relationship || item.nameVi === data.relationship || item.nameEn === data.relationship || (item.id === 'other' && (data.relationship.toLowerCase() === 'others' || data.relationship === 'Khác - Others'))
+            );
             if (found) setRelationship(found);
           }
           if (data.language && (data.language === 'vi' || data.language === 'en')) {

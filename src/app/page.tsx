@@ -107,7 +107,9 @@ export default function HomePage() {
           if (data.message) setMessage(data.message);
           if (data.sender) setSender(data.sender);
           if (data.relationship) {
-            const found = RELATIONSHIPS.find((item) => item.id === data.relationship || item.nameVi === data.relationship);
+            const found = RELATIONSHIPS.find(
+              (item) => item.id === data.relationship || item.nameVi === data.relationship || item.nameEn === data.relationship || (item.id === 'other' && (data.relationship.toLowerCase() === 'others' || data.relationship === 'Khác - Others'))
+            );
             if (found) setRelationship(found);
           }
         }
@@ -581,7 +583,7 @@ export default function HomePage() {
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2.5">
                     {t.labelRelationship}
                   </label>
-                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                  <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
                     {RELATIONSHIPS.map((rel) => {
                       const isSelected = rel.id === relationship.id;
                       const name = language === 'vi' ? rel.nameVi : rel.nameEn;
@@ -610,14 +612,20 @@ export default function HomePage() {
                 <section className="space-y-3 bg-white p-4 lg:p-5 rounded-2xl border border-slate-100 shadow-sm">
                   <div>
                     <label className="block text-xs font-bold text-slate-600 mb-1">
-                      {t.labelReceiverName}
+                      {relationship.id === 'other'
+                        ? (language === 'vi' ? 'Tên hoặc danh xưng người nhận (bạn muốn ghi cho ai cũng được):' : 'Recipient\'s name or title (any special person):')
+                        : t.labelReceiverName}
                     </label>
                     <input
                       type="text"
                       maxLength={40}
                       value={receiver}
                       onChange={(e) => setReceiver(e.target.value)}
-                      placeholder={t.receiverPlaceholder}
+                      placeholder={
+                        relationship.id === 'other'
+                          ? (language === 'vi' ? 'Ví dụ: Cô giáo, Dì Út, Con gái, Bạn, Khách hàng, Bé Thảo...' : 'E.g. Teacher, Aunt, Daughter, Client, Friend...')
+                          : t.receiverPlaceholder
+                      }
                       className="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition bg-slate-50/50"
                     />
                   </div>

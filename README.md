@@ -63,7 +63,7 @@
 
 ---
 
-## 🎨 Bộ sưu tập 7 chủ đề hoa (Botanical Themes)
+## 🎨 Bộ sưu tập 8 chủ đề hoa (Botanical Themes)
 
 Mỗi mối quan hệ được thiết kế với một loài hoa, cấu trúc cánh hoa và tone màu nền riêng biệt:
 
@@ -76,6 +76,7 @@ Mỗi mối quan hệ được thiết kế với một loài hoa, cấu trúc c
 | **Đồng nghiệp** | **Hoa Tím Lilac** (*Lilac*)<br>Cánh hoa lilac thanh nhã, trang trọng | Tím thạch anh & oải hương (`#9333ea`) | `#fbf6fe` (Tím nhạt thanh lịch) | *TRÂN TRỌNG HỢP TÁC* |
 | **Người yêu** | **Mao Lương San Hô** (*Ranunculus*)<br>42 cánh tròn uốn lượn đa tầng đồng tâm | Cam san hô ngọt ngào (`#ea580c`, `#fb923c`) | `#fff5f2` (Đào san hô ấm áp) | *TRÁI TIM CHO EM* |
 | **Người nhớ về** | **Hoa Trắng Thanh Khiết** (*White Lily*)<br>Cánh hoa xếp lớp thanh tao viền bóng bạc | Trắng tinh khôi, bóng ngọc trai dịu nhẹ | `#f0f4f8` (Xám xanh nhẹ trang trọng) | *SỐNG MÃI TRONG TIM* |
+| **Khác (Others)** | **Cát Tường Nắng Ấm** (*Lisianthus*)<br>Cánh hoa vàng mơ nắng ấm thanh lịch | Vàng hổ phách, vàng mơ nắng ấm, nhụy nâu ấm | `#faf8f5` (Ngà ấm linen thanh nhã) | *VẠN SỰ NHƯ Ý* |
 
 ---
 

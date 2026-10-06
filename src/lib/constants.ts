@@ -274,6 +274,44 @@ export const RELATIONSHIPS: RelationshipTheme[] = [
       "Sending peaceful thoughts to you. You remain my guiding light always.",
       "Cherishing your memory today with all my love, respect, and admiration."
     ]
+  },
+  {
+    id: 'other',
+    icon: '💐',
+    nameVi: 'Khác',
+    nameEn: 'Others',
+    flowerVi: 'Cát Tường Nắng Ấm',
+    flowerEn: 'Warm Lisianthus',
+    bgClass: 'bg-[#faf8f5]',
+    bgColor: '#faf8f5',
+    gradientClass: 'bg-gradient-to-b from-[#faf8f5] via-[#f7f2ea] to-[#f2e7d5]',
+    borderClass: 'border border-amber-300/80',
+    dividerSymbol: '✦ ❀ ✦',
+    stampBadgeVi: 'VẠN SỰ NHƯ Ý · 20.10',
+    stampBadgeEn: 'BEST WISHES · 20.10',
+    stampStyle: 'modern-foil',
+    salutationColor: 'text-amber-800',
+    titleColor: 'text-amber-950',
+    bodyColor: 'text-amber-900',
+    senderColor: 'text-amber-800',
+    strokeColor: '#f59e0b',
+    petalColor: '#fef3c7',
+    defaultReceiverVi: 'Người Phụ Nữ Tuyệt Vời',
+    defaultReceiverEn: 'Someone Special',
+    defaultSalutationVi: 'Thân gửi',
+    defaultSalutationEn: 'To',
+    wishesVi: [
+      "Nhân ngày Phụ nữ Việt Nam 20/10, chúc bạn luôn ngập tràn niềm vui, bình an, xinh đẹp và gặt hái thật nhiều hạnh phúc trong cuộc sống.",
+      "Cảm ơn vì đã luôn mang đến nguồn năng lượng tích cực và sự ấm áp. Chúc bạn có một ngày 20/10 thật trọn vẹn và ý nghĩa!",
+      "Chúc bạn luôn tự tin tỏa sáng theo cách riêng của mình, mỗi ngày trôi qua đều là một ngày ngập tràn tiếng cười và may mắn.",
+      "Gửi ngàn lời chúc tốt đẹp và chân thành nhất đến bạn. Chúc bạn mãi rạng rỡ, yêu đời và luôn được yêu thương thật nhiều."
+    ],
+    wishesEn: [
+      "Wishing you a joyful and wonderful Vietnamese Women's Day! May your life be filled with endless smiles, peace, and happiness.",
+      "Thank you for bringing warmth and positive energy everywhere you go. Have a delightful and memorable 20/10!",
+      "Stay bright, confident, and inspiring in your own special way. May every day bring you good fortune and laughter.",
+      "Sending my warmest thoughts and heartfelt wishes to you. May you always be cherished, happy, and radiant."
+    ]
   }
 ];
 

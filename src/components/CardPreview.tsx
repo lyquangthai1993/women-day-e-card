@@ -141,6 +141,21 @@ export const CARD_THEMES: Record<string, CardThemeConfig> = {
     senderColor: '#1e293b',
     dateColor: '#64748b',
   },
+  other: {
+    // Khác - Others: Hoa Cát Tường Nắng Ấm (Warm Sunshine Lisianthus - may mắn, cát tường & trân quý)
+    flowerType: 'peony',
+    cardBg: '#faf8f5',
+    frameColor: 'rgba(214, 168, 105, 0.65)',
+    flowerLayers: ['#d97706', '#f59e0b', '#fbbf24', '#fef08a'],
+    flowerLayersLight: ['#f59e0b', '#fbbf24', '#fef08a', '#ffffff'],
+    pistilColor: '#78350f',
+    leafColor: '#72976d',
+    salutationColor: '#452608',
+    bodyColor: '#3a2007',
+    dividerColor: '#d6a869',
+    senderColor: '#452608',
+    dateColor: '#8c6834',
+  },
 };
 
 interface LayeredBloomProps {
@@ -370,8 +385,10 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
     if (relationship.id === 'mother') prefix = 'Kính gửi ';
     else if (relationship.id === 'wife') prefix = 'Thương gửi ';
     else if (relationship.id === 'memorial') prefix = 'Tưởng nhớ ';
+    else if (relationship.id === 'other') prefix = 'Thân gửi ';
   } else {
     if (relationship.id === 'mother' || relationship.id === 'wife') prefix = 'Dearest ';
+    else if (relationship.id === 'other') prefix = 'To ';
   }
 
   const displayTitle = hasSalutation ? rawReceiver : `${prefix}${rawReceiver}`;
