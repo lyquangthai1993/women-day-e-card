@@ -12,7 +12,17 @@ interface CardPreviewProps {
   cardRef?: React.RefObject<HTMLDivElement>;
 }
 
+export type FlowerType =
+  | 'peony'       // Mẹ: mẫu đơn hồng
+  | 'rose'        // Vợ: hồng đỏ thẫm
+  | 'sakura'      // Chị / Em gái: anh đào hồng phấn
+  | 'daisy'       // Bạn thân: cúc họa mi, nền vàng kem
+  | 'lilac'       // Đồng nghiệp: hoa tím lilac
+  | 'ranunculus'  // Người yêu: mao lương (ranunculus) màu san hô
+  | 'white-lily'; // Người tôi muốn nhớ về: hoa trắng thanh khiết, nền xám xanh nhẹ
+
 export interface CardThemeConfig {
+  flowerType: FlowerType;
   cardBg: string;
   frameColor: string;
   flowerLayers: [string, string, string, string];
@@ -28,97 +38,103 @@ export interface CardThemeConfig {
 
 export const CARD_THEMES: Record<string, CardThemeConfig> = {
   mother: {
-    // Peony Soft Blush (Mẫu đơn ấm áp & hiền từ)
-    cardBg: '#fbf0f2',
-    frameColor: 'rgba(196, 130, 146, 0.65)',
-    flowerLayers: ['#df758e', '#ea92a5', '#f3b6c3', '#fae1e6'],
-    flowerLayersLight: ['#ea92a5', '#f3b6c3', '#fae1e6', '#ffffff'],
+    // Mẹ: mẫu đơn hồng (Peony - hồng phấn ngọt ngào, hiền từ)
+    flowerType: 'peony',
+    cardBg: '#fcf1f4',
+    frameColor: 'rgba(205, 130, 148, 0.65)',
+    flowerLayers: ['#d95b7c', '#ea7a98', '#f29bb1', '#fce2e8'],
+    flowerLayersLight: ['#ea7a98', '#f29bb1', '#fce2e8', '#ffffff'],
     pistilColor: '#e5a93b',
-    leafColor: '#9ab69c',
-    salutationColor: '#541e2a',
-    bodyColor: '#432128',
-    dividerColor: '#c48292',
-    senderColor: '#541e2a',
-    dateColor: '#a86a78',
-  },
-  sister: {
-    // Cherry Blossom (Anh đào tươi trẻ, ngọt ngào - giống hệt mẫu tham khảo)
-    cardBg: '#fbf0f2',
-    frameColor: 'rgba(196, 130, 146, 0.65)',
-    flowerLayers: ['#df758e', '#ea92a5', '#f3b6c3', '#fae1e6'],
-    flowerLayersLight: ['#ea92a5', '#f3b6c3', '#fae1e6', '#ffffff'],
-    pistilColor: '#e5a93b',
-    leafColor: '#9ab69c',
-    salutationColor: '#541e2a',
-    bodyColor: '#432128',
-    dividerColor: '#c48292',
-    senderColor: '#541e2a',
-    dateColor: '#a86a78',
+    leafColor: '#8fae92',
+    salutationColor: '#4e1723',
+    bodyColor: '#431e26',
+    dividerColor: '#cd8294',
+    senderColor: '#4e1723',
+    dateColor: '#a36474',
   },
   wife: {
-    // Red Rose (Hoa hồng nhung quyến rũ, nồng thắm)
-    cardBg: '#fdf3f4',
-    frameColor: 'rgba(184, 93, 110, 0.65)',
-    flowerLayers: ['#be123c', '#dc264e', '#e95374', '#fbcfe8'],
-    flowerLayersLight: ['#dc264e', '#e95374', '#fbcfe8', '#ffe4e6'],
+    // Vợ: hồng đỏ thẫm (Deep Red Rose - đỏ nhung nồng thắm, quyến rũ)
+    flowerType: 'rose',
+    cardBg: '#fdf5f5',
+    frameColor: 'rgba(168, 50, 72, 0.65)',
+    flowerLayers: ['#881337', '#9f1239', '#be123c', '#e11d48'],
+    flowerLayersLight: ['#9f1239', '#be123c', '#e11d48', '#fecdd3'],
     pistilColor: '#facc15',
-    leafColor: '#86a789',
-    salutationColor: '#581021',
-    bodyColor: '#461520',
-    dividerColor: '#b85d6e',
-    senderColor: '#581021',
-    dateColor: '#9f4357',
+    leafColor: '#5e8062',
+    salutationColor: '#450a18',
+    bodyColor: '#3d141e',
+    dividerColor: '#a83248',
+    senderColor: '#450a18',
+    dateColor: '#943447',
   },
-  lover: {
-    // Coral Camellia / Ruby (San hô lãng mạn & nồng nàn)
-    cardBg: '#fdf2f0',
-    frameColor: 'rgba(216, 123, 112, 0.65)',
-    flowerLayers: ['#e14958', '#f26a79', '#fa95a2', '#fde0e4'],
-    flowerLayersLight: ['#f26a79', '#fa95a2', '#fde0e4', '#ffffff'],
-    pistilColor: '#f59e0b',
-    leafColor: '#9ab69c',
-    salutationColor: '#5c1d24',
-    bodyColor: '#4a1e23',
-    dividerColor: '#d87b70',
-    senderColor: '#5c1d24',
-    dateColor: '#b05f69',
+  sister: {
+    // Chị / Em gái: anh đào hồng phấn (Cherry Blossom / Sakura - pastel tươi trẻ, thanh nhã)
+    flowerType: 'sakura',
+    cardBg: '#fdf2f5',
+    frameColor: 'rgba(220, 140, 160, 0.65)',
+    flowerLayers: ['#e87a98', '#f09cb2', '#f8b8c8', '#fde8ee'],
+    flowerLayersLight: ['#f09cb2', '#f8b8c8', '#fde8ee', '#ffffff'],
+    pistilColor: '#e5a93b',
+    leafColor: '#9dc09f',
+    salutationColor: '#521c28',
+    bodyColor: '#451d26',
+    dividerColor: '#dc8ca0',
+    senderColor: '#521c28',
+    dateColor: '#ab6679',
   },
   friend: {
-    // Daisy Sunshine Cream (Cúc họa mi rạng rỡ, tri kỷ)
-    cardBg: '#fefdf5',
-    frameColor: 'rgba(203, 178, 105, 0.65)',
-    flowerLayers: ['#f59e0b', '#fbbf24', '#fde047', '#fef9c3'],
-    flowerLayersLight: ['#fbbf24', '#fde047', '#fef9c3', '#ffffff'],
-    pistilColor: '#b45309',
-    leafColor: '#8eb084',
-    salutationColor: '#524016',
-    bodyColor: '#453713',
-    dividerColor: '#cbb269',
-    senderColor: '#524016',
-    dateColor: '#997e3a',
+    // Bạn thân: cúc họa mi, nền vàng kem (Daisy - cánh trắng tinh khôi, nhụy vàng ấm trên nền vàng kem)
+    flowerType: 'daisy',
+    cardBg: '#fefce8',
+    frameColor: 'rgba(217, 180, 74, 0.65)',
+    flowerLayers: ['#f1f5f9', '#f8fafc', '#ffffff', '#ffffff'],
+    pistilColor: '#eab308',
+    leafColor: '#7da672',
+    salutationColor: '#4a3810',
+    bodyColor: '#3d2f0d',
+    dividerColor: '#d9b44a',
+    senderColor: '#4a3810',
+    dateColor: '#927228',
   },
   colleague: {
-    // Soft Lavender / Lilac (Hoa tím thanh lịch, tinh tế)
-    cardBg: '#fbf8fe',
-    frameColor: 'rgba(159, 122, 184, 0.65)',
-    flowerLayers: ['#9333ea', '#a855f7', '#c084fc', '#f3e8ff'],
-    flowerLayersLight: ['#a855f7', '#c084fc', '#f3e8ff', '#ffffff'],
+    // Đồng nghiệp: hoa tím lilac (Lilac / Soft Lavender - tím lilac tinh tế, nhã nhặn)
+    flowerType: 'lilac',
+    cardBg: '#fbf6fe',
+    frameColor: 'rgba(165, 125, 195, 0.65)',
+    flowerLayers: ['#7c3aed', '#9333ea', '#a855f7', '#c4b5fd'],
+    flowerLayersLight: ['#9333ea', '#a855f7', '#c4b5fd', '#ede9fe'],
     pistilColor: '#fbbf24',
-    leafColor: '#88a892',
-    salutationColor: '#3b1d52',
-    bodyColor: '#321a44',
-    dividerColor: '#9f7ab8',
-    senderColor: '#3b1d52',
-    dateColor: '#7e5299',
+    leafColor: '#7d9d86',
+    salutationColor: '#32144d',
+    bodyColor: '#2b153f',
+    dividerColor: '#a57dc3',
+    senderColor: '#32144d',
+    dateColor: '#7c5496',
+  },
+  lover: {
+    // Người yêu: mao lương (ranunculus) màu san hô (Coral Ranunculus - san hô nồng nàn & lãng mạn)
+    flowerType: 'ranunculus',
+    cardBg: '#fff5f2',
+    frameColor: 'rgba(225, 115, 100, 0.65)',
+    flowerLayers: ['#ea580c', '#f97316', '#fb923c', '#fecba6'],
+    flowerLayersLight: ['#f97316', '#fb923c', '#fecba6', '#fff1e6'],
+    pistilColor: '#d97706',
+    leafColor: '#8ea889',
+    salutationColor: '#541920',
+    bodyColor: '#45171d',
+    dividerColor: '#e17364',
+    senderColor: '#541920',
+    dateColor: '#a85245',
   },
   memorial: {
-    // Pure White Lily (Hoa trắng thanh khiết & hoài niệm an yên)
-    cardBg: '#f8fafc',
+    // Người tôi muốn nhớ về: hoa trắng thanh khiết, nền xám xanh nhẹ (Pure White - hoa trắng thanh thoát trên nền xám xanh)
+    flowerType: 'white-lily',
+    cardBg: '#f0f4f8',
     frameColor: 'rgba(148, 163, 184, 0.65)',
-    flowerLayers: ['#94a3b8', '#cbd5e1', '#e2e8f0', '#ffffff'],
-    flowerLayersLight: ['#cbd5e1', '#e2e8f0', '#ffffff', '#ffffff'],
+    flowerLayers: ['#cbd5e1', '#e2e8f0', '#f1f5f9', '#ffffff'],
+    flowerLayersLight: ['#e2e8f0', '#f1f5f9', '#ffffff', '#ffffff'],
     pistilColor: '#d97706',
-    leafColor: '#94a3b8',
+    leafColor: '#8fa0a8',
     salutationColor: '#1e293b',
     bodyColor: '#334155',
     dividerColor: '#94a3b8',
@@ -132,6 +148,7 @@ interface LayeredBloomProps {
   pistilColor: string;
 }
 
+// Hoa xếp lớp đồng tâm chuẩn phong cách paper-bloom (Dành cho Mẫu đơn, Hoa hồng, Anh đào, Lilac, Hoa trắng)
 const LayeredBloom: React.FC<LayeredBloomProps> = ({ layers, pistilColor }) => (
   <g className="layered-bloom">
     {/* Vòng cánh ngoài cùng (Layer 1) */}
@@ -182,16 +199,131 @@ const LayeredBloom: React.FC<LayeredBloomProps> = ({ layers, pistilColor }) => (
       <circle cx="2.68" cy="-6.47" r="8" />
       <circle cx="6.47" cy="-2.68" r="8" />
     </g>
-    {/* Nhụy hoa vàng ấm áp */}
+    {/* Nhụy hoa ấm áp */}
     <circle cx="0" cy="0" r="7" fill={pistilColor} stroke="rgba(0,0,0,0.06)" strokeWidth="0.5" />
   </g>
 );
 
-interface LeavesClusterProps {
-  leafColor: string;
-}
+// Cúc Họa Mi đặc trưng (Cánh trắng thon dài tỏa đều quanh nhụy vàng)
+const DaisyBloom: React.FC<{ isLight?: boolean }> = ({ isLight }) => (
+  <g className="daisy-bloom">
+    {/* Vòng cánh dài ngoài (16 cánh) */}
+    <g fill={isLight ? '#ffffff' : '#f1f5f9'} stroke="rgba(0,0,0,0.05)" strokeWidth="0.4">
+      {Array.from({ length: 16 }).map((_, i) => (
+        <ellipse
+          key={`d-out-${i}`}
+          cx="0"
+          cy="25"
+          rx="5"
+          ry="16"
+          transform={`rotate(${i * 22.5})`}
+        />
+      ))}
+    </g>
+    {/* Vòng cánh trong xen kẽ (16 cánh trắng tinh khôi) */}
+    <g fill="#ffffff" stroke="rgba(0,0,0,0.05)" strokeWidth="0.4">
+      {Array.from({ length: 16 }).map((_, i) => (
+        <ellipse
+          key={`d-in-${i}`}
+          cx="0"
+          cy="20"
+          rx="4.2"
+          ry="13"
+          transform={`rotate(${i * 22.5 + 11.25})`}
+        />
+      ))}
+    </g>
+    {/* Nhụy vàng rực rỡ đặc trưng của Cúc Họa Mi */}
+    <circle cx="0" cy="0" r="14" fill="#eab308" stroke="rgba(0,0,0,0.06)" strokeWidth="0.5" />
+    <circle cx="0" cy="0" r="11" fill="#facc15" />
+    <circle cx="0" cy="0" r="7" fill="#fef08a" opacity="0.6" />
+    {/* Hạt nhụy li ti */}
+    {Array.from({ length: 8 }).map((_, i) => {
+      const angle = (i * 45 * Math.PI) / 180;
+      return (
+        <circle
+          key={`d-dot-${i}`}
+          cx={Number((5.5 * Math.cos(angle)).toFixed(2))}
+          cy={Number((5.5 * Math.sin(angle)).toFixed(2))}
+          r="1.1"
+          fill="#ca8a04"
+        />
+      );
+    })}
+  </g>
+);
 
-const LeavesCluster: React.FC<LeavesClusterProps> = ({ leafColor }) => (
+// Mao Lương (Ranunculus) màu san hô (Cánh tròn khum dày tầng, xòe tròn như quả cầu hoa)
+const RanunculusBloom: React.FC<{ layers: [string, string, string, string]; pistilColor: string }> = ({
+  layers,
+  pistilColor,
+}) => (
+  <g className="ranunculus-bloom">
+    {/* Tầng 1: 12 cánh ngoài */}
+    <g fill={layers[0]} stroke="rgba(0,0,0,0.05)" strokeWidth="0.5">
+      <circle cx="0" cy="0" r="32" />
+      {Array.from({ length: 12 }).map((_, i) => {
+        const a = (i * 30 * Math.PI) / 180;
+        return (
+          <circle
+            key={`r1-${i}`}
+            cx={Number((30 * Math.cos(a)).toFixed(2))}
+            cy={Number((30 * Math.sin(a)).toFixed(2))}
+            r="16"
+          />
+        );
+      })}
+    </g>
+    {/* Tầng 2: 12 cánh giữa */}
+    <g fill={layers[1]} stroke="rgba(0,0,0,0.05)" strokeWidth="0.5">
+      <circle cx="0" cy="0" r="24" />
+      {Array.from({ length: 12 }).map((_, i) => {
+        const a = ((i * 30 + 15) * Math.PI) / 180;
+        return (
+          <circle
+            key={`r2-${i}`}
+            cx={Number((23 * Math.cos(a)).toFixed(2))}
+            cy={Number((23 * Math.sin(a)).toFixed(2))}
+            r="13"
+          />
+        );
+      })}
+    </g>
+    {/* Tầng 3: 10 cánh khum tròn */}
+    <g fill={layers[2]} stroke="rgba(0,0,0,0.05)" strokeWidth="0.5">
+      <circle cx="0" cy="0" r="16" />
+      {Array.from({ length: 10 }).map((_, i) => {
+        const a = (i * 36 * Math.PI) / 180;
+        return (
+          <circle
+            key={`r3-${i}`}
+            cx={Number((15 * Math.cos(a)).toFixed(2))}
+            cy={Number((15 * Math.sin(a)).toFixed(2))}
+            r="10"
+          />
+        );
+      })}
+    </g>
+    {/* Tầng 4: 8 cánh trong cùng ôm lấy nhụy */}
+    <g fill={layers[3]} stroke="rgba(0,0,0,0.05)" strokeWidth="0.5">
+      <circle cx="0" cy="0" r="8" />
+      {Array.from({ length: 8 }).map((_, i) => {
+        const a = ((i * 45 + 22.5) * Math.PI) / 180;
+        return (
+          <circle
+            key={`r4-${i}`}
+            cx={Number((8 * Math.cos(a)).toFixed(2))}
+            cy={Number((8 * Math.sin(a)).toFixed(2))}
+            r="7"
+          />
+        );
+      })}
+    </g>
+    <circle cx="0" cy="0" r="6" fill={pistilColor} stroke="rgba(0,0,0,0.06)" strokeWidth="0.5" />
+  </g>
+);
+
+const LeavesCluster: React.FC<{ leafColor: string }> = ({ leafColor }) => (
   <g>
     <ellipse cx="102" cy="42" rx="17" ry="44" fill={leafColor} opacity="0.8" transform="rotate(48 102 42)" />
     <ellipse cx="124" cy="82" rx="15" ry="42" fill={leafColor} opacity="0.75" transform="rotate(58 124 82)" />
@@ -200,9 +332,21 @@ const LeavesCluster: React.FC<LeavesClusterProps> = ({ leafColor }) => (
   </g>
 );
 
+const renderThemeFlower = (theme: CardThemeConfig, isLight = false) => {
+  const layers = isLight && theme.flowerLayersLight ? theme.flowerLayersLight : theme.flowerLayers;
+
+  if (theme.flowerType === 'daisy') {
+    return <DaisyBloom isLight={isLight} />;
+  }
+  if (theme.flowerType === 'ranunculus') {
+    return <RanunculusBloom layers={layers} pistilColor={theme.pistilColor} />;
+  }
+  return <LayeredBloom layers={layers} pistilColor={theme.pistilColor} />;
+};
+
 export const renderFlowerSvgContent = (relId: string) => {
   const theme = CARD_THEMES[relId] || CARD_THEMES.mother;
-  return <LayeredBloom layers={theme.flowerLayers} pistilColor={theme.pistilColor} />;
+  return renderThemeFlower(theme, false);
 };
 
 export const CardPreview: React.FC<CardPreviewProps> = ({
@@ -262,38 +406,38 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
 
       {/* Cụm hoa góc trên bên trái (Top-Left Floral Cluster) */}
       <svg
-        className="absolute top-0 left-0 w-[180px] h-[180px] sm:w-[200px] sm:h-[200px] pointer-events-none z-10"
+        className="absolute top-0 left-0 w-[185px] h-[185px] sm:w-[205px] sm:h-[205px] pointer-events-none z-10"
         viewBox="0 0 180 180"
       >
         <LeavesCluster leafColor={theme.leafColor} />
         {/* Bông 1: Trên cùng (Tone sáng nhẹ) */}
         <g transform="translate(44, 40) scale(0.92)">
-          <LayeredBloom layers={theme.flowerLayersLight || theme.flowerLayers} pistilColor={theme.pistilColor} />
+          {renderThemeFlower(theme, true)}
         </g>
         {/* Bông 2: Bên dưới bên trái */}
         <g transform="translate(38, 116) scale(0.86)">
-          <LayeredBloom layers={theme.flowerLayers} pistilColor={theme.pistilColor} />
+          {renderThemeFlower(theme, false)}
         </g>
         {/* Bông 3: Nổi bật ở trung tâm cụm */}
         <g transform="translate(104, 98) scale(1.06)">
-          <LayeredBloom layers={theme.flowerLayers} pistilColor={theme.pistilColor} />
+          {renderThemeFlower(theme, false)}
         </g>
       </svg>
 
       {/* Cụm hoa góc dưới bên phải (Bottom-Right Floral Cluster - Xoay 180 độ đối xứng hoàn hảo) */}
       <svg
-        className="absolute bottom-0 right-0 w-[180px] h-[180px] sm:w-[200px] sm:h-[200px] pointer-events-none z-10 rotate-180"
+        className="absolute bottom-0 right-0 w-[185px] h-[185px] sm:w-[205px] sm:h-[205px] pointer-events-none z-10 rotate-180"
         viewBox="0 0 180 180"
       >
         <LeavesCluster leafColor={theme.leafColor} />
         <g transform="translate(44, 40) scale(0.92)">
-          <LayeredBloom layers={theme.flowerLayersLight || theme.flowerLayers} pistilColor={theme.pistilColor} />
+          {renderThemeFlower(theme, true)}
         </g>
         <g transform="translate(38, 116) scale(0.86)">
-          <LayeredBloom layers={theme.flowerLayers} pistilColor={theme.pistilColor} />
+          {renderThemeFlower(theme, false)}
         </g>
         <g transform="translate(104, 98) scale(1.06)">
-          <LayeredBloom layers={theme.flowerLayers} pistilColor={theme.pistilColor} />
+          {renderThemeFlower(theme, false)}
         </g>
       </svg>
 
@@ -303,7 +447,7 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
         viewBox="0 0 100 100"
       >
         <g transform="translate(74, 26) scale(0.72)">
-          <LayeredBloom layers={theme.flowerLayers} pistilColor={theme.pistilColor} />
+          {renderThemeFlower(theme, false)}
         </g>
       </svg>
 
@@ -313,7 +457,7 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
         viewBox="0 0 100 100"
       >
         <g transform="translate(26, 74) scale(0.72)">
-          <LayeredBloom layers={theme.flowerLayers} pistilColor={theme.pistilColor} />
+          {renderThemeFlower(theme, false)}
         </g>
       </svg>
 
