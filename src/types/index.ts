@@ -1,4 +1,4 @@
-export type Language = 'vi' | 'en';
+export type Language = 'en' | 'vi';
 
 export interface RelationshipTheme {
   id: string;

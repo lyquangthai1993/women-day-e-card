@@ -1,4 +1,5 @@
 import { Language } from '../types';
+import { AppConfig } from './i18n';
 
 const STORAGE_KEY = 'user_language';
 const COOKIE_NAME = 'user_lang';
@@ -41,4 +42,11 @@ export function getSavedUserLanguage(): Language | null {
     console.warn('Không thể đọc cài đặt ngôn ngữ:', e);
   }
   return null;
+}
+
+/**
+ * Lấy locale khởi tạo của ứng dụng, ưu tiên giá trị đã lưu và fallback về AppConfig.defaultLocale ('en')
+ */
+export function getInitialLocale(): Language {
+  return getSavedUserLanguage() || AppConfig.defaultLocale;
 }

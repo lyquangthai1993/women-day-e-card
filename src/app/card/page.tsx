@@ -10,7 +10,8 @@ import { RelationshipTheme, Language } from '../../types';
 import { RELATIONSHIPS, I18N } from '../../lib/constants';
 import { getCardFromGoogleSheet } from '../../lib/googleSheet';
 import { CardPreview } from '../../components/CardPreview';
-import { saveUserLanguage, getSavedUserLanguage } from '../../lib/languageStorage';
+import { saveUserLanguage, getInitialLocale } from '../../lib/languageStorage';
+import { AppConfig } from '../../lib/i18n';
 
 function CardViewContent() {
   const searchParams = useSearchParams();
@@ -18,7 +19,7 @@ function CardViewContent() {
 
   const initialLang = (urlLang === 'en' || urlLang === 'vi')
     ? (urlLang as Language)
-    : (getSavedUserLanguage() || 'en');
+    : getInitialLocale();
 
   const [language, setLanguage] = useState<Language>(initialLang);
   const [relationship, setRelationship] = useState<RelationshipTheme>(RELATIONSHIPS[0]);
@@ -107,7 +108,7 @@ function CardViewContent() {
     if (send) setSender(send);
     if (wishIdx) {
       const idx = parseInt(wishIdx, 10);
-      const wishes = (lang || 'en') === 'vi' ? initialRel.wishesVi : initialRel.wishesEn;
+      const wishes = (lang || AppConfig.defaultLocale) === 'vi' ? initialRel.wishesVi : initialRel.wishesEn;
       if (!isNaN(idx) && wishes[idx]) {
         setMessage(wishes[idx]);
       }

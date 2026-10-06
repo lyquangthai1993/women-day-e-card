@@ -14,10 +14,11 @@ import { CardPreview } from '../components/CardPreview';
 import { SuggestionsModal } from '../components/SuggestionsModal';
 import { IceCreamModal } from '../components/IceCreamModal';
 import { ViewCardModal } from '../components/ViewCardModal';
-import { saveUserLanguage, getSavedUserLanguage } from '../lib/languageStorage';
+import { saveUserLanguage, getInitialLocale } from '../lib/languageStorage';
+import { AppConfig } from '../lib/i18n';
 
 export default function HomePage() {
-  const [language, setLanguage] = useState<Language>('en');
+  const [language, setLanguage] = useState<Language>(AppConfig.defaultLocale);
   const [relationship, setRelationship] = useState<RelationshipTheme>(RELATIONSHIPS[0]);
   const [receiver, setReceiver] = useState<string>('');
   const [message, setMessage] = useState<string>('');
@@ -49,7 +50,7 @@ export default function HomePage() {
     return 'c_' + Math.random().toString(36).substring(2, 8) + Date.now().toString(36).slice(-4);
   };
 
-  // Khởi tạo FingerprintJS, nạp ngôn ngữ (mặc định EN) và kiểm tra trạng thái vé kem
+  // Khởi tạo FingerprintJS, nạp ngôn ngữ (mặc định AppConfig.defaultLocale = 'en') và kiểm tra trạng thái vé kem
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const urlParams = new URLSearchParams(window.location.search);
@@ -58,12 +59,7 @@ export default function HomePage() {
         setLanguage(urlLang);
         saveUserLanguage(urlLang);
       } else {
-        const savedLang = getSavedUserLanguage();
-        if (savedLang) {
-          setLanguage(savedLang);
-        } else {
-          setLanguage('en');
-        }
+        setLanguage(getInitialLocale());
       }
     }
 
