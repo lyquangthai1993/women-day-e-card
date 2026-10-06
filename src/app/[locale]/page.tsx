@@ -433,22 +433,28 @@ export default function HomePage() {
 
   return (
     <>
-      {/* Banner nhận kem sticky */}
+      {/* Floating Ice Cream Pass Button ở góc dưới bên trái */}
       {isClaimed && !isViewingMode && (
-        <div className="bg-gradient-to-r from-amber-500 via-rose-500 to-pink-500 text-white text-xs font-semibold py-2 px-4 shadow-sm z-30 sticky top-0">
-          <div className="max-w-md lg:max-w-5xl mx-auto flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <span className="text-base">🍦</span>
-              <span>{t.claimedBannerText}</span>
+        <aside aria-label="Ice Cream Ticket" className="fixed bottom-5 left-4 sm:left-6 z-40">
+          <button
+            type="button"
+            onClick={openIceCreamWithConfetti}
+            className="group flex items-center space-x-2.5 bg-gradient-to-r from-amber-500 via-rose-500 to-pink-500 text-white pl-2.5 pr-4 py-2 rounded-full shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 border-2 border-white/70 backdrop-blur-xs select-none cursor-pointer"
+            title={language === 'vi' ? 'Nhấn để xem vé nhận kem 🍦' : 'Tap to view your Ice Cream Pass 🍦'}
+          >
+            <span className="w-8 h-8 rounded-full bg-white/25 flex items-center justify-center text-lg shadow-inner group-hover:rotate-12 transition-transform">
+              🍦
+            </span>
+            <div className="text-left leading-tight">
+              <p className="text-[10px] font-semibold text-amber-100 uppercase tracking-wider">
+                {language === 'vi' ? 'Vé nhận kem' : 'Ice Cream Pass'}
+              </p>
+              <p className="text-xs font-bold tracking-tight">
+                {t.btnViewTicket}
+              </p>
             </div>
-            <button
-              onClick={() => setIsIceCreamModalOpen(true)}
-              className="bg-white/20 hover:bg-white/30 backdrop-blur-sm px-2.5 py-1 rounded-full text-white text-[11px] font-bold tracking-wide transition"
-            >
-              {t.btnViewTicket}
-            </button>
-          </div>
-        </div>
+          </button>
+        </aside>
       )}
 
       {/* Header */}
