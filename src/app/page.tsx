@@ -17,7 +17,7 @@ import { ViewCardModal } from '../components/ViewCardModal';
 import { saveUserLanguage, getSavedUserLanguage } from '../lib/languageStorage';
 
 export default function HomePage() {
-  const [language, setLanguage] = useState<Language>('vi');
+  const [language, setLanguage] = useState<Language>('en');
   const [relationship, setRelationship] = useState<RelationshipTheme>(RELATIONSHIPS[0]);
   const [receiver, setReceiver] = useState<string>('');
   const [message, setMessage] = useState<string>('');
@@ -49,11 +49,22 @@ export default function HomePage() {
     return 'c_' + Math.random().toString(36).substring(2, 8) + Date.now().toString(36).slice(-4);
   };
 
-  // Khởi tạo FingerprintJS, nạp ngôn ngữ đã lưu và kiểm tra trạng thái vé kem
+  // Khởi tạo FingerprintJS, nạp ngôn ngữ (mặc định EN) và kiểm tra trạng thái vé kem
   useEffect(() => {
-    const savedLang = getSavedUserLanguage();
-    if (savedLang) {
-      setLanguage(savedLang);
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlLang = urlParams.get('lang');
+      if (urlLang === 'vi' || urlLang === 'en') {
+        setLanguage(urlLang);
+        saveUserLanguage(urlLang);
+      } else {
+        const savedLang = getSavedUserLanguage();
+        if (savedLang) {
+          setLanguage(savedLang);
+        } else {
+          setLanguage('en');
+        }
+      }
     }
 
     async function init() {

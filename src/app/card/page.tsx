@@ -18,7 +18,7 @@ function CardViewContent() {
 
   const initialLang = (urlLang === 'en' || urlLang === 'vi')
     ? (urlLang as Language)
-    : (getSavedUserLanguage() || 'vi');
+    : (getSavedUserLanguage() || 'en');
 
   const [language, setLanguage] = useState<Language>(initialLang);
   const [relationship, setRelationship] = useState<RelationshipTheme>(RELATIONSHIPS[0]);
@@ -107,7 +107,7 @@ function CardViewContent() {
     if (send) setSender(send);
     if (wishIdx) {
       const idx = parseInt(wishIdx, 10);
-      const wishes = (lang || 'vi') === 'vi' ? initialRel.wishesVi : initialRel.wishesEn;
+      const wishes = (lang || 'en') === 'vi' ? initialRel.wishesVi : initialRel.wishesEn;
       if (!isNaN(idx) && wishes[idx]) {
         setMessage(wishes[idx]);
       }

@@ -1,9 +1,27 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
+const siteName = "Happy Vietnamese Women's Day 20/10 - E-Card";
+const siteDescription =
+  "Create and send heartfelt Vietnamese Women's Day 20/10 greeting e-cards with personalized botanical floral themes, live preview, high-res download, and sweet ice cream pass.";
+const siteUrl = 'https://women-day-e-card.vercel.app';
+
 export const metadata: Metadata = {
-  title: 'Thiệp Chúc Mừng 20/10 - E-Card',
-  description: 'Tạo và chia sẻ thiệp chúc mừng ngày Phụ nữ Việt Nam 20/10 với mã nhận diện thiết bị và vé nhận kem.',
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: siteName,
+    template: `%s | ${siteName}`,
+  },
+  description: siteDescription,
+  applicationName: "20/10 E-Card",
+  keywords: [
+    "20/10",
+    "Vietnamese Women's Day",
+    "E-Card",
+    "Greeting Card",
+    "Thiệp 20/10",
+    "Ngày Phụ Nữ Việt Nam",
+  ],
   icons: {
     icon: [
       { url: '/icon.png', sizes: '32x32', type: 'image/png' },
@@ -11,6 +29,28 @@ export const metadata: Metadata = {
     ],
     shortcut: '/favicon.ico',
     apple: '/apple-touch-icon.png',
+  },
+  openGraph: {
+    title: siteName,
+    description: siteDescription,
+    url: siteUrl,
+    siteName: '20/10 E-Card & Ice Cream Pass',
+    locale: 'en_US',
+    type: 'website',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: siteName,
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: siteName,
+    description: siteDescription,
+    images: ['/og-image.png'],
   },
 };
 
@@ -27,7 +67,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="vi" className="h-full bg-slate-50">
+    <html lang="en" className="h-full bg-slate-50">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
