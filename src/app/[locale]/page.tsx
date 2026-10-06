@@ -221,6 +221,33 @@ export default function HomePage() {
     return slug ? `happy-womens-day-${slug}.png` : "happy-womens-day-card.png";
   };
 
+  // Cơ chế Tự động Kích hoạt ISR & Edge Cache Warm-up ngầm (Pre-warm Background Ping)
+  const prewarmCardCache = (cId: string, sUrl: string, includeCleanRoutes = false) => {
+    if (typeof window === 'undefined') return;
+    try {
+      const origin = window.location.origin;
+      const targets: string[] = [sUrl];
+      if (includeCleanRoutes) {
+        targets.push(
+          `${origin}/vi/card/${cId}`,
+          `${origin}/card/${cId}`,
+          `${origin}/vi/card?id=${cId}`,
+          `${origin}/card?id=${cId}&lang=en`,
+          `${origin}/api/warm?id=${cId}`
+        );
+      }
+      targets.forEach((url) => {
+        fetch(url, {
+          method: 'GET',
+          mode: 'no-cors',
+          cache: 'reload',
+        }).catch(() => {});
+      });
+    } catch {
+      // Bỏ qua lỗi ngầm
+    }
+  };
+
   // Chia sẻ thiệp kèm hiệu ứng loading spinner (hỗ trợ tạo mới và cập nhật thiệp)
   const handleShare = async () => {
     if (isSharing) return;
@@ -243,7 +270,10 @@ export default function HomePage() {
 
       window.history.replaceState(null, '', `#id=${activeCardId}`);
 
-      // Đồng bộ ngầm lên Google Sheet (Optimistic UI - không bắt người dùng đợi mạng)
+      // 1. Pre-warm tức thì với các tham số inline của shareUrl
+      prewarmCardCache(activeCardId, shareUrl, false);
+
+      // 2. Đồng bộ ngầm lên Google Sheet (Optimistic UI - không bắt người dùng đợi mạng)
       syncToGoogleSheet({
         action: 'save_card',
         cardId: activeCardId,
@@ -255,6 +285,8 @@ export default function HomePage() {
         message: message.trim() || (language === 'vi' ? relationship.wishesVi[0] : relationship.wishesEn[0]),
         language,
       }).then((res) => {
+        // 3. Khi Google Sheet đã ghi xong dòng mới, kích hoạt ping warm-up đầy đủ cho ISR và Edge Cache
+        prewarmCardCache(activeCardId, shareUrl, true);
         if (!isNewCard && res && res.status === 'success' && res.action === 'updated') {
           showToast(t.toastCardUpdated);
         }
@@ -336,16 +368,21 @@ export default function HomePage() {
         setCardId(activeCardId);
       }
 
+      const saveShareUrl = getCardShareUrl(activeCardId);
+      prewarmCardCache(activeCardId, saveShareUrl, false);
+
       syncToGoogleSheet({
         action: 'save_card',
         cardId: activeCardId,
-        cardUrl: getCardShareUrl(activeCardId),
+        cardUrl: saveShareUrl,
         visitorId,
         sender: sender.trim() || '',
         receiver: receiver.trim() || (language === 'vi' ? relationship.defaultReceiverVi : relationship.defaultReceiverEn),
         relationship: relationship.id,
         message: message.trim() || (language === 'vi' ? relationship.wishesVi[0] : relationship.wishesEn[0]),
         language,
+      }).then(() => {
+        prewarmCardCache(activeCardId, saveShareUrl, true);
       });
 
       const finalFileName = getDownloadFileName();
