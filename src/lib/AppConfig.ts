@@ -1,6 +1,6 @@
-/**
- * Cấu hình quốc tế hoá (i18n locale) theo kiến trúc chuẩn tương tự kingshcmc-website
- */
+import type { LocalePrefixMode } from 'next-intl/routing';
+
+const localePrefix: LocalePrefixMode = 'as-needed';
 
 export enum AppLocale {
   En = 'en',
@@ -11,7 +11,7 @@ export const AppConfig = {
   name: "20/10 E-Card",
   locales: [AppLocale.En, AppLocale.Vi] as const,
   defaultLocale: AppLocale.En,
-  localePrefix: 'as-needed' as const,
+  localePrefix,
 };
 
 export type Locale = (typeof AppConfig.locales)[number];

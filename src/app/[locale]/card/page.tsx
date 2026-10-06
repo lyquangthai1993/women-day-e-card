@@ -3,17 +3,21 @@
 import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { toPng } from 'html-to-image';
 import { Image as ImageIcon, Loader2 } from 'lucide-react';
-import Link from 'next/link';
+import { Link, useRouter, usePathname } from '../../../lib/I18nNavigation';
+import { useLocale } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 
-import { RelationshipTheme, Language } from '../../types';
-import { RELATIONSHIPS, I18N } from '../../lib/constants';
-import { getCardFromGoogleSheet } from '../../lib/googleSheet';
-import { CardPreview } from '../../components/CardPreview';
-import { saveUserLanguage, getInitialLocale } from '../../lib/languageStorage';
-import { AppConfig } from '../../lib/i18n';
+import { RelationshipTheme, Language } from '../../../types';
+import { RELATIONSHIPS, I18N } from '../../../lib/constants';
+import { getCardFromGoogleSheet } from '../../../lib/googleSheet';
+import { CardPreview } from '../../../components/CardPreview';
+import { saveUserLanguage, getInitialLocale } from '../../../lib/languageStorage';
+import { AppConfig } from '../../../lib/AppConfig';
 
 function CardViewContent() {
+  const currentLocale = (useLocale() || AppConfig.defaultLocale) as Language;
+  const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const urlLang = searchParams.get('lang') || searchParams.get('l');
 
@@ -41,17 +45,19 @@ function CardViewContent() {
   };
 
   const toggleLanguage = () => {
-    setLanguage((prev) => {
-      const next = prev === 'vi' ? 'en' : 'vi';
-      saveUserLanguage(next);
-      return next;
-    });
+    const next = language === 'vi' ? 'en' : 'vi';
+    setLanguage(next);
+    saveUserLanguage(next);
+    const query = searchParams.toString() ? '?' + searchParams.toString() : '';
+    router.replace(pathname + query, { locale: next });
   };
 
   const handleSelectLanguage = (next: Language) => {
     if (language !== next) {
       setLanguage(next);
       saveUserLanguage(next);
+      const query = searchParams.toString() ? '?' + searchParams.toString() : '';
+      router.replace(pathname + query, { locale: next });
     }
   };
 

@@ -5,20 +5,32 @@ import { toPng } from 'html-to-image';
 import confetti from 'canvas-confetti';
 import { Sparkles, Share2, Image as ImageIcon, Loader2, RefreshCw, PlusCircle } from 'lucide-react';
 
-import { RelationshipTheme, Language } from '../types';
-import { RELATIONSHIPS, I18N, getIceCreamClaimStorageKey } from '../lib/constants';
-import { getDeviceFingerprint } from '../lib/fingerprint';
-import { syncToGoogleSheet, getCardFromGoogleSheet } from '../lib/googleSheet';
+import { RelationshipTheme, Language } from '../../types';
+import { RELATIONSHIPS, I18N, getIceCreamClaimStorageKey } from '../../lib/constants';
+import { getDeviceFingerprint } from '../../lib/fingerprint';
+import { syncToGoogleSheet, getCardFromGoogleSheet } from '../../lib/googleSheet';
 
-import { CardPreview } from '../components/CardPreview';
-import { SuggestionsModal } from '../components/SuggestionsModal';
-import { IceCreamModal } from '../components/IceCreamModal';
-import { ViewCardModal } from '../components/ViewCardModal';
-import { saveUserLanguage, getInitialLocale } from '../lib/languageStorage';
-import { AppConfig } from '../lib/i18n';
+import { CardPreview } from '../../components/CardPreview';
+import { SuggestionsModal } from '../../components/SuggestionsModal';
+import { IceCreamModal } from '../../components/IceCreamModal';
+import { ViewCardModal } from '../../components/ViewCardModal';
+import { saveUserLanguage, getInitialLocale } from '../../lib/languageStorage';
+import { AppConfig } from '../../lib/AppConfig';
+import { useLocale } from 'next-intl';
+import { useRouter, usePathname } from '../../lib/I18nNavigation';
 
 export default function HomePage() {
-  const [language, setLanguage] = useState<Language>(AppConfig.defaultLocale);
+  const currentLocale = (useLocale() || AppConfig.defaultLocale) as Language;
+  const [language, setLanguage] = useState<Language>(currentLocale);
+  const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (currentLocale && (currentLocale === 'en' || currentLocale === 'vi')) {
+      setLanguage(currentLocale);
+      saveUserLanguage(currentLocale);
+    }
+  }, [currentLocale]);
   const [relationship, setRelationship] = useState<RelationshipTheme>(RELATIONSHIPS[0]);
   const [receiver, setReceiver] = useState<string>('');
   const [message, setMessage] = useState<string>('');
@@ -130,7 +142,8 @@ export default function HomePage() {
     // 2. Nếu người dùng mở link xem thiệp cũ (có id) ở trang chủ, tự động chuyển sang trang con /card
     const cloudCardId = params.get('id') || params.get('cardId');
     if (cloudCardId) {
-      window.location.replace(`/card?${params.toString()}`);
+      const localePrefix = language === 'vi' ? '/vi' : '';
+      window.location.replace(`${localePrefix}/card?${params.toString()}`);
       return;
     }
 
@@ -138,7 +151,8 @@ export default function HomePage() {
 
     // 3. Backward compatibility: #card=...
     if (hash.includes('card=')) {
-      window.location.replace(`/card${hash}`);
+      const localePrefix = language === 'vi' ? '/vi' : '';
+      window.location.replace(`${localePrefix}/card${hash}`);
       return;
     }
   };
@@ -149,17 +163,17 @@ export default function HomePage() {
   };
 
   const toggleLanguage = () => {
-    setLanguage((prev) => {
-      const next = prev === 'vi' ? 'en' : 'vi';
-      saveUserLanguage(next);
-      return next;
-    });
+    const next = language === 'vi' ? 'en' : 'vi';
+    setLanguage(next);
+    saveUserLanguage(next);
+    router.replace(pathname, { locale: next });
   };
 
   const handleSelectLanguage = (next: Language) => {
     if (language !== next) {
       setLanguage(next);
       saveUserLanguage(next);
+      router.replace(pathname, { locale: next });
     }
   };
 
@@ -174,7 +188,8 @@ export default function HomePage() {
 
   // Tạo URL chia sẻ hướng về trang con /card?id=... (Luôn định nghĩa sẵn ngôn ngữ vi/en trên URL)
   const getCardShareUrl = (activeId: string) => {
-    const baseUrl = `${window.location.origin}/card`;
+    const localePrefix = language === 'vi' ? '/vi' : '';
+    const baseUrl = `${window.location.origin}${localePrefix}/card`;
     const p = new URLSearchParams();
     p.set('id', activeId);
     p.set('lang', language);

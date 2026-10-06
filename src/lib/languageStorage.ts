@@ -1,5 +1,5 @@
 import { Language } from '../types';
-import { AppConfig } from './i18n';
+import { AppConfig } from './AppConfig';
 
 const STORAGE_KEY = 'user_language';
 const COOKIE_NAME = 'user_lang';
