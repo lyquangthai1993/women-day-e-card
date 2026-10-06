@@ -21,9 +21,9 @@ function CardViewContent() {
   const searchParams = useSearchParams();
   const urlLang = searchParams.get('lang') || searchParams.get('l');
 
-  const initialLang = (urlLang === 'en' || urlLang === 'vi')
-    ? (urlLang as Language)
-    : currentLocale;
+  const initialLang = (currentLocale === 'vi' || urlLang === 'vi')
+    ? 'vi'
+    : ((urlLang === 'en' || currentLocale === 'en') ? 'en' : AppConfig.defaultLocale);
 
   const [language, setLanguage] = useState<Language>(initialLang);
   const [relationship, setRelationship] = useState<RelationshipTheme>(RELATIONSHIPS[0]);
@@ -36,11 +36,14 @@ function CardViewContent() {
   const [isSavingImage, setIsSavingImage] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
 
+  const userManuallySwitchedLang = useRef<boolean>(false);
+  const wishIndexRef = useRef<number | null>(null);
+  const relationshipRef = useRef<RelationshipTheme>(RELATIONSHIPS[0]);
   const cardRef = useRef<HTMLDivElement>(null);
   const t = I18N[language];
 
   useEffect(() => {
-    if (currentLocale && (currentLocale === 'en' || currentLocale === 'vi')) {
+    if (!userManuallySwitchedLang.current && currentLocale && (currentLocale === 'en' || currentLocale === 'vi')) {
       setLanguage(currentLocale);
       saveUserLanguage(currentLocale);
     }
@@ -57,18 +60,43 @@ function CardViewContent() {
   };
 
   const handleSelectLanguage = (next: Language) => {
-    if (language !== next) {
-      setLanguage(next);
-      saveUserLanguage(next);
-      if (typeof window !== 'undefined') {
-        const prefix = next === 'vi' ? '/vi' : '';
-        const search = window.location.search || '';
-        const hash = window.location.hash || '';
-        const targetUrl = `${prefix}/card${search}${hash}`;
-        window.history.replaceState(null, '', targetUrl);
-        document.documentElement.lang = next;
-        document.title = I18N[next].pageTitle;
+    userManuallySwitchedLang.current = true;
+    setLanguage(next);
+    saveUserLanguage(next);
+
+    const relObj = relationshipRef.current;
+    const wIdx = wishIndexRef.current;
+    if (wIdx !== null && wIdx >= 0 && relObj) {
+      const wishes = next === 'vi' ? relObj.wishesVi : relObj.wishesEn;
+      if (wishes[wIdx]) {
+        setMessage(wishes[wIdx]);
       }
+    }
+
+    setReceiver((prev) => {
+      const isDefault = !prev || prev === 'Mother' || prev === 'Mẹ' || prev === 'Dearest Mother' || prev === 'Mẹ Yêu Quý' || prev === relObj.defaultReceiverEn || prev === relObj.defaultReceiverVi;
+      if (isDefault) {
+        return next === 'vi' ? relObj.defaultReceiverVi : relObj.defaultReceiverEn;
+      }
+      return prev;
+    });
+
+    setSender((prev) => {
+      if (prev === 'Ẩn danh' || prev === 'Anonymous' || prev === '— Ẩn danh' || prev === '— Anonymous') {
+        return next === 'vi' ? 'Ẩn danh' : 'Anonymous';
+      }
+      return prev;
+    });
+
+    if (typeof window !== 'undefined') {
+      const prefix = next === 'vi' ? '/vi' : '';
+      const params = new URLSearchParams(window.location.search);
+      params.set('lang', next);
+      const hash = window.location.hash || '';
+      const targetUrl = `${prefix}/card?${params.toString()}${hash}`;
+      window.history.replaceState(null, '', targetUrl);
+      document.documentElement.lang = next;
+      document.title = I18N[next].pageTitle;
     }
   };
 
@@ -101,8 +129,12 @@ function CardViewContent() {
       if (!wishIdx) wishIdx = hashParams.get('w');
     }
 
-    if (lang === 'vi' || lang === 'en') {
-      setLanguage(lang as Language);
+    if (!userManuallySwitchedLang.current) {
+      if (currentLocale === 'vi' || lang === 'vi') {
+        setLanguage('vi');
+      } else if (lang === 'en' || currentLocale === 'en') {
+        setLanguage('en');
+      }
     }
 
     // Chỉ coi là có dữ liệu inline hoàn chỉnh nếu biết trước chủ đề thiệp (rel) VÀ có lời chúc (msg hoặc wishIdx)
@@ -122,15 +154,20 @@ function CardViewContent() {
       if (found) {
         initialRel = found;
         setRelationship(found);
+        relationshipRef.current = found;
       }
     }
     if (rec) setReceiver(rec);
     if (send) setSender(send);
     if (wishIdx) {
       const idx = parseInt(wishIdx, 10);
-      const wishes = (lang || AppConfig.defaultLocale) === 'vi' ? initialRel.wishesVi : initialRel.wishesEn;
-      if (!isNaN(idx) && wishes[idx]) {
-        setMessage(wishes[idx]);
+      if (!isNaN(idx)) {
+        wishIndexRef.current = idx;
+        const currentActiveLang = userManuallySwitchedLang.current ? language : (currentLocale === 'vi' ? 'vi' : (lang || AppConfig.defaultLocale));
+        const wishes = currentActiveLang === 'vi' ? initialRel.wishesVi : initialRel.wishesEn;
+        if (wishes[idx]) {
+          setMessage(wishes[idx]);
+        }
       }
     } else if (msg) {
       setMessage(msg);
@@ -138,24 +175,63 @@ function CardViewContent() {
 
     // 2. Xử lý trạng thái tải (Loading) & Đồng bộ từ Google Sheet
     if (id) {
-      // Nếu chưa có đầy đủ theme và nội dung từ URL, hiển thị skeleton loading để tránh bị đổi màu thiệp đột ngột
       if (!hasCompleteInlineData) {
         setIsLoadingCard(true);
       }
 
       getCardFromGoogleSheet(id.trim()).then((data) => {
         if (data) {
-          if (data.receiver) setReceiver(data.receiver);
-          if (data.message) setMessage(data.message);
-          if (data.sender) setSender(data.sender);
+          let currentRel = relationshipRef.current || RELATIONSHIPS[0];
           if (data.relationship) {
             const found = RELATIONSHIPS.find(
               (item) => item.id === data.relationship || item.nameVi === data.relationship || item.nameEn === data.relationship || (item.id === 'other' && (data.relationship.toLowerCase() === 'others' || data.relationship === 'Khác - Others'))
             );
-            if (found) setRelationship(found);
+            if (found) {
+              currentRel = found;
+              setRelationship(found);
+              relationshipRef.current = found;
+            }
           }
-          if (data.language && (data.language === 'vi' || data.language === 'en')) {
-            setLanguage(data.language as Language);
+
+          let detectedWishIdx = -1;
+          if (wishIdx) {
+            detectedWishIdx = parseInt(wishIdx, 10);
+          } else if (data.message) {
+            const viI = currentRel.wishesVi.indexOf(data.message);
+            const enI = currentRel.wishesEn.indexOf(data.message);
+            if (viI >= 0) detectedWishIdx = viI;
+            else if (enI >= 0) detectedWishIdx = enI;
+          }
+          if (detectedWishIdx >= 0) {
+            wishIndexRef.current = detectedWishIdx;
+          }
+
+          const activeLang = userManuallySwitchedLang.current ? language : (currentLocale === 'vi' ? 'vi' : (data.language && (data.language === 'vi' || data.language === 'en') ? (data.language as Language) : language));
+
+          if (detectedWishIdx >= 0) {
+            const wishes = activeLang === 'vi' ? currentRel.wishesVi : currentRel.wishesEn;
+            if (wishes[detectedWishIdx]) {
+              setMessage(wishes[detectedWishIdx]);
+            }
+          } else if (data.message) {
+            setMessage(data.message);
+          }
+
+          const isDefaultRec = !data.receiver || data.receiver === 'Mother' || data.receiver === 'Mẹ' || data.receiver === 'Dearest Mother' || data.receiver === 'Mẹ Yêu Quý' || data.receiver === currentRel.defaultReceiverEn || data.receiver === currentRel.defaultReceiverVi;
+          if (isDefaultRec) {
+            setReceiver(activeLang === 'vi' ? currentRel.defaultReceiverVi : currentRel.defaultReceiverEn);
+          } else {
+            setReceiver(data.receiver);
+          }
+
+          if (data.sender) {
+            setSender(data.sender);
+          }
+
+          if (!userManuallySwitchedLang.current && currentLocale !== 'vi') {
+            if (data.language && (data.language === 'vi' || data.language === 'en')) {
+              setLanguage(data.language as Language);
+            }
           }
         } else if (!hasAnyInlineData) {
           showToast(t.toastCardNotFound);
@@ -165,7 +241,6 @@ function CardViewContent() {
         setIsLoadingCard(false);
       });
     } else {
-      // Không có ID, mở ngay bằng dữ liệu inline
       setIsLoadingCard(false);
     }
   }, [searchParams]);
