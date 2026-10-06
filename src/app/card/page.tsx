@@ -57,7 +57,10 @@ function CardViewContent() {
 
   useEffect(() => {
     document.title = t.pageTitle;
-  }, [t.pageTitle]);
+    if (typeof document !== 'undefined') {
+      document.documentElement.lang = language;
+    }
+  }, [t.pageTitle, language]);
 
   useEffect(() => {
     let id = searchParams.get('id') || searchParams.get('cardId');

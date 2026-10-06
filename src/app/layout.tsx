@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
+import { AppConfig } from '../lib/i18n';
 
 const siteName = "Happy Vietnamese Women's Day 20/10 - E-Card";
 const siteDescription =
@@ -74,8 +75,10 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const locale = AppConfig.defaultLocale;
+
   return (
-    <html lang="en" className="h-full bg-slate-50">
+    <html lang={locale} className="h-full bg-slate-50">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

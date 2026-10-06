@@ -78,7 +78,10 @@ export default function HomePage() {
 
   useEffect(() => {
     document.title = t.pageTitle;
-  }, [t.pageTitle]);
+    if (typeof document !== 'undefined') {
+      document.documentElement.lang = language;
+    }
+  }, [t.pageTitle, language]);
 
   // Đọc dữ liệu từ URL hash nếu được chia sẻ
   // Đọc dữ liệu từ URL nếu được mở từ liên kết
