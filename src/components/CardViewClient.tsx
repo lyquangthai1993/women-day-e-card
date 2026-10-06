@@ -10,6 +10,7 @@ import { useSearchParams } from 'next/navigation';
 import { RelationshipTheme, Language } from '../types';
 import { RELATIONSHIPS, I18N, isDefaultReceiver, isAnonymousSender } from '../lib/constants';
 import { getCardFromGoogleSheet } from '../lib/googleSheet';
+import { isCardOwnedLocally } from '../lib/cardOwnership';
 import { CardPreview } from './CardPreview';
 import { saveUserLanguage } from '../lib/languageStorage';
 import { AppConfig } from '../lib/AppConfig';
@@ -45,6 +46,7 @@ export function CardViewClient({ initialData }: CardViewClientProps) {
   const [isLoadingCard, setIsLoadingCard] = useState<boolean>(initialData.isLoading);
   const [isSavingImage, setIsSavingImage] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
+  const [isOwner, setIsOwner] = useState<boolean>(false);
 
   const userManuallySwitchedLang = useRef<boolean>(false);
   const wishIndexRef = useRef<number | null>(initialData.wishIndex);
@@ -111,6 +113,12 @@ export function CardViewClient({ initialData }: CardViewClientProps) {
       document.documentElement.lang = language;
     }
   }, [t.pageTitle, language]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && cardId) {
+      setIsOwner(isCardOwnedLocally(cardId));
+    }
+  }, [cardId]);
 
   // Hỗ trợ fallback khi người dùng mở bằng client routing hoặc hash (#id=...) mà server không thấy
   useEffect(() => {
@@ -366,7 +374,18 @@ export function CardViewClient({ initialData }: CardViewClientProps) {
             <span>{isSavingImage ? t.btnSavingText : t.btnDownload}</span>
           </button>
 
-          {/* Nút 2: Lớn quay về Trang chủ tạo thiệp */}
+          {/* Nút 2 (Dành riêng cho Người tạo): Chỉnh sửa thiệp này */}
+          {isOwner && cardId && (
+            <Link
+              href={`/?edit=${encodeURIComponent(cardId)}`}
+              className="w-full bg-white hover:bg-rose-50 text-rose-700 font-bold py-3.5 px-5 rounded-2xl text-sm flex items-center justify-center space-x-2 border border-rose-200 shadow-xs active:scale-95 transition"
+            >
+              <span>✏️</span>
+              <span>{t.btnEditCurrentCardAction}</span>
+            </Link>
+          )}
+
+          {/* Nút 3: Lớn quay về Trang chủ tạo thiệp */}
           <Link
             href="/"
             className="w-full bg-gradient-to-r from-rose-600 via-pink-600 to-rose-500 hover:opacity-95 text-white font-bold py-3.5 px-5 rounded-2xl text-sm flex items-center justify-center space-x-2 shadow-lg shadow-rose-200 active:scale-95 transition"

@@ -369,7 +369,9 @@ export const I18N = {
     btnCreateAsNewCard: "Tạo thành thiệp mới (gửi người khác)",
     toastNewCardCreated: "Đã tạo thiệp mới thành công! Link thiệp cũ vẫn được giữ nguyên.",
     btnSharingText: "Đang tạo liên kết...",
-    btnSavingText: "Đang xuất ảnh..."
+    btnSavingText: "Đang xuất ảnh...",
+    unauthorizedEditNotice: "Bạn không phải là người tạo tấm thiệp này nên không thể chỉnh sửa bản gốc. Hệ thống đã mở nội dung để bạn tạo một tấm thiệp mới của riêng mình! 🌸",
+    toastPermissionDenied: "Bạn không có quyền chỉnh sửa thiệp này!"
   },
   en: {
     pageTitle: "Happy Vietnamese Women's Day 20/10 - E-Card",
@@ -424,7 +426,9 @@ export const I18N = {
     btnCreateAsNewCard: "Save as New Card (for someone else)",
     toastNewCardCreated: "New card created! Previous card link remains intact.",
     btnSharingText: "Creating link...",
-    btnSavingText: "Rendering image..."
+    btnSavingText: "Rendering image...",
+    unauthorizedEditNotice: "You are not the creator of this card and cannot edit the original. The content has been loaded so you can create a new card of your own! 🌸",
+    toastPermissionDenied: "You do not have permission to edit this card!"
   }
 };
 

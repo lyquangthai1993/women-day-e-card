@@ -184,6 +184,23 @@ function doPost(e) {
     }
 
     if (foundRow > 0) {
+      // PERMISSION CHECK: Chỉ người tạo thiệp (trùng khớp visitorId) mới được phép cập nhật
+      const originalVisitorId = String(data[foundRow - 1][map.visitorId] || '').trim();
+      const currentVisitorId = String(visitorId || '').trim();
+      if (
+        originalVisitorId &&
+        originalVisitorId !== 'Anonymous' &&
+        currentVisitorId &&
+        currentVisitorId !== 'Anonymous' &&
+        originalVisitorId !== currentVisitorId
+      ) {
+        return createJsonResponse({
+          status: 'error',
+          code: 'UNAUTHORIZED',
+          message: 'Permission denied: Only the card creator can update this card.'
+        });
+      }
+
       // UPDATE EXISTING CARD ROW
       sheet.getRange(foundRow, map.cardUrl + 1).setValue(cardUrl);
       sheet.getRange(foundRow, map.updatedAt + 1).setValue(nowStr);

@@ -9,6 +9,7 @@ import { RelationshipTheme, Language } from '../../types';
 import { RELATIONSHIPS, I18N, getIceCreamClaimStorageKey } from '../../lib/constants';
 import { getDeviceFingerprint } from '../../lib/fingerprint';
 import { syncToGoogleSheet, getCardFromGoogleSheet } from '../../lib/googleSheet';
+import { recordCardOwnership, isCardOwnedLocally, canEditCard } from '../../lib/cardOwnership';
 
 import { CardPreview } from '../../components/CardPreview';
 import { SuggestionsModal } from '../../components/SuggestionsModal';
@@ -109,10 +110,9 @@ export default function HomePage() {
       params = new URLSearchParams(window.location.search);
     }
 
-    // 1. Chế độ chỉnh sửa thiệp (khi được chuyển từ trang /card về trang chủ)
+    // 1. Chế độ chỉnh sửa thiệp (khi được chuyển từ trang /card về trang chủ hoặc mở qua ?edit=)
     if (params.has('edit')) {
       const editId = params.get('edit')!.trim();
-      setCardId(editId);
       setIsViewingMode(false);
 
       if (params.has('rel')) {
@@ -125,7 +125,13 @@ export default function HomePage() {
       if (params.has('s')) setSender(params.get('s') || '');
       if (params.has('m')) setMessage(params.get('m') || '');
 
-      getCardFromGoogleSheet(editId).then((data) => {
+      // Kiểm tra nhanh quyền sở hữu trên thiết bị qua localStorage
+      const hasLocalOwnership = isCardOwnedLocally(editId);
+      if (hasLocalOwnership) {
+        setCardId(editId);
+      }
+
+      getCardFromGoogleSheet(editId).then(async (data) => {
         if (data) {
           if (data.receiver) setReceiver(data.receiver);
           if (data.message) setMessage(data.message);
@@ -136,6 +142,26 @@ export default function HomePage() {
             );
             if (found) setRelationship(found);
           }
+
+          // Kiểm tra quyền sở hữu đối chiếu với Google Sheet
+          const currentFp = await getDeviceFingerprint();
+          const isOwner = canEditCard(editId, currentFp, data.visitorId);
+
+          if (isOwner) {
+            setCardId(editId);
+            recordCardOwnership(editId);
+          } else {
+            // Người truy cập không phải chủ sở hữu tấm thiệp:
+            // Chuyển sang chế độ tạo thiệp mới (Clone/Fork mẫu), không cho ghi đè thiệp gốc
+            setCardId(null);
+            if (typeof window !== 'undefined') {
+              const cleanUrl = window.location.pathname;
+              window.history.replaceState(null, '', cleanUrl);
+            }
+            showToast(t.unauthorizedEditNotice);
+          }
+        } else if (!hasLocalOwnership) {
+          setCardId(null);
         }
       });
       return;
@@ -260,6 +286,7 @@ export default function HomePage() {
       if (!activeCardId) {
         activeCardId = generateCardId();
         setCardId(activeCardId);
+        recordCardOwnership(activeCardId);
       }
 
       const shareUrl = getCardShareUrl(activeCardId);
@@ -285,6 +312,11 @@ export default function HomePage() {
         message: message.trim() || (language === 'vi' ? relationship.wishesVi[0] : relationship.wishesEn[0]),
         language,
       }).then((res) => {
+        if (res && res.status === 'error') {
+          showToast(t.toastPermissionDenied || 'Bạn không có quyền chỉnh sửa thiệp này!');
+          setCardId(null);
+          return;
+        }
         // 3. Khi Google Sheet đã ghi xong, kích hoạt purge cache cũ và nạp mới ISR
         prewarmCardCache(activeCardId, shareUrl, true, !isNewCard);
         if (!isNewCard && res && res.status === 'success' && res.action === 'updated') {
@@ -367,6 +399,7 @@ export default function HomePage() {
       if (!activeCardId) {
         activeCardId = generateCardId();
         setCardId(activeCardId);
+        recordCardOwnership(activeCardId);
       }
 
       const saveShareUrl = getCardShareUrl(activeCardId);
