@@ -54,7 +54,7 @@ export async function getCardFromGoogleSheet(cardId: string): Promise<GoogleShee
 
   try {
     const fetchOptions: RequestInit = typeof window === 'undefined'
-      ? ({ next: { revalidate: 300 } } as any)
+      ? ({ next: { revalidate: 300, tags: [`card-${cardId}`, 'cards'] } } as any)
       : { cache: 'default' };
 
     const res = await fetch(`${GOOGLE_SHEET_API_URL}?action=get_card&id=${encodeURIComponent(cardId)}`, fetchOptions);

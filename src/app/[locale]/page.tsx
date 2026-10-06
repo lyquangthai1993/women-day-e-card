@@ -222,7 +222,7 @@ export default function HomePage() {
   };
 
   // Cơ chế Tự động Kích hoạt ISR & Edge Cache Warm-up ngầm (Pre-warm Background Ping)
-  const prewarmCardCache = (cId: string, sUrl: string, includeCleanRoutes = false) => {
+  const prewarmCardCache = (cId: string, sUrl: string, includeCleanRoutes = false, isUpdate = false) => {
     if (typeof window === 'undefined') return;
     try {
       const origin = window.location.origin;
@@ -233,14 +233,14 @@ export default function HomePage() {
           `${origin}/card/${cId}`,
           `${origin}/vi/card?id=${cId}`,
           `${origin}/card?id=${cId}&lang=en`,
-          `${origin}/api/warm?id=${cId}`
+          `${origin}/api/warm?id=${cId}${isUpdate ? '&revalidate=true' : ''}`
         );
       }
       targets.forEach((url) => {
         fetch(url, {
           method: 'GET',
           mode: 'no-cors',
-          cache: 'reload',
+          cache: isUpdate ? 'no-store' : 'reload',
         }).catch(() => {});
       });
     } catch {
@@ -270,8 +270,8 @@ export default function HomePage() {
 
       window.history.replaceState(null, '', `#id=${activeCardId}`);
 
-      // 1. Pre-warm tức thì với các tham số inline của shareUrl
-      prewarmCardCache(activeCardId, shareUrl, false);
+      // 1. Pre-warm tức thì với các tham số inline của shareUrl (nếu cập nhật thì kèm cờ revalidate)
+      prewarmCardCache(activeCardId, shareUrl, false, !isNewCard);
 
       // 2. Đồng bộ ngầm lên Google Sheet (Optimistic UI - không bắt người dùng đợi mạng)
       syncToGoogleSheet({
@@ -285,8 +285,8 @@ export default function HomePage() {
         message: message.trim() || (language === 'vi' ? relationship.wishesVi[0] : relationship.wishesEn[0]),
         language,
       }).then((res) => {
-        // 3. Khi Google Sheet đã ghi xong dòng mới, kích hoạt ping warm-up đầy đủ cho ISR và Edge Cache
-        prewarmCardCache(activeCardId, shareUrl, true);
+        // 3. Khi Google Sheet đã ghi xong, kích hoạt purge cache cũ và nạp mới ISR
+        prewarmCardCache(activeCardId, shareUrl, true, !isNewCard);
         if (!isNewCard && res && res.status === 'success' && res.action === 'updated') {
           showToast(t.toastCardUpdated);
         }
@@ -362,6 +362,7 @@ export default function HomePage() {
         setIsViewCardModalOpen(true);
       }
 
+      const isNew = !cardId;
       let activeCardId = cardId;
       if (!activeCardId) {
         activeCardId = generateCardId();
@@ -369,7 +370,7 @@ export default function HomePage() {
       }
 
       const saveShareUrl = getCardShareUrl(activeCardId);
-      prewarmCardCache(activeCardId, saveShareUrl, false);
+      prewarmCardCache(activeCardId, saveShareUrl, false, !isNew);
 
       syncToGoogleSheet({
         action: 'save_card',
@@ -382,7 +383,7 @@ export default function HomePage() {
         message: message.trim() || (language === 'vi' ? relationship.wishesVi[0] : relationship.wishesEn[0]),
         language,
       }).then(() => {
-        prewarmCardCache(activeCardId, saveShareUrl, true);
+        prewarmCardCache(activeCardId, saveShareUrl, true, !isNew);
       });
 
       const finalFileName = getDownloadFileName();
