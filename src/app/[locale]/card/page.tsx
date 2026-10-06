@@ -194,17 +194,22 @@ function CardViewContent() {
           }
 
           let detectedWishIdx = -1;
-          if (wishIdx) {
-            detectedWishIdx = parseInt(wishIdx, 10);
-          } else if (data.message) {
+          if (data.message) {
+            // Kiểm tra xem message lưu trên Google Sheet có khớp với câu chúc mẫu nào không
             const viI = currentRel.wishesVi.indexOf(data.message);
             const enI = currentRel.wishesEn.indexOf(data.message);
-            if (viI >= 0) detectedWishIdx = viI;
-            else if (enI >= 0) detectedWishIdx = enI;
+            if (viI >= 0) {
+              detectedWishIdx = viI;
+            } else if (enI >= 0) {
+              detectedWishIdx = enI;
+            } else {
+              // Lời chúc tự gõ/custom riêng của người dùng -> Không coi là mẫu để bảo toàn 100%
+              detectedWishIdx = -1;
+            }
+          } else if (wishIdx) {
+            detectedWishIdx = parseInt(wishIdx, 10);
           }
-          if (detectedWishIdx >= 0) {
-            wishIndexRef.current = detectedWishIdx;
-          }
+          wishIndexRef.current = detectedWishIdx >= 0 ? detectedWishIdx : null;
 
           const activeLang = userManuallySwitchedLang.current ? language : (currentLocale === 'vi' ? 'vi' : (data.language && (data.language === 'vi' || data.language === 'en') ? (data.language as Language) : language));
 
@@ -212,8 +217,11 @@ function CardViewContent() {
             const wishes = activeLang === 'vi' ? currentRel.wishesVi : currentRel.wishesEn;
             if (wishes[detectedWishIdx]) {
               setMessage(wishes[detectedWishIdx]);
+            } else if (data.message) {
+              setMessage(data.message);
             }
           } else if (data.message) {
+            // Bảo toàn tuyệt đối nội dung lời chúc tự gõ đã lưu trong Google Sheet
             setMessage(data.message);
           }
 
