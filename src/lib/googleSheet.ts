@@ -53,7 +53,11 @@ export async function getCardFromGoogleSheet(cardId: string): Promise<GoogleShee
   }
 
   try {
-    const res = await fetch(`${GOOGLE_SHEET_API_URL}?action=get_card&id=${encodeURIComponent(cardId)}`);
+    const fetchOptions: RequestInit = typeof window === 'undefined'
+      ? ({ next: { revalidate: 300 } } as any)
+      : { cache: 'default' };
+
+    const res = await fetch(`${GOOGLE_SHEET_API_URL}?action=get_card&id=${encodeURIComponent(cardId)}`, fetchOptions);
     const json = await res.json();
     if (json && json.status === 'success' && json.data) {
       return json.data as GoogleSheetCardData;
