@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { RelationshipTheme, Language } from '../types';
+import { isDefaultReceiver, isAnonymousSender } from '../lib/constants';
 
 interface CardPreviewProps {
   relationship: RelationshipTheme;
@@ -377,7 +378,7 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
   const defaultReceiver = language === 'vi' ? relationship.defaultReceiverVi : relationship.defaultReceiverEn;
   const defaultMessage = language === 'vi' ? relationship.wishesVi[0] : relationship.wishesEn[0];
 
-  const rawReceiver = receiver.trim() || defaultReceiver;
+  const rawReceiver = isDefaultReceiver(receiver, relationship) ? defaultReceiver : receiver.trim();
   const hasSalutation = /^(gửi|kính gửi|thương gửi|thân gửi|tưởng nhớ|dearest|to|dear)\b/i.test(rawReceiver);
 
   let prefix = language === 'vi' ? 'Gửi ' : 'To ';
@@ -396,12 +397,12 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
 
   const rawSender = sender.trim();
   let displaySender = '';
-  if (rawSender) {
+  if (isAnonymousSender(rawSender)) {
+    displaySender = language === 'vi' ? '— Một người thầm trân quý' : '— Someone who cherishes you';
+  } else {
     displaySender = rawSender.startsWith('—') || rawSender.startsWith('-')
       ? rawSender
       : `— ${rawSender}`;
-  } else {
-    displaySender = language === 'vi' ? '— Một người thầm trân quý' : '— Someone who cherishes you';
   }
 
   return (

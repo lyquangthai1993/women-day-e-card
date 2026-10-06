@@ -8,7 +8,7 @@ import { useLocale } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 
 import { RelationshipTheme, Language } from '../types';
-import { RELATIONSHIPS, I18N } from '../lib/constants';
+import { RELATIONSHIPS, I18N, isDefaultReceiver, isAnonymousSender } from '../lib/constants';
 import { getCardFromGoogleSheet } from '../lib/googleSheet';
 import { CardPreview } from './CardPreview';
 import { saveUserLanguage } from '../lib/languageStorage';
@@ -80,16 +80,15 @@ export function CardViewClient({ initialData }: CardViewClientProps) {
     }
 
     setReceiver((prev) => {
-      const isDefault = !prev || prev === 'Mother' || prev === 'Mẹ' || prev === 'Dearest Mother' || prev === 'Mẹ Yêu Quý' || prev === relObj.defaultReceiverEn || prev === relObj.defaultReceiverVi;
-      if (isDefault) {
+      if (isDefaultReceiver(prev, relObj)) {
         return next === 'vi' ? relObj.defaultReceiverVi : relObj.defaultReceiverEn;
       }
       return prev;
     });
 
     setSender((prev) => {
-      if (prev === 'Ẩn danh' || prev === 'Anonymous' || prev === '— Ẩn danh' || prev === '— Anonymous') {
-        return next === 'vi' ? 'Ẩn danh' : 'Anonymous';
+      if (isAnonymousSender(prev)) {
+        return '';
       }
       return prev;
     });
@@ -185,15 +184,16 @@ export function CardViewClient({ initialData }: CardViewClientProps) {
             setMessage(data.message);
           }
 
-          const isDefaultRec = !data.receiver || data.receiver === 'Mother' || data.receiver === 'Mẹ' || data.receiver === 'Dearest Mother' || data.receiver === 'Mẹ Yêu Quý' || data.receiver === currentRel.defaultReceiverEn || data.receiver === currentRel.defaultReceiverVi;
-          if (isDefaultRec) {
-            setReceiver(activeLang === 'vi' ? currentRel.defaultReceiverVi : currentRel.defaultReceiverEn);
-          } else {
-            setReceiver(data.receiver);
+          if (data.receiver) {
+            if (isDefaultReceiver(data.receiver, currentRel)) {
+              setReceiver(activeLang === 'vi' ? currentRel.defaultReceiverVi : currentRel.defaultReceiverEn);
+            } else {
+              setReceiver(data.receiver);
+            }
           }
 
           if (data.sender) {
-            setSender(data.sender);
+            setSender(isAnonymousSender(data.sender) ? '' : data.sender);
           }
 
           if (!userManuallySwitchedLang.current && currentLocale !== 'vi') {

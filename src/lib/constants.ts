@@ -427,3 +427,54 @@ export const I18N = {
     btnSavingText: "Rendering image..."
   }
 };
+
+export function isDefaultReceiver(rec: string | undefined | null, rel?: RelationshipTheme): boolean {
+  if (!rec || !rec.trim()) return true;
+  const r = rec.trim().toLowerCase();
+
+  const genericDefaults = [
+    'mother', 'mẹ', 'dearest mother', 'mẹ yêu quý',
+    'wife', 'vợ', 'vợ yêu', 'vợ yêu của anh', 'my beloved wife',
+    'sister', 'chị / em gái', 'chị / em', 'chị gái', 'em gái', 'my dear sister',
+    'friend', 'bạn thân', 'bạn thân của tôi', 'my best friend',
+    'colleague', 'đồng nghiệp', 'chị / em đồng nghiệp', 'dear colleague',
+    'lover', 'girlfriend', 'người yêu', 'em yêu của anh', 'my sweetheart',
+    'memorial', 'người tôi muốn nhớ về', 'người phụ nữ trong tim tôi', 'in loving memory', 'forever in my heart',
+    'other', 'others', 'khác', 'người phụ nữ tuyệt vời', 'someone special', 'special someone'
+  ];
+
+  if (genericDefaults.includes(r)) return true;
+
+  if (rel) {
+    if (
+      r === rel.nameVi.toLowerCase() ||
+      r === rel.nameEn.toLowerCase() ||
+      r === rel.defaultReceiverVi.toLowerCase() ||
+      r === rel.defaultReceiverEn.toLowerCase()
+    ) {
+      return true;
+    }
+  }
+
+  return RELATIONSHIPS.some(
+    (item) =>
+      item.nameVi.toLowerCase() === r ||
+      item.nameEn.toLowerCase() === r ||
+      item.defaultReceiverVi.toLowerCase() === r ||
+      item.defaultReceiverEn.toLowerCase() === r
+  );
+}
+
+export function isAnonymousSender(sender: string | undefined | null): boolean {
+  if (!sender || !sender.trim()) return true;
+  const s = sender.trim().toLowerCase();
+  const anonList = [
+    'ẩn danh', '— ẩn danh', '- ẩn danh',
+    'anonymous', '— anonymous', '- anonymous',
+    'một người thầm trân quý', '— một người thầm trân quý', '- một người thầm trân quý',
+    'từ: một người thầm trân quý',
+    'someone who cherishes you', '— someone who cherishes you', '- someone who cherishes you',
+    'from: someone who cherishes you'
+  ];
+  return anonList.includes(s);
+}

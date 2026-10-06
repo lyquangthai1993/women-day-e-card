@@ -4,7 +4,7 @@ import { setRequestLocale } from 'next-intl/server';
 import { Loader2 } from 'lucide-react';
 
 import { CardViewClient, CardInitialData } from '../../../components/CardViewClient';
-import { RELATIONSHIPS, I18N } from '../../../lib/constants';
+import { RELATIONSHIPS, I18N, isDefaultReceiver, isAnonymousSender } from '../../../lib/constants';
 import { getCardFromGoogleSheet } from '../../../lib/googleSheet';
 import { Language, RelationshipTheme } from '../../../types';
 import { AppConfig } from '../../../lib/AppConfig';
@@ -40,8 +40,17 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
     }
   }
 
-  const finalReceiver = sheetData?.receiver || rec || (isVi ? 'Mẹ Yêu Quý' : 'Mother');
-  const finalMessage = sheetData?.message || msg || (isVi ? 'Tấm thiệp gửi gắm muôn vàn yêu thương nhân ngày 20/10 🌸' : 'A heartfelt e-card for Vietnamese Women\'s Day 🌸');
+  const relId = sheetData?.relationship || searchParams.rel || 'mother';
+  const relObj = RELATIONSHIPS.find(
+    (item) => item.id === relId || item.nameVi === relId || item.nameEn === relId || (item.id === 'other' && (relId.toLowerCase() === 'others' || relId === 'Khác - Others'))
+  ) || RELATIONSHIPS[0];
+
+  const candidateReceiver = sheetData?.receiver || rec || '';
+  const finalReceiver = candidateReceiver && !isDefaultReceiver(candidateReceiver, relObj)
+    ? candidateReceiver
+    : (isVi ? relObj.defaultReceiverVi : relObj.defaultReceiverEn);
+
+  const finalMessage = sheetData?.message || msg || (isVi ? relObj.wishesVi[0] : relObj.wishesEn[0]);
 
   const title = isVi
     ? `Thiệp 20/10 gửi tặng ${finalReceiver} 🌸`
@@ -151,8 +160,7 @@ export default async function CardPage({ params, searchParams }: PageProps) {
     }
 
     if (sheetData.receiver) {
-      const isDefault = !sheetData.receiver || sheetData.receiver === 'Mother' || sheetData.receiver === 'Mẹ' || sheetData.receiver === 'Dearest Mother' || sheetData.receiver === 'Mẹ Yêu Quý' || sheetData.receiver === initialRel.defaultReceiverEn || sheetData.receiver === initialRel.defaultReceiverVi;
-      if (isDefault) {
+      if (isDefaultReceiver(sheetData.receiver, initialRel)) {
         initialReceiver = activeLang === 'vi' ? initialRel.defaultReceiverVi : initialRel.defaultReceiverEn;
       } else {
         initialReceiver = sheetData.receiver;
@@ -160,15 +168,15 @@ export default async function CardPage({ params, searchParams }: PageProps) {
     }
 
     if (sheetData.sender) {
-      initialSender = sheetData.sender;
+      initialSender = isAnonymousSender(sheetData.sender) ? '' : sheetData.sender;
     }
   } else {
     // Nếu chưa có từ sheet hoặc url, thiết lập mặc định theo chủ đề
-    if (!initialReceiver) {
+    if (!initialReceiver || isDefaultReceiver(initialReceiver, initialRel)) {
       initialReceiver = activeLang === 'vi' ? initialRel.defaultReceiverVi : initialRel.defaultReceiverEn;
     }
-    if (!initialSender) {
-      initialSender = activeLang === 'vi' ? 'Ẩn danh' : 'Anonymous';
+    if (!initialSender || isAnonymousSender(initialSender)) {
+      initialSender = '';
     }
     if (!initialMessage) {
       initialMessage = activeLang === 'vi' ? initialRel.wishesVi[0] : initialRel.wishesEn[0];
