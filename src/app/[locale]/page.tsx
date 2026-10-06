@@ -62,19 +62,8 @@ export default function HomePage() {
     return 'c_' + Math.random().toString(36).substring(2, 8) + Date.now().toString(36).slice(-4);
   };
 
-  // Khởi tạo FingerprintJS, nạp ngôn ngữ (mặc định AppConfig.defaultLocale = 'en') và kiểm tra trạng thái vé kem
+  // Khởi tạo FingerprintJS và kiểm tra trạng thái vé kem
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const urlParams = new URLSearchParams(window.location.search);
-      const urlLang = urlParams.get('lang');
-      if (urlLang === 'vi' || urlLang === 'en') {
-        setLanguage(urlLang);
-        saveUserLanguage(urlLang);
-      } else {
-        setLanguage(getInitialLocale());
-      }
-    }
-
     async function init() {
       const id = await getDeviceFingerprint();
       setVisitorId(id);
@@ -166,14 +155,14 @@ export default function HomePage() {
     const next = language === 'vi' ? 'en' : 'vi';
     setLanguage(next);
     saveUserLanguage(next);
-    router.replace(pathname, { locale: next });
+    router.replace(pathname, { locale: next, scroll: false });
   };
 
   const handleSelectLanguage = (next: Language) => {
     if (language !== next) {
       setLanguage(next);
       saveUserLanguage(next);
-      router.replace(pathname, { locale: next });
+      router.replace(pathname, { locale: next, scroll: false });
     }
   };
 
@@ -451,7 +440,7 @@ export default function HomePage() {
         <div className="max-w-md lg:max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
           <div 
             onClick={handleSwitchToCreateMode} 
-            className="flex items-center space-x-2 cursor-pointer group select-none min-w-0 pr-2"
+            className="flex items-center space-x-2 cursor-pointer group select-none flex-1 min-w-0 pr-4"
             title={language === 'vi' ? 'Trang chủ tạo thiệp' : 'Homepage Creator'}
           >
             <span className="text-xl group-hover:scale-110 transition-transform shrink-0">🌸</span>
@@ -462,11 +451,11 @@ export default function HomePage() {
           </div>
 
           {/* Segmented Language Switcher: [ VI | EN ] */}
-          <div className="shrink-0 flex items-center bg-rose-50/90 border border-rose-200/80 p-0.5 rounded-full shadow-2xs">
+          <div className="shrink-0 ml-auto flex items-center bg-rose-50/90 border border-rose-200/80 p-0.5 rounded-full shadow-2xs">
             <button
               type="button"
               onClick={() => handleSelectLanguage('vi')}
-              className={`px-2.5 py-1 rounded-full text-xs font-bold transition-all duration-200 ${
+              className={`w-9 h-7 inline-flex items-center justify-center rounded-full text-xs font-bold transition-colors duration-150 select-none ${
                 language === 'vi'
                   ? 'bg-rose-600 text-white shadow-xs'
                   : 'text-rose-700/80 hover:text-rose-900 hover:bg-rose-100/50'
@@ -477,7 +466,7 @@ export default function HomePage() {
             <button
               type="button"
               onClick={() => handleSelectLanguage('en')}
-              className={`px-2.5 py-1 rounded-full text-xs font-bold transition-all duration-200 ${
+              className={`w-9 h-7 inline-flex items-center justify-center rounded-full text-xs font-bold transition-colors duration-150 select-none ${
                 language === 'en'
                   ? 'bg-rose-600 text-white shadow-xs'
                   : 'text-rose-700/80 hover:text-rose-900 hover:bg-rose-100/50'

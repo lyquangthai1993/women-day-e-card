@@ -23,7 +23,7 @@ function CardViewContent() {
 
   const initialLang = (urlLang === 'en' || urlLang === 'vi')
     ? (urlLang as Language)
-    : getInitialLocale();
+    : currentLocale;
 
   const [language, setLanguage] = useState<Language>(initialLang);
   const [relationship, setRelationship] = useState<RelationshipTheme>(RELATIONSHIPS[0]);
@@ -39,6 +39,13 @@ function CardViewContent() {
   const cardRef = useRef<HTMLDivElement>(null);
   const t = I18N[language];
 
+  useEffect(() => {
+    if (currentLocale && (currentLocale === 'en' || currentLocale === 'vi')) {
+      setLanguage(currentLocale);
+      saveUserLanguage(currentLocale);
+    }
+  }, [currentLocale]);
+
   const showToast = (msg: string) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(''), 3000);
@@ -49,7 +56,7 @@ function CardViewContent() {
     setLanguage(next);
     saveUserLanguage(next);
     const query = searchParams.toString() ? '?' + searchParams.toString() : '';
-    router.replace(pathname + query, { locale: next });
+    router.replace(pathname + query, { locale: next, scroll: false });
   };
 
   const handleSelectLanguage = (next: Language) => {
@@ -57,7 +64,7 @@ function CardViewContent() {
       setLanguage(next);
       saveUserLanguage(next);
       const query = searchParams.toString() ? '?' + searchParams.toString() : '';
-      router.replace(pathname + query, { locale: next });
+      router.replace(pathname + query, { locale: next, scroll: false });
     }
   };
 
@@ -218,10 +225,10 @@ function CardViewContent() {
       {/* Header */}
       <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-rose-100 shadow-2xs">
         <div className="max-w-md mx-auto px-4 h-14 flex items-center justify-between">
-          <Link href="/" className="flex items-center space-x-2 hover:opacity-90 transition min-w-0 pr-2">
+          <Link href="/" className="flex items-center space-x-2 hover:opacity-90 transition flex-1 min-w-0 pr-4">
             <span className="text-xl shrink-0">🌸</span>
             <div className="min-w-0">
-              <h1 className="font-serif font-bold text-base sm:text-lg text-rose-900 leading-tight">
+              <h1 className="font-serif font-bold text-base sm:text-lg text-rose-900 leading-tight truncate">
                 20 · 10 E-Card
               </h1>
               <p className="text-[10px] text-rose-700 tracking-wider font-medium truncate">
@@ -231,11 +238,11 @@ function CardViewContent() {
           </Link>
 
           {/* Segmented Language Switcher: [ VI | EN ] */}
-          <div className="shrink-0 flex items-center bg-rose-50/90 border border-rose-200/80 p-0.5 rounded-full shadow-2xs">
+          <div className="shrink-0 ml-auto flex items-center bg-rose-50/90 border border-rose-200/80 p-0.5 rounded-full shadow-2xs">
             <button
               type="button"
               onClick={() => handleSelectLanguage('vi')}
-              className={`px-2.5 py-1 rounded-full text-xs font-bold transition-all duration-200 ${
+              className={`w-9 h-7 inline-flex items-center justify-center rounded-full text-xs font-bold transition-colors duration-150 select-none ${
                 language === 'vi'
                   ? 'bg-rose-600 text-white shadow-xs'
                   : 'text-rose-700/80 hover:text-rose-900 hover:bg-rose-100/50'
@@ -246,7 +253,7 @@ function CardViewContent() {
             <button
               type="button"
               onClick={() => handleSelectLanguage('en')}
-              className={`px-2.5 py-1 rounded-full text-xs font-bold transition-all duration-200 ${
+              className={`w-9 h-7 inline-flex items-center justify-center rounded-full text-xs font-bold transition-colors duration-150 select-none ${
                 language === 'en'
                   ? 'bg-rose-600 text-white shadow-xs'
                   : 'text-rose-700/80 hover:text-rose-900 hover:bg-rose-100/50'
