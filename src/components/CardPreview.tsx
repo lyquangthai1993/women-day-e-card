@@ -406,44 +406,44 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
 
       {/* Cụm hoa góc trên bên trái (Top-Left Floral Cluster) */}
       <svg
-        className="absolute top-0 left-0 w-[185px] h-[185px] sm:w-[205px] sm:h-[205px] pointer-events-none z-10"
+        className="absolute top-0 left-0 w-[155px] h-[155px] sm:w-[175px] sm:h-[175px] pointer-events-none z-10"
         viewBox="0 0 180 180"
       >
         <LeavesCluster leafColor={theme.leafColor} />
         {/* Bông 1: Trên cùng (Tone sáng nhẹ) */}
-        <g transform="translate(44, 40) scale(0.92)">
+        <g transform="translate(42, 38) scale(0.92)">
           {renderThemeFlower(theme, true)}
         </g>
         {/* Bông 2: Bên dưới bên trái */}
-        <g transform="translate(38, 116) scale(0.86)">
+        <g transform="translate(36, 112) scale(0.86)">
           {renderThemeFlower(theme, false)}
         </g>
         {/* Bông 3: Nổi bật ở trung tâm cụm */}
-        <g transform="translate(104, 98) scale(1.06)">
+        <g transform="translate(94, 88) scale(0.96)">
           {renderThemeFlower(theme, false)}
         </g>
       </svg>
 
       {/* Cụm hoa góc dưới bên phải (Bottom-Right Floral Cluster - Xoay 180 độ đối xứng hoàn hảo) */}
       <svg
-        className="absolute bottom-0 right-0 w-[185px] h-[185px] sm:w-[205px] sm:h-[205px] pointer-events-none z-10 rotate-180"
+        className="absolute bottom-0 right-0 w-[145px] h-[145px] sm:w-[165px] sm:h-[165px] pointer-events-none z-10 rotate-180"
         viewBox="0 0 180 180"
       >
         <LeavesCluster leafColor={theme.leafColor} />
-        <g transform="translate(44, 40) scale(0.92)">
+        <g transform="translate(42, 38) scale(0.92)">
           {renderThemeFlower(theme, true)}
         </g>
-        <g transform="translate(38, 116) scale(0.86)">
+        <g transform="translate(36, 112) scale(0.86)">
           {renderThemeFlower(theme, false)}
         </g>
-        <g transform="translate(104, 98) scale(1.06)">
+        <g transform="translate(94, 88) scale(0.96)">
           {renderThemeFlower(theme, false)}
         </g>
       </svg>
 
       {/* Bông hoa đơn góc trên bên phải (Top-Right Single Bloom) */}
       <svg
-        className="absolute top-0 right-0 w-[100px] h-[100px] pointer-events-none z-10"
+        className="absolute top-0 right-0 w-[90px] h-[90px] sm:w-[100px] sm:h-[100px] pointer-events-none z-10"
         viewBox="0 0 100 100"
       >
         <g transform="translate(74, 26) scale(0.72)">
@@ -453,7 +453,7 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
 
       {/* Bông hoa đơn góc dưới bên trái (Bottom-Left Single Bloom) */}
       <svg
-        className="absolute bottom-0 left-0 w-[100px] h-[100px] pointer-events-none z-10"
+        className="absolute bottom-0 left-0 w-[90px] h-[90px] sm:w-[100px] sm:h-[100px] pointer-events-none z-10"
         viewBox="0 0 100 100"
       >
         <g transform="translate(26, 74) scale(0.72)">
@@ -462,7 +462,7 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
       </svg>
 
       {/* Nội dung thiệp chính giữa */}
-      <div className="relative z-20 flex flex-col justify-between h-full px-8 sm:px-12 pt-28 sm:pt-32 pb-14 sm:pb-16 text-center">
+      <div className="relative z-20 flex flex-col justify-between h-full px-6 sm:px-12 pt-[144px] sm:pt-[160px] pb-10 sm:pb-14 text-center">
         {/* Người nhận (Title) */}
         <div className="max-w-[85%] mx-auto">
           <h2
@@ -484,7 +484,7 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
         </div>
 
         {/* Chân thiệp (Footer: Đường kẻ, Người gửi, Ngày tháng) */}
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center max-w-[80%] mx-auto">
           <div
             className="w-12 h-[1px] mb-3"
             style={{ backgroundColor: theme.dividerColor, opacity: 0.6 }}
