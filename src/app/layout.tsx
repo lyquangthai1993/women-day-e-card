@@ -4,6 +4,14 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'Thiệp Chúc Mừng 20/10 - E-Card',
   description: 'Tạo và chia sẻ thiệp chúc mừng ngày Phụ nữ Việt Nam 20/10 với mã nhận diện thiết bị và vé nhận kem.',
+  icons: {
+    icon: [
+      { url: '/icon.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+    ],
+    shortcut: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
+  },
 };
 
 export const viewport: Viewport = {
