@@ -39,9 +39,11 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: '/og-image.png',
+        url: `${siteUrl}/og-image.jpg`,
+        secureUrl: `${siteUrl}/og-image.jpg`,
         width: 1200,
         height: 630,
+        type: 'image/jpeg',
         alt: siteName,
       },
     ],
@@ -50,7 +52,13 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: siteName,
     description: siteDescription,
-    images: ['/og-image.png'],
+    images: [`${siteUrl}/og-image.jpg`],
+  },
+  other: {
+    'og:image:secure_url': `${siteUrl}/og-image.jpg`,
+    'og:image:type': 'image/jpeg',
+    'og:image:width': '1200',
+    'og:image:height': '630',
   },
 };
 
@@ -75,6 +83,7 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Charm:wght@400;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Playfair+Display:ital,wght@0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
           rel="stylesheet"
         />
+        <link rel="image_src" href="https://women-day-e-card.vercel.app/og-image.jpg" />
       </head>
       <body className="min-h-full flex flex-col text-slate-800 antialiased selection:bg-rose-200">
         {children}
