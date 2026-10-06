@@ -53,18 +53,22 @@ function CardViewContent() {
 
   const toggleLanguage = () => {
     const next = language === 'vi' ? 'en' : 'vi';
-    setLanguage(next);
-    saveUserLanguage(next);
-    const query = searchParams.toString() ? '?' + searchParams.toString() : '';
-    router.replace(pathname + query, { locale: next, scroll: false });
+    handleSelectLanguage(next);
   };
 
   const handleSelectLanguage = (next: Language) => {
     if (language !== next) {
       setLanguage(next);
       saveUserLanguage(next);
-      const query = searchParams.toString() ? '?' + searchParams.toString() : '';
-      router.replace(pathname + query, { locale: next, scroll: false });
+      if (typeof window !== 'undefined') {
+        const prefix = next === 'vi' ? '/vi' : '';
+        const search = window.location.search || '';
+        const hash = window.location.hash || '';
+        const targetUrl = `${prefix}/card${search}${hash}`;
+        window.history.replaceState(null, '', targetUrl);
+        document.documentElement.lang = next;
+        document.title = I18N[next].pageTitle;
+      }
     }
   };
 

@@ -47,7 +47,20 @@ export default function HomePage() {
   const [isSavingImage, setIsSavingImage] = useState<boolean>(false);
 
   const [visitorId, setVisitorId] = useState<string>('fp_loading');
-  const [isClaimed, setIsClaimed] = useState<boolean>(false);
+  const [isClaimed, setIsClaimed] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    try {
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && k.startsWith('icecream_claimed') && localStorage.getItem(k) === 'true') {
+          return true;
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return false;
+  });
 
   const [isSuggestionsOpen, setIsSuggestionsOpen] = useState<boolean>(false);
   const [isIceCreamModalOpen, setIsIceCreamModalOpen] = useState<boolean>(false);
@@ -153,16 +166,19 @@ export default function HomePage() {
 
   const toggleLanguage = () => {
     const next = language === 'vi' ? 'en' : 'vi';
-    setLanguage(next);
-    saveUserLanguage(next);
-    router.replace(pathname, { locale: next, scroll: false });
+    handleSelectLanguage(next);
   };
 
   const handleSelectLanguage = (next: Language) => {
     if (language !== next) {
       setLanguage(next);
       saveUserLanguage(next);
-      router.replace(pathname, { locale: next, scroll: false });
+      if (typeof window !== 'undefined') {
+        const targetUrl = next === 'vi' ? '/vi' : '/';
+        window.history.replaceState(null, '', targetUrl);
+        document.documentElement.lang = next;
+        document.title = I18N[next].pageTitle;
+      }
     }
   };
 
