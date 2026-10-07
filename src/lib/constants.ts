@@ -149,13 +149,13 @@ export const RELATIONSHIPS: RelationshipTheme[] = [
     defaultSalutationVi: 'Gửi bạn',
     defaultSalutationEn: 'To My Buddy',
     wishesVi: [
-      "Chúc bạn thân 20/10 luôn tràn đầy năng lượng, tiền vào như nước và sớm có người rước nha!",
+      "Chúc bạn thân ngày 20/10 luôn xinh đẹp rạng ngời, tự tin làm chủ cuộc sống và gặt hái thật nhiều thành công rực rỡ nhé!",
       "Cảm ơn bạn vì luôn lắng nghe và đồng hành những lúc vui buồn. 20/10 thật hạnh phúc nhé người bạn tuyệt vời!",
       "Chúc bạn luôn xinh đẹp, tự tin làm chủ cuộc sống và luôn yêu thương chính mình.",
       "Hôm nay xứng đáng nhận hoa, quà và thật nhiều niềm vui. Happy Women's Day!"
     ],
     wishesEn: [
-      "Happy Women's Day to my favorite partner in crime! Stay fabulous, rich, and cheerful!",
+      "Wishing my wonderful bestie a fabulous 20/10! Stay beautiful, confident, and chase your dreams with pride!",
       "Thanks for always being there through thick and thin. Have a truly wonderful 20/10!",
       "Wishing you confidence, success, and tons of love. You deserve the best!",
       "Go treat yourself to something nice today—you truly rock!"
@@ -301,10 +301,10 @@ export const RELATIONSHIPS: RelationshipTheme[] = [
     defaultSalutationVi: 'Thân gửi',
     defaultSalutationEn: 'To',
     wishesVi: [
-      "Nhân ngày Phụ nữ Việt Nam 20/10, chúc bạn luôn ngập tràn niềm vui, bình an, xinh đẹp và gặt hái thật nhiều hạnh phúc trong cuộc sống.",
-      "Cảm ơn vì đã luôn mang đến nguồn năng lượng tích cực và sự ấm áp. Chúc bạn có một ngày 20/10 thật trọn vẹn và ý nghĩa!",
-      "Chúc bạn luôn tự tin tỏa sáng theo cách riêng của mình, mỗi ngày trôi qua đều là một ngày ngập tràn tiếng cười và may mắn.",
-      "Gửi ngàn lời chúc tốt đẹp và chân thành nhất đến bạn. Chúc bạn mãi rạng rỡ, yêu đời và luôn được yêu thương thật nhiều."
+      "Nhân ngày Phụ nữ Việt Nam 20/10, chúc bạn luôn ngập tràn niềm vui, xinh đẹp, duyên dáng và gặt hái thật nhiều hạnh phúc trong cuộc sống.",
+      "Cảm ơn vì đã luôn mang đến nguồn năng lượng tích cực và sự ấm áp. Chúc bạn có một ngày 20/10 thật trọn vẹn và rạng rỡ!",
+      "Chúc bạn luôn tự tin tỏa sáng theo cách riêng của mình, mỗi khoảnh khắc trôi qua đều đong đầy yêu thương và nụ cười rạng rỡ.",
+      "Gửi ngàn lời chúc tốt đẹp và chân thành nhất nhân ngày 20/10. Chúc bạn mãi tươi vui, yêu đời và luôn được nâng niu, trân trọng."
     ],
     wishesEn: [
       "Wishing you a joyful and wonderful Vietnamese Women's Day! May your life be filled with endless smiles, peace, and happiness.",
