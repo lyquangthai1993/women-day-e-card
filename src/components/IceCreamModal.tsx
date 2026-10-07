@@ -41,12 +41,12 @@ export const IceCreamModal: React.FC<IceCreamModalProps> = ({
       <div className="bg-white max-w-sm w-full rounded-3xl p-6 shadow-2xl text-center space-y-5 animate-scale-up relative overflow-hidden">
         
         {/* Ice cream celebration icon */}
-        <div className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto text-3xl shadow-inner animate-pulse-slow">
+        <div className="w-16 h-16 bg-[#06214c]/10 rounded-full flex items-center justify-center mx-auto text-3xl shadow-inner animate-pulse-slow">
           🍦
         </div>
 
         <div>
-          <span className="inline-block bg-rose-100 text-rose-700 text-[11px] font-bold px-3 py-1 rounded-full mb-2 uppercase tracking-wider">
+          <span className="inline-block bg-[#06214c]/10 text-[#06214c] text-[11px] font-bold px-3 py-1 rounded-full mb-2 uppercase tracking-wider border border-[#06214c]/20">
             {t.modalTag}
           </span>
           <h3 className="font-serif font-bold text-2xl text-slate-800">
@@ -58,16 +58,16 @@ export const IceCreamModal: React.FC<IceCreamModalProps> = ({
         </div>
 
         {/* Digital Ice Cream Pass */}
-        <div className="bg-gradient-to-br from-amber-50 to-pink-50 border-2 border-dashed border-rose-300 rounded-2xl p-4 text-left space-y-2 relative">
-          <div className="flex justify-between items-center border-b border-rose-200/60 pb-2">
-            <span className="text-[10px] font-bold text-rose-600 uppercase tracking-widest">ICE CREAM PASS</span>
+        <div className="bg-gradient-to-br from-amber-50/60 via-slate-50 to-blue-50/40 border-2 border-dashed border-[#06214c]/30 rounded-2xl p-4 text-left space-y-2 relative">
+          <div className="flex justify-between items-center border-b border-[#06214c]/15 pb-2">
+            <span className="text-[10px] font-bold text-[#06214c] uppercase tracking-widest">ICE CREAM PASS</span>
             <span className="text-[10px] font-mono font-bold text-slate-500">{currentTime}</span>
           </div>
 
           <div className="flex items-center justify-between pt-1">
             <div>
               <div className="text-[10px] text-slate-400">Mã nhận kem</div>
-              <div className="font-mono font-bold text-xl text-rose-700 tracking-wider">{ticketCode}</div>
+              <div className="font-mono font-bold text-xl text-[#06214c] tracking-wider">{ticketCode}</div>
             </div>
             <div className="text-right">
               <div className="text-[10px] text-slate-400">Trạng thái</div>
@@ -79,7 +79,7 @@ export const IceCreamModal: React.FC<IceCreamModalProps> = ({
             </div>
           </div>
 
-          <div className="text-[10px] text-slate-400 font-mono truncate pt-1 border-t border-rose-200/60">
+          <div className="text-[10px] text-slate-400 font-mono truncate pt-1 border-t border-[#06214c]/15">
             Device: <span>{visitorId.substring(0, 12)}</span>
           </div>
         </div>

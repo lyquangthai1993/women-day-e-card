@@ -272,29 +272,31 @@ export function CardViewClient({ initialData }: CardViewClientProps) {
       )}
 
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-rose-100 shadow-2xs">
-        <div className="max-w-md mx-auto px-4 h-14 flex items-center justify-between">
-          <Link href="/" className="flex items-center space-x-2 hover:opacity-90 transition flex-1 min-w-0 pr-4">
-            <span className="text-xl shrink-0">🌸</span>
+      <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200/80 shadow-2xs">
+        <div className="max-w-md mx-auto px-4 h-16 flex items-center justify-between">
+          <Link href="/" className="flex items-center space-x-3 hover:opacity-90 transition flex-1 min-w-0 pr-4">
+            <span className="w-9 h-9 rounded-xl bg-[#06214c] text-[#f9b31e] flex items-center justify-center text-lg shadow-sm border border-[#d4a843]/40 shrink-0">
+              🌸
+            </span>
             <div className="min-w-0">
-              <h1 className="font-serif font-bold text-base sm:text-lg text-rose-900 leading-tight truncate">
+              <h1 className="font-serif font-bold text-base sm:text-lg text-[#06214c] leading-tight truncate">
                 20 · 10 E-Card
               </h1>
-              <p className="text-[10px] text-rose-700 tracking-wider font-medium truncate">
+              <p className="text-[10px] text-[#d4a843] font-semibold tracking-wider uppercase leading-none truncate">
                 {t.subHeader}
               </p>
             </div>
           </Link>
 
           {/* Segmented Language Switcher: [ VI | EN ] */}
-          <div className="shrink-0 ml-auto flex items-center bg-rose-50/90 border border-rose-200/80 p-0.5 rounded-full shadow-2xs">
+          <div className="shrink-0 ml-auto flex items-center bg-[#06214c]/5 border border-[#06214c]/15 p-0.5 rounded-full shadow-2xs">
             <button
               type="button"
               onClick={() => handleSelectLanguage('vi')}
               className={`w-9 h-7 inline-flex items-center justify-center rounded-full text-xs font-bold transition-colors duration-150 select-none ${
                 language === 'vi'
-                  ? 'bg-rose-600 text-white shadow-xs'
-                  : 'text-rose-700/80 hover:text-rose-900 hover:bg-rose-100/50'
+                  ? 'bg-[#06214c] text-white shadow-xs'
+                  : 'text-[#06214c]/80 hover:text-[#06214c] hover:bg-[#06214c]/10'
               }`}
             >
               VI
@@ -304,8 +306,8 @@ export function CardViewClient({ initialData }: CardViewClientProps) {
               onClick={() => handleSelectLanguage('en')}
               className={`w-9 h-7 inline-flex items-center justify-center rounded-full text-xs font-bold transition-colors duration-150 select-none ${
                 language === 'en'
-                  ? 'bg-rose-600 text-white shadow-xs'
-                  : 'text-rose-700/80 hover:text-rose-900 hover:bg-rose-100/50'
+                  ? 'bg-[#06214c] text-white shadow-xs'
+                  : 'text-[#06214c]/80 hover:text-[#06214c] hover:bg-[#06214c]/10'
               }`}
             >
               EN
@@ -318,10 +320,10 @@ export function CardViewClient({ initialData }: CardViewClientProps) {
       <main className="flex-1 max-w-md mx-auto w-full px-4 py-6 space-y-5 animate-fade-in">
         {/* Banner tiêu đề trang xem thiệp */}
         <div className="text-center space-y-1.5 pb-1">
-          <div className="inline-flex items-center space-x-1.5 bg-rose-100/80 text-rose-800 text-xs font-semibold px-3.5 py-1 rounded-full border border-rose-200 shadow-2xs">
+          <div className="inline-flex items-center space-x-1.5 bg-[#06214c]/10 text-[#06214c] text-xs font-semibold px-3.5 py-1 rounded-full border border-[#06214c]/20 shadow-2xs">
             <span>{t.viewCardGreetingBadge}</span>
           </div>
-          <h2 className="font-serif font-bold text-xl text-slate-800 tracking-wide">
+          <h2 className="font-serif font-bold text-xl text-[#06214c] tracking-wide">
             {t.viewCardHeading}
           </h2>
         </div>
@@ -329,21 +331,21 @@ export function CardViewClient({ initialData }: CardViewClientProps) {
         {/* Khung Thiệp Trực Quan */}
         <div ref={cardRef}>
           {isLoadingCard ? (
-            <div className="w-full max-w-sm mx-auto aspect-[3/4] rounded-3xl bg-gradient-to-br from-rose-50/90 via-pink-50/70 to-amber-50/80 border-2 border-dashed border-rose-200 shadow-xl flex flex-col items-center justify-center p-8 text-center animate-pulse">
-              <div className="w-16 h-16 rounded-full bg-rose-100/90 text-rose-500 flex items-center justify-center text-3xl mb-4 shadow-sm animate-bounce">
+            <div className="w-full max-w-sm mx-auto aspect-[3/4] rounded-3xl bg-gradient-to-br from-slate-50 via-blue-50/40 to-amber-50/50 border-2 border-dashed border-[#06214c]/20 shadow-xl flex flex-col items-center justify-center p-8 text-center animate-pulse">
+              <div className="w-16 h-16 rounded-full bg-[#06214c]/10 text-[#06214c] flex items-center justify-center text-3xl mb-4 shadow-sm animate-bounce">
                 🌸
               </div>
-              <div className="flex items-center space-x-2 text-rose-800 font-serif font-bold text-base mb-2">
-                <Loader2 className="w-4 h-4 animate-spin text-rose-600" />
+              <div className="flex items-center space-x-2 text-[#06214c] font-serif font-bold text-base mb-2">
+                <Loader2 className="w-4 h-4 animate-spin text-[#06214c]" />
                 <span>{language === 'vi' ? 'Đang mở tấm thiệp yêu thương...' : 'Opening your heartfelt e-card...'}</span>
               </div>
               <p className="text-xs text-slate-500 max-w-xs leading-relaxed">
                 {language === 'vi' ? 'Đang tải nội dung thiệp được gửi riêng cho bạn, vui lòng đợi trong giây lát...' : 'Loading your custom e-card, please wait a moment...'}
               </p>
               <div className="w-full mt-6 space-y-2.5 opacity-60">
-                <div className="h-3.5 bg-rose-200/60 rounded-full w-2/3 mx-auto"></div>
-                <div className="h-3.5 bg-rose-200/50 rounded-full w-4/5 mx-auto"></div>
-                <div className="h-3.5 bg-rose-200/40 rounded-full w-1/2 mx-auto"></div>
+                <div className="h-3.5 bg-[#06214c]/10 rounded-full w-2/3 mx-auto"></div>
+                <div className="h-3.5 bg-[#06214c]/10 rounded-full w-4/5 mx-auto"></div>
+                <div className="h-3.5 bg-[#06214c]/10 rounded-full w-1/2 mx-auto"></div>
               </div>
             </div>
           ) : (
@@ -364,7 +366,7 @@ export function CardViewClient({ initialData }: CardViewClientProps) {
             type="button"
             onClick={handleSaveImage}
             disabled={isSavingImage || isLoadingCard}
-            className="w-full bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white font-bold py-3.5 px-5 rounded-2xl text-sm flex items-center justify-center space-x-2 shadow-md shadow-rose-200 active:scale-95 transition"
+            className="w-full bg-[#06214c] hover:bg-[#0b3474] disabled:opacity-50 text-white font-bold py-3.5 px-5 rounded-2xl text-sm flex items-center justify-center space-x-2 shadow-md shadow-[#06214c]/20 border border-[#d4a843]/40 active:scale-95 transition"
           >
             {isSavingImage ? (
               <Loader2 className="w-5 h-5 animate-spin" />
@@ -378,7 +380,7 @@ export function CardViewClient({ initialData }: CardViewClientProps) {
           {isOwner && cardId && (
             <Link
               href={`/?edit=${encodeURIComponent(cardId)}`}
-              className="w-full bg-white hover:bg-rose-50 text-rose-700 font-bold py-3.5 px-5 rounded-2xl text-sm flex items-center justify-center space-x-2 border border-rose-200 shadow-xs active:scale-95 transition"
+              className="w-full bg-white hover:bg-slate-50 text-[#06214c] font-bold py-3.5 px-5 rounded-2xl text-sm flex items-center justify-center space-x-2 border border-slate-200 shadow-2xs active:scale-95 transition"
             >
               <span>✏️</span>
               <span>{t.btnEditCurrentCardAction}</span>
@@ -388,7 +390,7 @@ export function CardViewClient({ initialData }: CardViewClientProps) {
           {/* Nút 3: Lớn quay về Trang chủ tạo thiệp */}
           <Link
             href="/"
-            className="w-full bg-gradient-to-r from-rose-600 via-pink-600 to-rose-500 hover:opacity-95 text-white font-bold py-3.5 px-5 rounded-2xl text-sm flex items-center justify-center space-x-2 shadow-lg shadow-rose-200 active:scale-95 transition"
+            className="w-full bg-gradient-to-r from-[#d4a843] via-[#e2b958] to-[#c49a37] hover:opacity-95 text-[#06214c] font-bold py-3.5 px-5 rounded-2xl text-sm flex items-center justify-center space-x-2 shadow-lg shadow-amber-200/50 active:scale-95 transition"
           >
             <span>🌸</span>
             <span>{t.btnCreateOwnCardAction}</span>

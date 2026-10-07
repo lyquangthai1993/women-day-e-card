@@ -14,22 +14,29 @@ interface CardPreviewProps {
 }
 
 export type FlowerType =
-  | 'peony'       // Mẹ: mẫu đơn hồng
-  | 'rose'        // Vợ: hồng đỏ thẫm
-  | 'sakura'      // Chị / Em gái: anh đào hồng phấn
-  | 'daisy'       // Bạn thân: cúc họa mi, nền vàng kem
-  | 'lilac'       // Đồng nghiệp: hoa tím lilac
-  | 'ranunculus'  // Người yêu: mao lương (ranunculus) màu san hô
-  | 'white-lily'; // Người tôi muốn nhớ về: hoa trắng thanh khiết, nền xám xanh nhẹ
+  | 'peony'       // Mẹ: mẫu đơn vương giả
+  | 'rose'        // Vợ: hồng nhung hoàng gia
+  | 'sakura'      // Chị / Em gái: anh đào sân trường Wimbledon
+  | 'daisy'       // Bạn thân: cúc họa mi ánh kim
+  | 'lilac'       // Đồng nghiệp: hoa tím lilac học thuật
+  | 'ranunculus'  // Người yêu: mao lương san hô & lụa hoàng gia
+  | 'white-lily'  // Người tôi muốn nhớ về: hoa bách hợp trắng thanh khiết
+  | 'lisianthus'; // Khác: cát tường vinh hoa vạn sự như ý
 
 export interface CardThemeConfig {
   flowerType: FlowerType;
   cardBg: string;
   frameColor: string;
+  innerFrameColor?: string;
+  cornerStyle: string;
   flowerLayers: [string, string, string, string];
   flowerLayersLight?: [string, string, string, string];
+  accentColor: string;
   pistilColor: string;
   leafColor: string;
+  brandTagColor: string;
+  stampBadgeVi: string;
+  stampBadgeEn: string;
   salutationColor: string;
   bodyColor: string;
   dividerColor: string;
@@ -39,221 +46,337 @@ export interface CardThemeConfig {
 
 export const CARD_THEMES: Record<string, CardThemeConfig> = {
   mother: {
-    // Mẹ: mẫu đơn hồng (Peony - hồng phấn ngọt ngào, hiền từ)
+    // 1. MẸ: Mẫu đơn vương giả (Royal Peony & Gold Filigree)
     flowerType: 'peony',
-    cardBg: '#fcf1f4',
-    frameColor: 'rgba(205, 130, 148, 0.65)',
-    flowerLayers: ['#d95b7c', '#ea7a98', '#f29bb1', '#fce2e8'],
-    flowerLayersLight: ['#ea7a98', '#f29bb1', '#fce2e8', '#ffffff'],
-    pistilColor: '#e5a93b',
-    leafColor: '#8fae92',
-    salutationColor: '#4e1723',
-    bodyColor: '#431e26',
-    dividerColor: '#cd8294',
-    senderColor: '#4e1723',
-    dateColor: '#a36474',
+    cardBg: '#faf9f6',
+    frameColor: '#d4a843',
+    innerFrameColor: '#06214c',
+    cornerStyle: 'peony-filigree',
+    flowerLayers: ['#06214c', '#1b3a6b', '#f9d2de', '#fdf3dc'],
+    flowerLayersLight: ['#1b3a6b', '#f9d2de', '#fdf3dc', '#ffffff'],
+    accentColor: '#d4a843',
+    pistilColor: '#f9b31e',
+    leafColor: '#4a6750',
+    brandTagColor: '#06214c',
+    stampBadgeVi: 'MẪU TỬ TRI ÂN · DÀNH TẶNG MẸ KÍNH YÊU',
+    stampBadgeEn: 'LOVE & GRATITUDE · DEAREST MOTHER',
+    salutationColor: '#06214c',
+    bodyColor: '#1b2a47',
+    dividerColor: '#d4a843',
+    senderColor: '#06214c',
+    dateColor: '#06214c',
   },
   wife: {
-    // Vợ: hồng đỏ thẫm (Deep Red Rose - đỏ nhung nồng thắm, quyến rũ)
+    // 2. VỢ: Hoa hồng nhung hoàng gia (King\'s Velvet Rose & Crown)
     flowerType: 'rose',
-    cardBg: '#fdf5f5',
-    frameColor: 'rgba(168, 50, 72, 0.65)',
-    flowerLayers: ['#881337', '#9f1239', '#be123c', '#e11d48'],
-    flowerLayersLight: ['#9f1239', '#be123c', '#e11d48', '#fecdd3'],
+    cardBg: '#faf6f7',
+    frameColor: '#d4a843',
+    innerFrameColor: '#881337',
+    cornerStyle: 'royal-crown',
+    flowerLayers: ['#06214c', '#881337', '#be123c', '#fecdd3'],
+    flowerLayersLight: ['#881337', '#be123c', '#fecdd3', '#ffffff'],
+    accentColor: '#be123c',
     pistilColor: '#facc15',
-    leafColor: '#5e8062',
-    salutationColor: '#450a18',
-    bodyColor: '#3d141e',
-    dividerColor: '#a83248',
-    senderColor: '#450a18',
-    dateColor: '#943447',
+    leafColor: '#2d503b',
+    brandTagColor: '#06214c',
+    stampBadgeVi: 'TRỌN VẸN YÊU THƯƠNG · GỬI VỢ YÊU',
+    stampBadgeEn: 'FOREVER YOURS · DEAREST WIFE',
+    salutationColor: '#7f1d3a',
+    bodyColor: '#0f2240',
+    dividerColor: '#d4a843',
+    senderColor: '#06214c',
+    dateColor: '#881337',
   },
   sister: {
-    // Chị / Em gái: anh đào hồng phấn (Cherry Blossom / Sakura - pastel tươi trẻ, thanh nhã)
+    // 3. CHỊ / EM GÁI: Anh đào Wimbledon (Wimbledon Cherry Blossom)
     flowerType: 'sakura',
-    cardBg: '#fdf2f5',
-    frameColor: 'rgba(220, 140, 160, 0.65)',
-    flowerLayers: ['#e87a98', '#f09cb2', '#f8b8c8', '#fde8ee'],
-    flowerLayersLight: ['#f09cb2', '#f8b8c8', '#fde8ee', '#ffffff'],
-    pistilColor: '#e5a93b',
-    leafColor: '#9dc09f',
-    salutationColor: '#521c28',
-    bodyColor: '#451d26',
-    dividerColor: '#dc8ca0',
-    senderColor: '#521c28',
-    dateColor: '#ab6679',
+    cardBg: '#f4f8fb',
+    frameColor: '#d4a843',
+    innerFrameColor: '#3b6998',
+    cornerStyle: 'wimbledon-branch',
+    flowerLayers: ['#234b82', '#4b77ad', '#f9a8d4', '#fdf2f8'],
+    flowerLayersLight: ['#4b77ad', '#f9a8d4', '#fdf2f8', '#ffffff'],
+    accentColor: '#d4a843',
+    pistilColor: '#f59e0b',
+    leafColor: '#6b9474',
+    brandTagColor: '#06214c',
+    stampBadgeVi: 'RẠNG RỠ TỎA SÁNG · CHỊ EM THÂN THƯƠNG',
+    stampBadgeEn: 'SWEET & SHINING · DEAREST SISTER',
+    salutationColor: '#0d3674',
+    bodyColor: '#1e293b',
+    dividerColor: '#d4a843',
+    senderColor: '#06214c',
+    dateColor: '#234b82',
   },
   friend: {
-    // Bạn thân: cúc họa mi, nền vàng kem (Daisy - cánh trắng tinh khôi, nhụy vàng ấm trên nền vàng kem)
+    // 4. BẠN THÂN: Cúc họa mi ánh kim (Sunlit Daisy of Companionship)
     flowerType: 'daisy',
-    cardBg: '#fefce8',
-    frameColor: 'rgba(217, 180, 74, 0.65)',
-    flowerLayers: ['#f1f5f9', '#f8fafc', '#ffffff', '#ffffff'],
-    pistilColor: '#eab308',
-    leafColor: '#7da672',
-    salutationColor: '#4a3810',
-    bodyColor: '#3d2f0d',
-    dividerColor: '#d9b44a',
-    senderColor: '#4a3810',
-    dateColor: '#927228',
+    cardBg: '#fcfaf2',
+    frameColor: '#d4a843',
+    innerFrameColor: '#f9b31e',
+    cornerStyle: 'octagram-star',
+    flowerLayers: ['#06214c', '#f1f5f9', '#ffffff', '#ffffff'],
+    flowerLayersLight: ['#1e3a68', '#f8fafc', '#ffffff', '#ffffff'],
+    accentColor: '#f9b31e',
+    pistilColor: '#d4a843',
+    leafColor: '#5b7e52',
+    brandTagColor: '#06214c',
+    stampBadgeVi: 'TRI KỶ BỀN LÂU · TÌNH BẠN DIỆU KỲ',
+    stampBadgeEn: 'BESTIE FOREVER · CHERISHED FRIENDSHIP',
+    salutationColor: '#78350f',
+    bodyColor: '#0a1f44',
+    dividerColor: '#d4a843',
+    senderColor: '#06214c',
+    dateColor: '#b45309',
   },
   colleague: {
-    // Đồng nghiệp: hoa tím lilac (Lilac / Soft Lavender - tím lilac tinh tế, nhã nhặn)
+    // 5. ĐỒNG NGHIỆP: Lilac tri thức & học thuật (Academic Lilac & Crest)
     flowerType: 'lilac',
-    cardBg: '#fbf6fe',
-    frameColor: 'rgba(165, 125, 195, 0.65)',
-    flowerLayers: ['#7c3aed', '#9333ea', '#a855f7', '#c4b5fd'],
-    flowerLayersLight: ['#9333ea', '#a855f7', '#c4b5fd', '#ede9fe'],
-    pistilColor: '#fbbf24',
-    leafColor: '#7d9d86',
-    salutationColor: '#32144d',
-    bodyColor: '#2b153f',
-    dividerColor: '#a57dc3',
-    senderColor: '#32144d',
-    dateColor: '#7c5496',
+    cardBg: '#f3f6fa',
+    frameColor: '#d4a843',
+    innerFrameColor: '#06214c',
+    cornerStyle: 'academic-deco',
+    flowerLayers: ['#06214c', '#581c87', '#7c3aed', '#c4b5fd'],
+    flowerLayersLight: ['#581c87', '#7c3aed', '#c4b5fd', '#ede9fe'],
+    accentColor: '#7c3aed',
+    pistilColor: '#f9b31e',
+    leafColor: '#5e7568',
+    brandTagColor: '#06214c',
+    stampBadgeVi: 'TRÂN TRỌNG HỢP TÁC · ĐỒNG NGHIỆP TUYỆT VỜI',
+    stampBadgeEn: 'VALUED COLLEAGUE · INSPIRING PARTNERSHIP',
+    salutationColor: '#1e1b4b',
+    bodyColor: '#1e293b',
+    dividerColor: '#d4a843',
+    senderColor: '#06214c',
+    dateColor: '#581c87',
   },
   lover: {
-    // Người yêu: mao lương (ranunculus) màu san hô (Coral Ranunculus - san hô nồng nàn & lãng mạn)
+    // 6. NGƯỜI YÊU: Mao lương san hô & lụa hoàng gia (Coral Ranunculus & Royal Silk)
     flowerType: 'ranunculus',
-    cardBg: '#fff5f2',
-    frameColor: 'rgba(225, 115, 100, 0.65)',
-    flowerLayers: ['#ea580c', '#f97316', '#fb923c', '#fecba6'],
-    flowerLayersLight: ['#f97316', '#fb923c', '#fecba6', '#fff1e6'],
+    cardBg: '#faf5f2',
+    frameColor: '#d4a843',
+    innerFrameColor: '#ea580c',
+    cornerStyle: 'romantic-ribbon',
+    flowerLayers: ['#06214c', '#ea580c', '#fb923c', '#fed7aa'],
+    flowerLayersLight: ['#ea580c', '#fb923c', '#fed7aa', '#fff1e6'],
+    accentColor: '#ea580c',
     pistilColor: '#d97706',
-    leafColor: '#8ea889',
-    salutationColor: '#541920',
-    bodyColor: '#45171d',
-    dividerColor: '#e17364',
-    senderColor: '#541920',
-    dateColor: '#a85245',
+    leafColor: '#60856d',
+    brandTagColor: '#06214c',
+    stampBadgeVi: 'TRÁI TIM CHO EM · NGỌT NGÀO YÊU THƯƠNG',
+    stampBadgeEn: 'MY SWEETHEART · WITH ALL MY HEART',
+    salutationColor: '#7c2d12',
+    bodyColor: '#0d2347',
+    dividerColor: '#d4a843',
+    senderColor: '#06214c',
+    dateColor: '#ea580c',
   },
   memorial: {
-    // Người tôi muốn nhớ về: hoa trắng thanh khiết, nền xám xanh nhẹ (Pure White - hoa trắng thanh thoát trên nền xám xanh)
+    // 7. NGƯỜI TÔI MUỐN NHỚ VỀ: Bách hợp trắng thanh khiết (Sovereign White Lily)
     flowerType: 'white-lily',
     cardBg: '#f0f4f8',
-    frameColor: 'rgba(148, 163, 184, 0.65)',
-    flowerLayers: ['#cbd5e1', '#e2e8f0', '#f1f5f9', '#ffffff'],
-    flowerLayersLight: ['#e2e8f0', '#f1f5f9', '#ffffff', '#ffffff'],
+    frameColor: '#94a3b8',
+    innerFrameColor: '#06214c',
+    cornerStyle: 'laurel-peace',
+    flowerLayers: ['#06214c', '#64748b', '#cbd5e1', '#ffffff'],
+    flowerLayersLight: ['#64748b', '#cbd5e1', '#ffffff', '#ffffff'],
+    accentColor: '#94a3b8',
     pistilColor: '#d97706',
-    leafColor: '#8fa0a8',
-    salutationColor: '#1e293b',
+    leafColor: '#64748b',
+    brandTagColor: '#06214c',
+    stampBadgeVi: 'SỐNG MÃI TRONG TIM · NỖI NHỚ KHÔN NGUÔI',
+    stampBadgeEn: 'FOREVER IN MEMORY · SACRED PEACE',
+    salutationColor: '#0f172a',
     bodyColor: '#334155',
     dividerColor: '#94a3b8',
-    senderColor: '#1e293b',
+    senderColor: '#06214c',
     dateColor: '#64748b',
   },
   other: {
-    // Khác - Others: Hoa Cát Tường Nắng Ấm (Warm Sunshine Lisianthus - may mắn, cát tường & trân quý)
-    flowerType: 'peony',
-    cardBg: '#faf8f5',
-    frameColor: 'rgba(214, 168, 105, 0.65)',
-    flowerLayers: ['#d97706', '#f59e0b', '#fbbf24', '#fef08a'],
-    flowerLayersLight: ['#f59e0b', '#fbbf24', '#fef08a', '#ffffff'],
+    // 8. KHÁC: Cát tường vinh hoa vạn sự như ý (The King\'s Crest Lisianthus)
+    flowerType: 'lisianthus',
+    cardBg: '#faf9f6',
+    frameColor: '#d4a843',
+    innerFrameColor: '#06214c',
+    cornerStyle: 'kings-crest',
+    flowerLayers: ['#06214c', '#d97706', '#f59e0b', '#fef08a'],
+    flowerLayersLight: ['#d97706', '#f59e0b', '#fef08a', '#ffffff'],
+    accentColor: '#d4a843',
     pistilColor: '#78350f',
-    leafColor: '#72976d',
-    salutationColor: '#452608',
-    bodyColor: '#3a2007',
-    dividerColor: '#d6a869',
-    senderColor: '#452608',
-    dateColor: '#8c6834',
+    leafColor: '#4d6b53',
+    brandTagColor: '#06214c',
+    stampBadgeVi: 'VẠN SỰ NHƯ Ý · TRÂN QUÝ & BÌNH AN',
+    stampBadgeEn: 'BEST WISHES · PEACE & JOY',
+    salutationColor: '#06214c',
+    bodyColor: '#1c283d',
+    dividerColor: '#d4a843',
+    senderColor: '#06214c',
+    dateColor: '#d4a843',
   },
 };
 
-interface LayeredBloomProps {
-  layers: [string, string, string, string];
-  pistilColor: string;
-}
-
-// Hoa xếp lớp đồng tâm chuẩn phong cách paper-bloom (Dành cho Mẫu đơn, Hoa hồng, Anh đào, Lilac, Hoa trắng)
-const LayeredBloom: React.FC<LayeredBloomProps> = ({ layers, pistilColor }) => (
-  <g className="layered-bloom">
-    {/* Vòng cánh ngoài cùng (Layer 1) */}
-    <g fill={layers[0]} stroke="rgba(0,0,0,0.05)" strokeWidth="0.5">
-      <circle cx="0" cy="0" r="30" />
-      <circle cx="30" cy="0" r="18" />
-      <circle cx="21.21" cy="21.21" r="18" />
-      <circle cx="0" cy="30" r="18" />
-      <circle cx="-21.21" cy="21.21" r="18" />
-      <circle cx="-30" cy="0" r="18" />
-      <circle cx="-21.21" cy="-21.21" r="18" />
-      <circle cx="0" cy="-30" r="18" />
-      <circle cx="21.21" cy="-21.21" r="18" />
+// 1. HOA MẪU ĐƠN VƯƠNG GIẢ (Mẹ)
+const PeonyBloom: React.FC<{ layers: [string, string, string, string]; pistilColor: string }> = ({
+  layers,
+  pistilColor,
+}) => (
+  <g className="peony-bloom">
+    <g fill={layers[0]} stroke="rgba(0,0,0,0.06)" strokeWidth="0.5">
+      <circle cx="0" cy="0" r="32" />
+      {Array.from({ length: 12 }).map((_, i) => {
+        const a = (i * 30 * Math.PI) / 180;
+        return (
+          <circle
+            key={`p1-${i}`}
+            cx={Number((26 * Math.cos(a)).toFixed(2))}
+            cy={Number((26 * Math.sin(a)).toFixed(2))}
+            r="16"
+          />
+        );
+      })}
     </g>
-    {/* Vòng cánh thứ hai (Layer 2) */}
-    <g fill={layers[1]} stroke="rgba(0,0,0,0.05)" strokeWidth="0.5">
+    <g fill={layers[1]} stroke="rgba(0,0,0,0.06)" strokeWidth="0.5">
       <circle cx="0" cy="0" r="22" />
-      <circle cx="20.32" cy="8.42" r="14" />
-      <circle cx="8.42" cy="20.32" r="14" />
-      <circle cx="-8.42" cy="20.32" r="14" />
-      <circle cx="-20.32" cy="8.42" r="14" />
-      <circle cx="-20.32" cy="-8.42" r="14" />
-      <circle cx="-8.42" cy="-20.32" r="14" />
-      <circle cx="8.42" cy="-20.32" r="14" />
-      <circle cx="20.32" cy="-8.42" r="14" />
+      {Array.from({ length: 10 }).map((_, i) => {
+        const a = ((i * 36 + 18) * Math.PI) / 180;
+        return (
+          <circle
+            key={`p2-${i}`}
+            cx={Number((18 * Math.cos(a)).toFixed(2))}
+            cy={Number((18 * Math.sin(a)).toFixed(2))}
+            r="13"
+          />
+        );
+      })}
     </g>
-    {/* Vòng cánh thứ ba (Layer 3) */}
-    <g fill={layers[2]} stroke="rgba(0,0,0,0.05)" strokeWidth="0.5">
+    <g fill={layers[2]} stroke="rgba(0,0,0,0.06)" strokeWidth="0.5">
       <circle cx="0" cy="0" r="14" />
-      <circle cx="14" cy="0" r="11" />
-      <circle cx="9.9" cy="9.9" r="11" />
-      <circle cx="0" cy="14" r="11" />
-      <circle cx="-9.9" cy="9.9" r="11" />
-      <circle cx="-14" cy="0" r="11" />
-      <circle cx="-9.9" cy="-9.9" r="11" />
-      <circle cx="0" cy="-14" r="11" />
-      <circle cx="9.9" cy="-9.9" r="11" />
+      {Array.from({ length: 8 }).map((_, i) => {
+        const a = (i * 45 * Math.PI) / 180;
+        return (
+          <circle
+            key={`p3-${i}`}
+            cx={Number((11 * Math.cos(a)).toFixed(2))}
+            cy={Number((11 * Math.sin(a)).toFixed(2))}
+            r="9"
+          />
+        );
+      })}
     </g>
-    {/* Vòng cánh trong cùng (Layer 4) */}
-    <g fill={layers[3]} stroke="rgba(0,0,0,0.05)" strokeWidth="0.5">
-      <circle cx="0" cy="0" r="7" />
-      <circle cx="6.47" cy="2.68" r="8" />
-      <circle cx="2.68" cy="6.47" r="8" />
-      <circle cx="-2.68" cy="6.47" r="8" />
-      <circle cx="-6.47" cy="2.68" r="8" />
-      <circle cx="-6.47" cy="-2.68" r="8" />
-      <circle cx="-2.68" cy="-6.47" r="8" />
-      <circle cx="2.68" cy="-6.47" r="8" />
-      <circle cx="6.47" cy="-2.68" r="8" />
+    <g fill={layers[3]} stroke="rgba(0,0,0,0.06)" strokeWidth="0.5">
+      <circle cx="0" cy="0" r="8" />
+      {Array.from({ length: 6 }).map((_, i) => {
+        const a = ((i * 60 + 30) * Math.PI) / 180;
+        return (
+          <circle
+            key={`p4-${i}`}
+            cx={Number((5 * Math.cos(a)).toFixed(2))}
+            cy={Number((5 * Math.sin(a)).toFixed(2))}
+            r="6"
+          />
+        );
+      })}
     </g>
-    {/* Nhụy hoa ấm áp */}
-    <circle cx="0" cy="0" r="7" fill={pistilColor} stroke="rgba(0,0,0,0.06)" strokeWidth="0.5" />
+    <circle cx="0" cy="0" r="7.5" fill={pistilColor} stroke="rgba(0,0,0,0.08)" strokeWidth="0.5" />
+    <circle cx="0" cy="0" r="4.5" fill="#fef08a" opacity="0.75" />
   </g>
 );
 
-// Cúc Họa Mi đặc trưng (Cánh trắng thon dài tỏa đều quanh nhụy vàng)
+// 2. HOA HỒNG NHUNG HOÀNG GIA (Vợ)
+const RoseBloom: React.FC<{ layers: [string, string, string, string]; pistilColor: string }> = ({
+  layers,
+  pistilColor,
+}) => (
+  <g className="rose-bloom">
+    <g fill={layers[0]} stroke="rgba(0,0,0,0.06)" strokeWidth="0.5">
+      <circle cx="0" cy="0" r="30" />
+      <ellipse cx="-12" cy="-14" rx="20" ry="15" transform="rotate(-15 -12 -14)" />
+      <ellipse cx="14" cy="-12" rx="19" ry="16" transform="rotate(25 14 -12)" />
+      <ellipse cx="16" cy="12" rx="20" ry="15" transform="rotate(75 16 12)" />
+      <ellipse cx="-6" cy="18" rx="21" ry="14" transform="rotate(-20 -6 18)" />
+      <ellipse cx="-18" cy="2" rx="19" ry="15" transform="rotate(45 -18 2)" />
+    </g>
+    <g fill={layers[1]} stroke="rgba(0,0,0,0.06)" strokeWidth="0.5">
+      <ellipse cx="-8" cy="-6" rx="15" ry="11" transform="rotate(10 -8 -6)" />
+      <ellipse cx="8" cy="-5" rx="14" ry="12" transform="rotate(-25 8 -5)" />
+      <ellipse cx="9" cy="8" rx="14" ry="11" transform="rotate(35 9 8)" />
+      <ellipse cx="-5" cy="10" rx="15" ry="10" transform="rotate(-15 -5 10)" />
+    </g>
+    <g fill={layers[2]} stroke="rgba(0,0,0,0.06)" strokeWidth="0.5">
+      <ellipse cx="-3" cy="-3" rx="10" ry="8" transform="rotate(-30 -3 -3)" />
+      <ellipse cx="4" cy="-2" rx="9" ry="8" transform="rotate(30 4 -2)" />
+      <ellipse cx="2" cy="4" rx="9" ry="7" transform="rotate(60 2 4)" />
+      <ellipse cx="-3" cy="3" rx="8" ry="7" transform="rotate(-40 -3 3)" />
+    </g>
+    <g fill={layers[3]}>
+      <circle cx="0" cy="0" r="5" />
+      <ellipse cx="0.5" cy="-0.5" rx="3.5" ry="2.5" transform="rotate(45 0.5 -0.5)" />
+    </g>
+    <circle cx="0" cy="0" r="2.5" fill={pistilColor} />
+  </g>
+);
+
+// 3. ANH ĐÀO WIMBLEDON (Chị / Em gái)
+const SakuraBloom: React.FC<{ layers: [string, string, string, string]; pistilColor: string }> = ({
+  layers,
+  pistilColor,
+}) => (
+  <g className="sakura-bloom">
+    <g fill={layers[0]} stroke="rgba(0,0,0,0.05)" strokeWidth="0.4">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <path
+          key={`sakura-out-${i}`}
+          d="M 0,0 C -12,-18 -16,-34 -6,-39 C -1,-36 -0.5,-36 0,-34 C 0.5,-36 1,-36 6,-39 C 16,-34 12,-18 0,0 Z"
+          transform={`rotate(${i * 72})`}
+        />
+      ))}
+    </g>
+    <g fill={layers[1]} stroke="rgba(0,0,0,0.05)" strokeWidth="0.4">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <path
+          key={`sakura-mid-${i}`}
+          d="M 0,0 C -8,-12 -12,-24 -4,-28 C 0,-25 0,-25 0,-24 C 0,-25 0,-25 4,-28 C 12,-24 8,-12 0,0 Z"
+          transform={`rotate(${i * 72 + 36})`}
+        />
+      ))}
+    </g>
+    <circle cx="0" cy="0" r="8" fill={layers[2]} />
+    {Array.from({ length: 10 }).map((_, i) => {
+      const a = (i * 36 * Math.PI) / 180;
+      const x = Number((11 * Math.cos(a)).toFixed(2));
+      const y = Number((11 * Math.sin(a)).toFixed(2));
+      return (
+        <g key={`sakura-stamen-${i}`}>
+          <line x1="0" y1="0" x2={x} y2={y} stroke={pistilColor} strokeWidth="0.8" opacity="0.8" />
+          <circle cx={x} cy={y} r="1.3" fill={pistilColor} />
+        </g>
+      );
+    })}
+    <circle cx="0" cy="0" r="4.5" fill={layers[3]} />
+  </g>
+);
+
+// 4. CÚC HỌA MI ÁNH KIM (Bạn thân)
 const DaisyBloom: React.FC<{ isLight?: boolean }> = ({ isLight }) => (
   <g className="daisy-bloom">
-    {/* Vòng cánh dài ngoài (16 cánh) */}
-    <g fill={isLight ? '#ffffff' : '#f1f5f9'} stroke="rgba(0,0,0,0.05)" strokeWidth="0.4">
+    <g fill="#06214c" opacity="0.12">
       {Array.from({ length: 16 }).map((_, i) => (
-        <ellipse
-          key={`d-out-${i}`}
-          cx="0"
-          cy="25"
-          rx="5"
-          ry="16"
-          transform={`rotate(${i * 22.5})`}
-        />
+        <ellipse key={`d-bg-${i}`} cx="0" cy="27" rx="6" ry="17" transform={`rotate(${i * 22.5})`} />
       ))}
     </g>
-    {/* Vòng cánh trong xen kẽ (16 cánh trắng tinh khôi) */}
+    <g fill={isLight ? '#ffffff' : '#f8fafc'} stroke="rgba(0,0,0,0.06)" strokeWidth="0.4">
+      {Array.from({ length: 16 }).map((_, i) => (
+        <ellipse key={`d-out-${i}`} cx="0" cy="25" rx="5" ry="16" transform={`rotate(${i * 22.5})`} />
+      ))}
+    </g>
     <g fill="#ffffff" stroke="rgba(0,0,0,0.05)" strokeWidth="0.4">
       {Array.from({ length: 16 }).map((_, i) => (
-        <ellipse
-          key={`d-in-${i}`}
-          cx="0"
-          cy="20"
-          rx="4.2"
-          ry="13"
-          transform={`rotate(${i * 22.5 + 11.25})`}
-        />
+        <ellipse key={`d-in-${i}`} cx="0" cy="20" rx="4.2" ry="13" transform={`rotate(${i * 22.5 + 11.25})`} />
       ))}
     </g>
-    {/* Nhụy vàng rực rỡ đặc trưng của Cúc Họa Mi */}
-    <circle cx="0" cy="0" r="14" fill="#eab308" stroke="rgba(0,0,0,0.06)" strokeWidth="0.5" />
-    <circle cx="0" cy="0" r="11" fill="#facc15" />
-    <circle cx="0" cy="0" r="7" fill="#fef08a" opacity="0.6" />
-    {/* Hạt nhụy li ti */}
+    <circle cx="0" cy="0" r="14" fill="#d4a843" stroke="rgba(0,0,0,0.08)" strokeWidth="0.5" />
+    <circle cx="0" cy="0" r="11" fill="#f9b31e" />
+    <circle cx="0" cy="0" r="7" fill="#fef08a" opacity="0.75" />
     {Array.from({ length: 8 }).map((_, i) => {
       const angle = (i * 45 * Math.PI) / 180;
       return (
@@ -261,21 +384,54 @@ const DaisyBloom: React.FC<{ isLight?: boolean }> = ({ isLight }) => (
           key={`d-dot-${i}`}
           cx={Number((5.5 * Math.cos(angle)).toFixed(2))}
           cy={Number((5.5 * Math.sin(angle)).toFixed(2))}
-          r="1.1"
-          fill="#ca8a04"
+          r="1.2"
+          fill="#92400e"
         />
       );
     })}
   </g>
 );
 
-// Mao Lương (Ranunculus) màu san hô (Cánh tròn khum dày tầng, xòe tròn như quả cầu hoa)
+// 5. LILAC TRI THỨC & HỌC THUẬT (Đồng nghiệp)
+const LilacBloom: React.FC<{ layers: [string, string, string, string]; pistilColor: string }> = ({
+  layers,
+  pistilColor,
+}) => (
+  <g className="lilac-bloom">
+    {[
+      { x: 0, y: 0, s: 1 },
+      { x: -16, y: -12, s: 0.8 },
+      { x: 16, y: -12, s: 0.8 },
+      { x: -20, y: 12, s: 0.75 },
+      { x: 20, y: 12, s: 0.75 },
+      { x: 0, y: 22, s: 0.82 },
+      { x: 0, y: -24, s: 0.72 },
+    ].map((f, fi) => (
+      <g key={`lilac-f-${fi}`} transform={`translate(${f.x}, ${f.y}) scale(${f.s})`}>
+        <g fill={fi % 2 === 0 ? layers[0] : layers[1]} stroke="rgba(0,0,0,0.05)" strokeWidth="0.4">
+          <ellipse cx="0" cy="-9" rx="5" ry="8" />
+          <ellipse cx="9" cy="0" rx="8" ry="5" />
+          <ellipse cx="0" cy="9" rx="5" ry="8" />
+          <ellipse cx="-9" cy="0" rx="8" ry="5" />
+        </g>
+        <g fill={layers[2]}>
+          <circle cx="0" cy="-4" r="3.5" />
+          <circle cx="4" cy="0" r="3.5" />
+          <circle cx="0" cy="4" r="3.5" />
+          <circle cx="-4" cy="0" r="3.5" />
+        </g>
+        <circle cx="0" cy="0" r="2.5" fill={pistilColor} />
+      </g>
+    ))}
+  </g>
+);
+
+// 6. MAO LƯƠNG SAN HÔ & LỤA HOÀNG GIA (Người yêu)
 const RanunculusBloom: React.FC<{ layers: [string, string, string, string]; pistilColor: string }> = ({
   layers,
   pistilColor,
 }) => (
   <g className="ranunculus-bloom">
-    {/* Tầng 1: 12 cánh ngoài */}
     <g fill={layers[0]} stroke="rgba(0,0,0,0.05)" strokeWidth="0.5">
       <circle cx="0" cy="0" r="32" />
       {Array.from({ length: 12 }).map((_, i) => {
@@ -290,7 +446,6 @@ const RanunculusBloom: React.FC<{ layers: [string, string, string, string]; pist
         );
       })}
     </g>
-    {/* Tầng 2: 12 cánh giữa */}
     <g fill={layers[1]} stroke="rgba(0,0,0,0.05)" strokeWidth="0.5">
       <circle cx="0" cy="0" r="24" />
       {Array.from({ length: 12 }).map((_, i) => {
@@ -305,7 +460,6 @@ const RanunculusBloom: React.FC<{ layers: [string, string, string, string]; pist
         );
       })}
     </g>
-    {/* Tầng 3: 10 cánh khum tròn */}
     <g fill={layers[2]} stroke="rgba(0,0,0,0.05)" strokeWidth="0.5">
       <circle cx="0" cy="0" r="16" />
       {Array.from({ length: 10 }).map((_, i) => {
@@ -320,7 +474,6 @@ const RanunculusBloom: React.FC<{ layers: [string, string, string, string]; pist
         );
       })}
     </g>
-    {/* Tầng 4: 8 cánh trong cùng ôm lấy nhụy */}
     <g fill={layers[3]} stroke="rgba(0,0,0,0.05)" strokeWidth="0.5">
       <circle cx="0" cy="0" r="8" />
       {Array.from({ length: 8 }).map((_, i) => {
@@ -339,6 +492,201 @@ const RanunculusBloom: React.FC<{ layers: [string, string, string, string]; pist
   </g>
 );
 
+// 7. BÁCH HỢP TRẮNG THANH KHIẾT (Người tôi muốn nhớ về)
+const LilyBloom: React.FC<{ layers: [string, string, string, string]; pistilColor: string }> = ({
+  layers,
+  pistilColor,
+}) => (
+  <g className="lily-bloom">
+    <g fill={layers[0]} stroke="rgba(0,0,0,0.06)" strokeWidth="0.5">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <path
+          key={`lily-out-${i}`}
+          d="M 0,0 C -9,-15 -14,-32 0,-44 C 14,-32 9,-15 0,0 Z"
+          transform={`rotate(${i * 60})`}
+        />
+      ))}
+    </g>
+    <g fill={layers[1]} stroke="rgba(0,0,0,0.05)" strokeWidth="0.4">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <path
+          key={`lily-in-${i}`}
+          d="M 0,0 C -6,-12 -10,-24 0,-34 C 10,-24 6,-12 0,0 Z"
+          transform={`rotate(${i * 60 + 30})`}
+        />
+      ))}
+    </g>
+    <circle cx="0" cy="0" r="8" fill={layers[2]} />
+    {Array.from({ length: 6 }).map((_, i) => {
+      const a = ((i * 60 + 15) * Math.PI) / 180;
+      const x = Number((18 * Math.cos(a)).toFixed(2));
+      const y = Number((18 * Math.sin(a)).toFixed(2));
+      return (
+        <g key={`lily-stamen-${i}`}>
+          <line x1="0" y1="0" x2={x} y2={y} stroke="#94a3b8" strokeWidth="0.9" />
+          <ellipse cx={x} cy={y} rx="2.5" ry="1.2" transform={`rotate(${i * 60} ${x} ${y})`} fill={pistilColor} />
+        </g>
+      );
+    })}
+    <circle cx="0" cy="0" r="4.5" fill={layers[3]} />
+  </g>
+);
+
+// 8. CÁT TƯỜNG VINH HOA VẠN SỰ NHƯ Ý (Khác)
+const LisianthusBloom: React.FC<{ layers: [string, string, string, string]; pistilColor: string }> = ({
+  layers,
+  pistilColor,
+}) => (
+  <g className="lisianthus-bloom">
+    <g fill={layers[0]} stroke="rgba(0,0,0,0.06)" strokeWidth="0.5">
+      <circle cx="0" cy="0" r="32" />
+      {Array.from({ length: 8 }).map((_, i) => {
+        const a = (i * 45 * Math.PI) / 180;
+        return (
+          <ellipse
+            key={`lis-out-${i}`}
+            cx={Number((22 * Math.cos(a)).toFixed(2))}
+            cy={Number((22 * Math.sin(a)).toFixed(2))}
+            rx="17"
+            ry="14"
+            transform={`rotate(${i * 45})`}
+          />
+        );
+      })}
+    </g>
+    <g fill={layers[1]} stroke="rgba(0,0,0,0.05)" strokeWidth="0.5">
+      <circle cx="0" cy="0" r="22" />
+      {Array.from({ length: 8 }).map((_, i) => {
+        const a = ((i * 45 + 22.5) * Math.PI) / 180;
+        return (
+          <ellipse
+            key={`lis-mid-${i}`}
+            cx={Number((15 * Math.cos(a)).toFixed(2))}
+            cy={Number((15 * Math.sin(a)).toFixed(2))}
+            rx="13"
+            ry="11"
+            transform={`rotate(${i * 45 + 22.5})`}
+          />
+        );
+      })}
+    </g>
+    <g fill={layers[2]} stroke="rgba(0,0,0,0.05)" strokeWidth="0.5">
+      <circle cx="0" cy="0" r="14" />
+      {Array.from({ length: 6 }).map((_, i) => {
+        const a = (i * 60 * Math.PI) / 180;
+        return (
+          <circle
+            key={`lis-in-${i}`}
+            cx={Number((8 * Math.cos(a)).toFixed(2))}
+            cy={Number((8 * Math.sin(a)).toFixed(2))}
+            r="8"
+          />
+        );
+      })}
+    </g>
+    <circle cx="0" cy="0" r="7.5" fill={layers[3]} />
+    <circle cx="0" cy="0" r="4.5" fill={pistilColor} />
+  </g>
+);
+
+// HỌA TIẾT GÓC ĐẶC TRƯNG CHO TỪNG LOẠI THIỆP (Corner Ornaments)
+const CornerOrnament: React.FC<{ style: string; color: string; accentColor: string }> = ({
+  style,
+  color,
+  accentColor,
+}) => {
+  switch (style) {
+    case 'peony-filigree':
+      return (
+        <svg viewBox="0 0 36 36" className="w-7 h-7 sm:w-8 sm:h-8 pointer-events-none">
+          <path d="M 4,4 L 28,4 C 20,10 14,14 10,22 C 6,28 4,32 4,32 Z" fill="none" stroke={color} strokeWidth="1.2" />
+          <path d="M 7,7 Q 16,10 21,21 Q 10,16 7,7 Z" fill={accentColor} opacity="0.35" />
+          <circle cx="10" cy="10" r="2" fill={color} />
+          <circle cx="18" cy="7" r="1.2" fill={accentColor} />
+          <circle cx="7" cy="18" r="1.2" fill={accentColor} />
+        </svg>
+      );
+    case 'royal-crown':
+      return (
+        <svg viewBox="0 0 36 36" className="w-7 h-7 sm:w-8 sm:h-8 pointer-events-none">
+          <path d="M 4,4 L 26,4 M 4,4 L 4,26" stroke={color} strokeWidth="1.2" strokeLinecap="round" />
+          <path d="M 8,14 L 10,19 L 14,12 L 18,19 L 20,14 L 20,21 L 8,21 Z" fill={color} />
+          <circle cx="8" cy="12" r="1" fill={accentColor} />
+          <circle cx="14" cy="10" r="1.2" fill={accentColor} />
+          <circle cx="20" cy="12" r="1" fill={accentColor} />
+          <rect x="8" y="22" width="12" height="1.5" rx="0.5" fill={accentColor} />
+        </svg>
+      );
+    case 'wimbledon-branch':
+      return (
+        <svg viewBox="0 0 36 36" className="w-7 h-7 sm:w-8 sm:h-8 pointer-events-none">
+          <path d="M 4,4 Q 15,7 24,24" fill="none" stroke={color} strokeWidth="1.2" strokeLinecap="round" />
+          <ellipse cx="13" cy="7" rx="3.5" ry="1.8" transform="rotate(-25 13 7)" fill={accentColor} opacity="0.8" />
+          <ellipse cx="7" cy="13" rx="3.5" ry="1.8" transform="rotate(65 7 13)" fill={accentColor} opacity="0.8" />
+          <circle cx="24" cy="24" r="1.8" fill={color} />
+          <circle cx="18" cy="16" r="1.3" fill={color} />
+        </svg>
+      );
+    case 'octagram-star':
+      return (
+        <svg viewBox="0 0 36 36" className="w-7 h-7 sm:w-8 sm:h-8 pointer-events-none">
+          <path d="M 4,4 L 26,4 M 4,4 L 4,26" stroke={color} strokeWidth="1.1" />
+          <g transform="translate(13, 13)">
+            <path d="M 0,-7 L 2,-2 L 7,0 L 2,2 L 0,7 L -2,2 L -7,0 L -2,-2 Z" fill={color} />
+            <path
+              d="M -3.5,-3.5 L 0,-1.5 L 3.5,-3.5 L 1.5,0 L 3.5,3.5 L 0,1.5 L -3.5,3.5 L -1.5,0 Z"
+              fill={accentColor}
+              opacity="0.8"
+            />
+            <circle cx="0" cy="0" r="1.3" fill="#ffffff" />
+          </g>
+        </svg>
+      );
+    case 'academic-deco':
+      return (
+        <svg viewBox="0 0 36 36" className="w-7 h-7 sm:w-8 sm:h-8 pointer-events-none">
+          <path d="M 4,26 L 4,11 L 11,11 L 11,4 L 26,4" fill="none" stroke={color} strokeWidth="1.2" />
+          <path d="M 7,22 L 7,14 L 14,14 L 14,7 L 22,7" fill="none" stroke={accentColor} strokeWidth="0.8" opacity="0.7" />
+          <polygon points="11,11 15,7 19,11 15,15" fill={color} />
+          <circle cx="15" cy="11" r="1" fill="#ffffff" />
+        </svg>
+      );
+    case 'romantic-ribbon':
+      return (
+        <svg viewBox="0 0 36 36" className="w-7 h-7 sm:w-8 sm:h-8 pointer-events-none">
+          <path d="M 4,4 C 16,4 26,14 26,26" fill="none" stroke={color} strokeWidth="1.2" strokeLinecap="round" />
+          <path d="M 4,4 C 4,16 14,26 26,26" fill="none" stroke={accentColor} strokeWidth="0.8" opacity="0.6" />
+          <path d="M 6,9 C 11,11 15,15 17,20 C 13,16 9,13 6,9 Z" fill={color} opacity="0.75" />
+          <circle cx="15" cy="15" r="2" fill={accentColor} />
+        </svg>
+      );
+    case 'laurel-peace':
+      return (
+        <svg viewBox="0 0 36 36" className="w-7 h-7 sm:w-8 sm:h-8 pointer-events-none">
+          <path d="M 5,5 Q 15,9 22,22" fill="none" stroke={color} strokeWidth="1" />
+          <ellipse cx="9" cy="6" rx="3.2" ry="1.6" transform="rotate(-30 9 6)" fill={color} opacity="0.8" />
+          <ellipse cx="6" cy="11" rx="3.2" ry="1.6" transform="rotate(60 6 11)" fill={color} opacity="0.8" />
+          <ellipse cx="15" cy="11" rx="3.2" ry="1.6" transform="rotate(-30 15 11)" fill={accentColor} opacity="0.7" />
+          <ellipse cx="11" cy="17" rx="3.2" ry="1.6" transform="rotate(60 11 17)" fill={accentColor} opacity="0.7" />
+          <circle cx="22" cy="22" r="1.3" fill={color} />
+        </svg>
+      );
+    case 'kings-crest':
+    default:
+      return (
+        <svg viewBox="0 0 36 36" className="w-7 h-7 sm:w-8 sm:h-8 pointer-events-none">
+          <path d="M 4,4 L 26,4 M 4,4 L 4,26" stroke={color} strokeWidth="1.2" />
+          <path
+            d="M 13,7 C 13,11 11,14 8,16 C 12,16 14,14 15,12 C 16,14 18,16 22,16 C 19,14 17,11 17,7 C 16,5 14,5 13,7 Z"
+            fill={color}
+          />
+          <path d="M 15,7 L 15,19 M 11,17 L 19,17" stroke={accentColor} strokeWidth="0.9" />
+          <circle cx="15" cy="20" r="1" fill={accentColor} />
+        </svg>
+      );
+  }
+};
+
 const LeavesCluster: React.FC<{ leafColor: string }> = ({ leafColor }) => (
   <g>
     <ellipse cx="102" cy="42" rx="17" ry="44" fill={leafColor} opacity="0.8" transform="rotate(48 102 42)" />
@@ -351,13 +699,25 @@ const LeavesCluster: React.FC<{ leafColor: string }> = ({ leafColor }) => (
 const renderThemeFlower = (theme: CardThemeConfig, isLight = false) => {
   const layers = isLight && theme.flowerLayersLight ? theme.flowerLayersLight : theme.flowerLayers;
 
-  if (theme.flowerType === 'daisy') {
-    return <DaisyBloom isLight={isLight} />;
+  switch (theme.flowerType) {
+    case 'peony':
+      return <PeonyBloom layers={layers} pistilColor={theme.pistilColor} />;
+    case 'rose':
+      return <RoseBloom layers={layers} pistilColor={theme.pistilColor} />;
+    case 'sakura':
+      return <SakuraBloom layers={layers} pistilColor={theme.pistilColor} />;
+    case 'daisy':
+      return <DaisyBloom isLight={isLight} />;
+    case 'lilac':
+      return <LilacBloom layers={layers} pistilColor={theme.pistilColor} />;
+    case 'ranunculus':
+      return <RanunculusBloom layers={layers} pistilColor={theme.pistilColor} />;
+    case 'white-lily':
+      return <LilyBloom layers={layers} pistilColor={theme.pistilColor} />;
+    case 'lisianthus':
+    default:
+      return <LisianthusBloom layers={layers} pistilColor={theme.pistilColor} />;
   }
-  if (theme.flowerType === 'ranunculus') {
-    return <RanunculusBloom layers={layers} pistilColor={theme.pistilColor} />;
-  }
-  return <LayeredBloom layers={layers} pistilColor={theme.pistilColor} />;
 };
 
 export const renderFlowerSvgContent = (relId: string) => {
@@ -410,17 +770,33 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
       ref={cardRef}
       id="cardCaptureArea"
       style={{ backgroundColor: theme.cardBg }}
-      className="relative w-full aspect-[4/5] min-h-[500px] sm:min-h-[540px] rounded-3xl shadow-xl overflow-hidden flex flex-col justify-between select-none transition-all duration-300"
+      className="relative w-full aspect-[4/5] min-h-[510px] sm:min-h-[550px] rounded-3xl shadow-xl overflow-hidden flex flex-col justify-between select-none transition-all duration-300"
     >
-      {/* Khung đôi tinh tế (Double Frame Border) */}
+      {/* Khung đôi viền vàng kim hoàng gia & Navy (Royal British Double Frame) */}
       <div
-        className="absolute inset-[20px] pointer-events-none z-[1] rounded-[2px]"
-        style={{ border: `1px solid ${theme.frameColor}` }}
+        className="absolute inset-[18px] pointer-events-none z-[3] rounded-2xl"
+        style={{ border: `1.5px solid ${theme.frameColor}` }}
       />
       <div
-        className="absolute inset-[27px] pointer-events-none z-[1] rounded-[1px]"
-        style={{ border: `1px solid ${theme.frameColor}`, opacity: 0.6 }}
+        className="absolute inset-[24px] pointer-events-none z-[3] rounded-xl"
+        style={{ border: `1px solid ${theme.innerFrameColor || '#06214c'}`, opacity: 0.35 }}
       />
+
+      {/* 4 Góc cách điệu riêng biệt cho từng loại thiệp (Unique Themed Corner Ornaments) */}
+      <div className="absolute top-[22px] left-[22px] z-[4] pointer-events-none">
+        <CornerOrnament style={theme.cornerStyle} color={theme.frameColor} accentColor={theme.accentColor} />
+      </div>
+      <div className="absolute top-[22px] right-[22px] z-[4] pointer-events-none scale-x-[-1]">
+        <CornerOrnament style={theme.cornerStyle} color={theme.frameColor} accentColor={theme.accentColor} />
+      </div>
+      <div className="absolute bottom-[22px] left-[22px] z-[4] pointer-events-none scale-y-[-1]">
+        <CornerOrnament style={theme.cornerStyle} color={theme.frameColor} accentColor={theme.accentColor} />
+      </div>
+      <div className="absolute bottom-[22px] right-[22px] z-[4] pointer-events-none -scale-100">
+        <CornerOrnament style={theme.cornerStyle} color={theme.frameColor} accentColor={theme.accentColor} />
+      </div>
+
+      {/* Subtle Botanical Texture Background Accent */}
 
       {/* Cụm hoa góc trên bên trái (Top-Left Floral Cluster) */}
       <svg
@@ -428,15 +804,12 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
         viewBox="0 0 180 180"
       >
         <LeavesCluster leafColor={theme.leafColor} />
-        {/* Bông 1: Trên cùng (Tone sáng nhẹ) */}
         <g transform="translate(42, 38) scale(0.92)">
           {renderThemeFlower(theme, true)}
         </g>
-        {/* Bông 2: Bên dưới bên trái */}
         <g transform="translate(36, 112) scale(0.86)">
           {renderThemeFlower(theme, false)}
         </g>
-        {/* Bông 3: Nổi bật ở trung tâm cụm */}
         <g transform="translate(94, 88) scale(0.96)">
           {renderThemeFlower(theme, false)}
         </g>
@@ -480,9 +853,22 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
       </svg>
 
       {/* Nội dung thiệp chính giữa */}
-      <div className="relative z-20 flex flex-col justify-between h-full px-6 sm:px-12 pt-[144px] sm:pt-[160px] pb-10 sm:pb-14 text-center">
-        {/* Người nhận (Title) */}
-        <div className="max-w-[85%] mx-auto">
+      <div className="relative z-20 flex flex-col justify-between h-full px-6 sm:px-12 pt-[124px] sm:pt-[136px] pb-8 sm:pb-10 text-center">
+        {/* Brand Header & Người nhận (Title) */}
+        <div className="max-w-[88%] mx-auto space-y-2">
+          {/* Subtle Elegance Header Tag */}
+          <div className="flex flex-col items-center justify-center space-y-1">
+            <div className="inline-flex items-center space-x-1.5 px-3 py-0.5 rounded-full bg-[#06214c]/5 border border-[#d4a843]/35 shadow-2xs">
+              <span className="text-[10px]">✨</span>
+              <span
+                className="text-[8.5px] sm:text-[9.5px] tracking-[0.2em] font-sans font-bold uppercase truncate"
+                style={{ color: theme.brandTagColor }}
+              >
+                {language === 'vi' ? theme.stampBadgeVi : theme.stampBadgeEn}
+              </span>
+            </div>
+          </div>
+
           <h2
             className="font-serif italic font-semibold text-2xl sm:text-3xl tracking-wide px-2 break-words leading-tight"
             style={{ color: theme.salutationColor }}
@@ -492,9 +878,9 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
         </div>
 
         {/* Lời chúc chân thành (Message Body) */}
-        <div className="my-auto py-4 px-2 sm:px-4 flex items-center justify-center">
+        <div className="my-auto py-3 px-2 sm:px-4 flex items-center justify-center">
           <p
-            className="font-serif text-base sm:text-[18px] leading-relaxed break-words whitespace-pre-line"
+            className="font-serif text-base sm:text-[17.5px] leading-relaxed break-words whitespace-pre-line"
             style={{ color: theme.bodyColor }}
           >
             {displayMessage}
@@ -502,10 +888,10 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
         </div>
 
         {/* Chân thiệp (Footer: Đường kẻ, Người gửi, Ngày tháng) */}
-        <div className="flex flex-col items-center max-w-[80%] mx-auto">
+        <div className="flex flex-col items-center max-w-[85%] mx-auto space-y-1">
           <div
-            className="w-12 h-[1px] mb-3"
-            style={{ backgroundColor: theme.dividerColor, opacity: 0.6 }}
+            className="w-14 h-[1px] mb-1.5"
+            style={{ backgroundColor: theme.dividerColor, opacity: 0.65 }}
           />
           <p
             className="font-serif italic text-base sm:text-lg tracking-wide"
@@ -513,11 +899,12 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
           >
             {displaySender}
           </p>
-          <div
-            className="text-[11px] font-sans font-medium tracking-[0.25em] uppercase mt-2"
-            style={{ color: theme.dateColor }}
-          >
-            20 . 10
+          <div className="flex items-center space-x-2 text-[10px] sm:text-[11px] font-sans font-medium tracking-[0.18em] uppercase mt-1">
+            <span style={{ color: theme.dateColor }}>20 · 10</span>
+            <span style={{ color: theme.dividerColor, opacity: 0.5 }}>•</span>
+            <span className="font-semibold" style={{ color: '#d4a843' }}>
+              {language === 'vi' ? 'NGÀY PHỤ NỮ VIỆT NAM' : 'HAPPY WOMEN\'S DAY'}
+            </span>
           </div>
         </div>
       </div>
