@@ -21,7 +21,7 @@ export type FlowerType =
   | 'lilac'       // Đồng nghiệp: hoa tím lilac học thuật
   | 'ranunculus'  // Người yêu: mao lương san hô & lụa hoàng gia
   | 'white-lily'  // Người tôi muốn nhớ về: hoa bách hợp trắng thanh khiết
-  | 'lisianthus'; // Khác: cát tường vinh hoa vạn sự như ý
+  | 'lisianthus'; // Khác: cát tường vinh hoa hoàng gia
 
 export interface CardThemeConfig {
   flowerType: FlowerType;
@@ -193,7 +193,7 @@ export const CARD_THEMES: Record<string, CardThemeConfig> = {
     dateColor: '#64748b',
   },
   other: {
-    // 8. KHÁC: Cát tường vinh hoa vạn sự như ý (The King\'s Crest Lisianthus)
+    // 8. KHÁC: Cát tường vinh hoa hoàng gia (The King\'s Crest Lisianthus)
     flowerType: 'lisianthus',
     cardBg: '#faf9f6',
     frameColor: '#d4a843',
@@ -205,8 +205,8 @@ export const CARD_THEMES: Record<string, CardThemeConfig> = {
     pistilColor: '#78350f',
     leafColor: '#4d6b53',
     brandTagColor: '#06214c',
-    stampBadgeVi: 'VẠN SỰ NHƯ Ý · TRÂN QUÝ & BÌNH AN',
-    stampBadgeEn: 'BEST WISHES · PEACE & JOY',
+    stampBadgeVi: 'TÔN VINH PHÁI ĐẸP · RẠNG NGỜI & HẠNH PHÚC',
+    stampBadgeEn: 'CELEBRATING WOMEN · RADIANT & CHERISHED',
     salutationColor: '#06214c',
     bodyColor: '#1c283d',
     dividerColor: '#d4a843',
@@ -532,7 +532,7 @@ const LilyBloom: React.FC<{ layers: [string, string, string, string]; pistilColo
   </g>
 );
 
-// 8. CÁT TƯỜNG VINH HOA VẠN SỰ NHƯ Ý (Khác)
+// 8. CÁT TƯỜNG VINH HOA HOÀNG GIA (Khác)
 const LisianthusBloom: React.FC<{ layers: [string, string, string, string]; pistilColor: string }> = ({
   layers,
   pistilColor,
@@ -854,21 +854,8 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
 
       {/* Nội dung thiệp chính giữa */}
       <div className="relative z-20 flex flex-col justify-between h-full px-6 sm:px-12 pt-[124px] sm:pt-[136px] pb-8 sm:pb-10 text-center">
-        {/* Brand Header & Người nhận (Title) */}
-        <div className="max-w-[88%] mx-auto space-y-2">
-          {/* Subtle Elegance Header Tag */}
-          <div className="flex flex-col items-center justify-center space-y-1">
-            <div className="inline-flex items-center space-x-1.5 px-3 py-0.5 rounded-full bg-[#06214c]/5 border border-[#d4a843]/35 shadow-2xs">
-              <span className="text-[10px]">✨</span>
-              <span
-                className="text-[8.5px] sm:text-[9.5px] tracking-[0.2em] font-sans font-bold uppercase truncate"
-                style={{ color: theme.brandTagColor }}
-              >
-                {language === 'vi' ? theme.stampBadgeVi : theme.stampBadgeEn}
-              </span>
-            </div>
-          </div>
-
+        {/* Người nhận (Title) */}
+        <div className="max-w-[88%] mx-auto">
           <h2
             className="font-serif italic font-semibold text-2xl sm:text-3xl tracking-wide px-2 break-words leading-tight"
             style={{ color: theme.salutationColor }}
