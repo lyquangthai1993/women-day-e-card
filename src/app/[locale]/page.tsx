@@ -11,7 +11,7 @@ import { getDeviceFingerprint } from '../../lib/fingerprint';
 import { syncToGoogleSheet, getCardFromGoogleSheet } from '../../lib/googleSheet';
 import { recordCardOwnership, isCardOwnedLocally, canEditCard } from '../../lib/cardOwnership';
 
-import { CardPreview } from '../../components/CardPreview';
+import { CardPreview, computeCardLayout } from '../../components/CardPreview';
 import { SuggestionsModal } from '../../components/SuggestionsModal';
 import { IceCreamModal } from '../../components/IceCreamModal';
 import { ViewCardModal } from '../../components/ViewCardModal';
@@ -391,13 +391,8 @@ export default function HomePage() {
     showToast(t.btnSavingText);
 
     try {
-      const targetEl = (cardRef.current.querySelector('#cardCaptureArea') as HTMLElement) || cardRef.current;
-
-      const imgData = await exportCardToPng(targetEl, {
-        relationshipId: relationship.id,
-        backgroundColor: relationship.bgColor || '#ffffff',
-        pixelRatio: 2,
-      });
+      const layout = computeCardLayout(relationship, receiver, sender, message, language);
+      const imgData = await exportCardToPng(layout);
       setGeneratedImageUrl(imgData);
 
       // Nếu đang trong creator mode thì mở modal xem lại ảnh
@@ -432,13 +427,16 @@ export default function HomePage() {
 
       const finalFileName = getDownloadFileName();
 
-      // Tự động tải về máy
-      const link = document.createElement('a');
-      link.href = imgData;
-      link.download = finalFileName;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      // Tự động tải về máy (trên desktop/Android; trên iOS modal xem ảnh hỗ trợ nhấn giữ để lưu vào Photos)
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent || '');
+      if (!isIOS) {
+        const link = document.createElement('a');
+        link.href = imgData;
+        link.download = finalFileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
 
       showToast(t.toastImageSaved);
 

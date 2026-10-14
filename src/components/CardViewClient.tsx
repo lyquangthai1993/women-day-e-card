@@ -11,7 +11,7 @@ import { RelationshipTheme, Language } from '../types';
 import { RELATIONSHIPS, I18N, isDefaultReceiver, isAnonymousSender } from '../lib/constants';
 import { getCardFromGoogleSheet } from '../lib/googleSheet';
 import { isCardOwnedLocally } from '../lib/cardOwnership';
-import { CardPreview } from './CardPreview';
+import { CardPreview, computeCardLayout } from './CardPreview';
 import { saveUserLanguage } from '../lib/languageStorage';
 import { AppConfig } from '../lib/AppConfig';
 
@@ -233,21 +233,21 @@ export function CardViewClient({ initialData }: CardViewClientProps) {
     showToast(t.btnSavingText);
 
     try {
-      const targetEl = (cardRef.current.querySelector('#cardCaptureArea') as HTMLElement) || cardRef.current;
-
-      const imgData = await exportCardToPng(targetEl, {
-        relationshipId: relationship.id,
-        backgroundColor: relationship.bgColor || '#ffffff',
-        pixelRatio: 2,
-      });
+      const layout = computeCardLayout(relationship, receiver, sender, message, language);
+      const imgData = await exportCardToPng(layout);
       const finalFileName = getDownloadFileName();
 
-      const link = document.createElement('a');
-      link.href = imgData;
-      link.download = finalFileName;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent || '');
+      if (!isIOS) {
+        const link = document.createElement('a');
+        link.href = imgData;
+        link.download = finalFileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        window.open(imgData, '_blank');
+      }
 
       showToast(t.toastImageSaved);
     } catch (error) {
