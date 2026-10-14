@@ -15,7 +15,7 @@ import { CardPreview } from '../../components/CardPreview';
 import { SuggestionsModal } from '../../components/SuggestionsModal';
 import { IceCreamModal } from '../../components/IceCreamModal';
 import { ViewCardModal } from '../../components/ViewCardModal';
-import { saveUserLanguage, getInitialLocale } from '../../lib/languageStorage';
+import { saveUserLanguage } from '../../lib/languageStorage';
 import { AppConfig } from '../../lib/AppConfig';
 import { useLocale } from 'next-intl';
 import { useRouter, usePathname } from '../../lib/I18nNavigation';
@@ -48,20 +48,7 @@ export default function HomePage() {
   const [isSavingImage, setIsSavingImage] = useState<boolean>(false);
 
   const [visitorId, setVisitorId] = useState<string>('fp_loading');
-  const [isClaimed, setIsClaimed] = useState<boolean>(() => {
-    if (typeof window === 'undefined') return false;
-    try {
-      for (let i = 0; i < localStorage.length; i++) {
-        const k = localStorage.key(i);
-        if (k && k.startsWith('icecream_claimed') && localStorage.getItem(k) === 'true') {
-          return true;
-        }
-      }
-    } catch {
-      // ignore
-    }
-    return false;
-  });
+  const [isClaimed, setIsClaimed] = useState<boolean>(false);
 
   const [isSuggestionsOpen, setIsSuggestionsOpen] = useState<boolean>(false);
   const [isIceCreamModalOpen, setIsIceCreamModalOpen] = useState<boolean>(false);
@@ -79,11 +66,25 @@ export default function HomePage() {
   // Khởi tạo FingerprintJS và kiểm tra trạng thái vé kem
   useEffect(() => {
     async function init() {
+      if (typeof window !== 'undefined') {
+        try {
+          for (let i = 0; i < localStorage.length; i++) {
+            const k = localStorage.key(i);
+            if (k && k.startsWith('icecream_claimed') && localStorage.getItem(k) === 'true') {
+              setIsClaimed(true);
+              break;
+            }
+          }
+        } catch {
+          // ignore
+        }
+      }
+
       const id = await getDeviceFingerprint();
       setVisitorId(id);
       
       const claimedKey = getIceCreamClaimStorageKey(id);
-      if (localStorage.getItem(claimedKey) === 'true') {
+      if (typeof window !== 'undefined' && localStorage.getItem(claimedKey) === 'true') {
         setIsClaimed(true);
       }
     }
