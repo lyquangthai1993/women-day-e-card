@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { RelationshipTheme, Language } from '../types';
-import { isDefaultReceiver, isAnonymousSender } from '../lib/constants';
+import { isDefaultReceiver, isAnonymousSender, RELATIONSHIPS } from '../lib/constants';
 
 interface CardPreviewProps {
   relationship: RelationshipTheme;
@@ -213,15 +213,19 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
         xmlns="http://www.w3.org/2000/svg"
         xmlnsXlink="http://www.w3.org/1999/xlink"
       >
-        {/* 1. Nền SVG Template nghệ thuật của Designer (Hoa văn, viền, Happy Women's day & Trái tim) */}
-        <image
-          href={templateSrc}
-          x="0"
-          y="0"
-          width="297.75"
-          height="419.25"
-          preserveAspectRatio="xMidYMid meet"
-        />
+        {/* 1. Nền SVG Template nghệ thuật của Designer (pre-render tất cả template để đổi tab tức thì 0ms, không độ trễ) */}
+        {RELATIONSHIPS.map((rel) => (
+          <image
+            key={rel.id}
+            href={`/templates/${rel.id}.svg`}
+            x="0"
+            y="0"
+            width="297.75"
+            height="419.25"
+            preserveAspectRatio="xMidYMid meet"
+            style={{ display: relationship.id === rel.id ? 'inline' : 'none' }}
+          />
+        ))}
 
         {/* 2. Người nhận: Đặt chính xác tại y = 202 theo toạ độ thiết kế gốc (dưới trái tim), hỗ trợ ngắt dòng nếu dài */}
         <text

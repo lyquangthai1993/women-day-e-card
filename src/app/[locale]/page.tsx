@@ -90,6 +90,15 @@ export default function HomePage() {
     }
     init();
     checkUrlHash();
+
+    // Preload toàn bộ 8 file template SVG vào cache trình duyệt ngay khi load trang
+    // Đảm bảo khi người dùng bấm chuyển giữa các tab thiệp thì hiển thị tức thì (0ms latency)
+    if (typeof window !== 'undefined') {
+      RELATIONSHIPS.forEach((rel) => {
+        const img = new window.Image();
+        img.src = `/templates/${rel.id}.svg`;
+      });
+    }
   }, []);
 
   useEffect(() => {
