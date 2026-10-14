@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { toPng } from 'html-to-image';
+import { exportCardToPng } from '../lib/exportCard';
 import { Image as ImageIcon, Loader2 } from 'lucide-react';
 import { Link, useRouter, usePathname } from '../lib/I18nNavigation';
 import { useLocale } from 'next-intl';
@@ -233,16 +233,12 @@ export function CardViewClient({ initialData }: CardViewClientProps) {
     showToast(t.btnSavingText);
 
     try {
-      if (typeof document !== 'undefined' && document.fonts) {
-        await document.fonts.ready;
-      }
-
       const targetEl = (cardRef.current.querySelector('#cardCaptureArea') as HTMLElement) || cardRef.current;
 
-      const imgData = await toPng(targetEl, {
-        cacheBust: false,
-        pixelRatio: 2.5,
+      const imgData = await exportCardToPng(targetEl, {
+        relationshipId: relationship.id,
         backgroundColor: relationship.bgColor || '#ffffff',
+        pixelRatio: 2,
       });
       const finalFileName = getDownloadFileName();
 

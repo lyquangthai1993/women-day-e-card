@@ -225,6 +225,8 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
               width="297.75"
               height="419.25"
               preserveAspectRatio="xMidYMid meet"
+              data-rel-id={rel.id}
+              data-active={isActive ? 'true' : 'false'}
               style={{
                 opacity: isActive ? 1 : 0,
                 visibility: isActive ? 'visible' : 'hidden',
