@@ -95,8 +95,13 @@ export default function HomePage() {
     // Đảm bảo khi người dùng bấm chuyển giữa các tab thiệp thì hiển thị tức thì (0ms latency)
     if (typeof window !== 'undefined') {
       RELATIONSHIPS.forEach((rel) => {
-        const img = new window.Image();
-        img.src = `/templates/${rel.id}.svg`;
+        try {
+          fetch(`/templates/${rel.id}.svg`, { priority: 'low' }).catch(() => {});
+          const img = new window.Image();
+          img.src = `/templates/${rel.id}.svg`;
+        } catch {
+          // ignore
+        }
       });
     }
   }, []);
@@ -393,7 +398,7 @@ export default function HomePage() {
       const targetEl = (cardRef.current.querySelector('#cardCaptureArea') as HTMLElement) || cardRef.current;
 
       const imgData = await toPng(targetEl, {
-        cacheBust: true,
+        cacheBust: false,
         pixelRatio: 2.5,
         backgroundColor: relationship.bgColor || '#ffffff',
       });

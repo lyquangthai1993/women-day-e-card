@@ -240,7 +240,7 @@ export function CardViewClient({ initialData }: CardViewClientProps) {
       const targetEl = (cardRef.current.querySelector('#cardCaptureArea') as HTMLElement) || cardRef.current;
 
       const imgData = await toPng(targetEl, {
-        cacheBust: true,
+        cacheBust: false,
         pixelRatio: 2.5,
         backgroundColor: relationship.bgColor || '#ffffff',
       });
